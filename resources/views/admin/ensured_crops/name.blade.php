@@ -102,7 +102,7 @@
                                         href="#" data-toggle="modal" data-target="#EnsuredCropModal">Create</a>
                                 @endif
 
-                                <table class="table text-center" id="table_id_events">
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
@@ -116,7 +116,7 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $EnsuredCrop->name }}</td>
                                                 <td>
-                                                    <div class="d-flex gap-4 justify-content-center">
+                                                    <div class="d-flex gap-4">
                                                         @if (Auth::guard('admin')->check() ||
                                                                 $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Ensured Crops' &&
                                                                         $permission['permissions']->contains('edit')))

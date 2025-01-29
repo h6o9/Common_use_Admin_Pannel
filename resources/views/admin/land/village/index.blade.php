@@ -82,7 +82,7 @@
                             <div class="card-body table-striped table-bordered table-responsive">
                                 <a class="btn btn-primary mb-3" href="#" data-toggle="modal"
                                                     data-target="#villageModal">Add Village</a>
-                                <table class="table text-center" id="table_id_events">
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
@@ -96,7 +96,7 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $village->name }}</td>
                                                 <td>
-                                                    <div class="d-flex gap-4 justify-content-center">
+                                                    <div class="d-flex gap-4">
                                                         <a href="#"
                                                         data-toggle="modal"
                                                         data-target="#editvillageModal-{{$village->id}}"

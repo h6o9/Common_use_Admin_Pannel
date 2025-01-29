@@ -111,7 +111,7 @@
                                     <a class="btn btn-primary mb-3 text-white" href="{{ route('subadmin.create') }}">Create</a>
                                 @endif
 
-                                <table class="table text-center" id="table_id_events">
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>

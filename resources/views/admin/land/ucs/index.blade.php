@@ -83,7 +83,7 @@
                             <div class="card-body table-striped table-bordered table-responsive">
                                 <a class="btn btn-primary mb-3" href="#" data-toggle="modal"
                                     data-target="#ucModal">Add Union Council</a>
-                                <table class="table text-center" id="table_id_events">
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
@@ -101,7 +101,7 @@
                                                     <a class="btn btn-primary" href="{{ route('village.index', $uc->id) }}">Villages</a>
                                                 </td>
                                                 <td>
-                                                    <div class="d-flex gap-4 justify-content-center">
+                                                    <div class="d-flex gap-4">
                                                         <a href="#"
                                                         data-toggle="modal" data-target="#editucModal-{{$uc->id}}"
                                                             class="btn btn-primary" style="margin-left: 10px">Edit</a>

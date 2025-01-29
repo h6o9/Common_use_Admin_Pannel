@@ -21,11 +21,11 @@
                                         href="{{ route('farmer.create') }}">Create</a>
                                 @endif
 
-                                <table class="table text-center" id="table_id_events">
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
-                                            <th>Name</th>
+                                            <th>Farmer Name</th>
                                             <th>Father Name</th>
                                             <th>Email</th>
                                             <th>Image</th>

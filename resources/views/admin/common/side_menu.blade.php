@@ -66,7 +66,7 @@
 
             @if (Auth::guard('admin')->check() || $sideMenuName->contains('Insurance Companies'))
                 {{-- Demands --}}
-                <li class="dropdown {{ request()->is('admin/insurance-company*') ? 'active' : '' }}">
+                <li class="dropdown {{ request()->is('admin/insurance-company*') || request()->is('admin/company-insurance*') ? 'active' : '' }}">
                     <a href="
                 {{ route('insurance.company.index') }}
                 " class="nav-link px-2">
