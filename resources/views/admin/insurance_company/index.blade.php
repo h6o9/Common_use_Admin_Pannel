@@ -167,10 +167,10 @@
                                 @if (Auth::guard('admin')->check() ||
                                         $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Insurance Companies' &&
                                                 $permission['permissions']->contains('create')))
-                                    <a class="btn btn-primary mb-3 text-white" href="#" data-toggle="modal"
-                                        data-target="#InsuranceCompaniesModal">Create</a>
+                                    <a class="btn btn-primary text-white mb-3" href="#" data-toggle="modal"
+                                        data-target="#InsuranceCompaniesModal">Add Company</a>
                                 @endif
-                                <table class="table text-center" id="table_id_events">
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
@@ -196,7 +196,7 @@
                                                 </td>
                                                 <td>
                                                     <a class="btn btn-primary" href="
-                                                    {{ route('company.insurance.index', $insuranceCompany->id) }}
+                                                    {{ route('company.insurance.types.index', $insuranceCompany->id) }}
                                                      ">View</a>
                                                 </td>
                                                 <td>

@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('title', 'Company Insurance')
+@section('title', 'Company Insurance Sub-Types')
 @section('content')
 
 <style>
@@ -14,26 +14,27 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="InsuranceTypesModalLabel">Add Insurance</h5>
+                    <h5 class="modal-title" id="InsuranceTypesModalLabel">Add Insurance Sub-Types</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('company.insurance.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="
+                {{ route('company.insurance.sub.types.store') }}
+                " method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
-                        <input type="hidden" name="insurance_company_id" value="{{ $Company->id }}">
+                        <input type="hidden" name="company_insurance_type_id" value="{{ $CompanyinsuranceType->id }}">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="insurance_type_id">Type</label>
-                                    <select name="insurance_type_id" id="insurance_type_id" class="form-control">
-                                        <option value="" disabled selected>Select Type</option>
-                                        @foreach ($Insurance_types as $Insurance_type)
-                                            <option value="{{ $Insurance_type->id }}">{{ $Insurance_type->name }}</option>
+                                    <label for="insurance_subtype_id">Sub-Types</label>
+                                    <select name="insurance_subtype_id[]" id="insurance_subtype_id" class="form-control" multiple required>
+                                        @foreach ($savedInsuranceSubtypes as $Insurance_subtype)
+                                            <option value="{{ $Insurance_subtype->id }}">{{ $Insurance_subtype->name }}</option>
                                         @endforeach
                                     </select>
-                                    @error('insurance_type_id')
+                                    @error('insurance_subtype_id')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -41,15 +42,28 @@
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="status">Sub-Type</label>
-                                    <select name="insurance_subtype_id[]" id="insurance_subtype_id" class="form-control" multiple style="position: static !important;">
-                                        <option value="" disabled selected>Select Sub-Type</option>
+                                    <label for="status">Status</label>
+                                    <select name="status" id="status" class="form-control" required>
+                                        <option value="" selected disabled>Select an Option</option>
+                                        <option value="1" {{ old('status') }}>Active</option>
+                                        <option value="0" {{ old('status') }}>Deactive</option>
                                     </select>
-                                    @error('insurance_subtype_id')
+                                    @error('status')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="price">Price</label>
+                                    <div id="priceContainer"></div>
+                                    @error('price.{$Insurance_type->id}')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -64,41 +78,32 @@
 
 
     {{-- Edit Insurance Types Modal --}}
-    @foreach ($CompanyInsurances as $InsuranceType)
+    @foreach ($CompanyInsurancesSubTypes as $InsuranceType)
         <div class="modal fade" id="EditInsuranceTypesModal-{{ $InsuranceType->id }}" tabindex="-1" role="dialog"
             aria-labelledby="EditInsuranceTypesModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="EditInsuranceTypesModalLabel">Edit Insurance</h5>
+                        <h5 class="modal-title" id="EditInsuranceTypesModalLabel">Edit Insurance Sub-Type</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="{{ route('insurance.type.update', $InsuranceType->id) }}" method="POST">
+                    <form action="
+                    {{ route('company.insurance.sub.types.update', $InsuranceType->id) }}
+                        " method="POST">
                         @csrf
                         @method('POST')
                         <div class="modal-body">
                             <div class="row">
-                                <input type="hidden" name="incurance_company_id" value="{{ $Company->id }}">
+                                <input type="hidden" name="company_insurance_type_id" value="{{ $CompanyinsuranceType->id }}">
+
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="insurance_type_id">Type</label>
-                                        <select name="insurance_type_id" id="insurance_type_id" class="form-control">
-                                            <option value="" disabled>Select Type</option>
-                                            @foreach ($Insurance_types as $Insurance_type)
-                                                <option value="{{ $Insurance_type->id }}" 
-                                                    {{ (isset($CompanyInsurance) && $CompanyInsurance->insurance_type_id == $Insurance_type->id) ? 'selected' : '' }}>
-                                                    {{ $Insurance_type->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('insurance_type_id')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                        <label for="price">Price</label>
+                                        <input type="number" name="price" id="price" value="{{ $InsuranceType->price }}" class="form-control" required>
                                     </div>
                                 </div>
-                                
 
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -135,11 +140,10 @@
             <div class="section-body">
                 <div class="row">
                     <div class="col-12 col-md-12 col-lg-12">
-                        <a class="btn btn-primary mb-2" href="{{ route('insurance.company.index') }}">Back</a>
                         <div class="card">
                             <div class="card-header">
                                 <div class="col-12">
-                                    <h4>{{ $Company->name }} - Insurances</h4>
+                                    <h4>{{ $CompanyinsuranceType->insuranceCompany->name }} - {{ $CompanyinsuranceType->insuranceType->name }} - (Insurance Sub-Types)</h4>
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
@@ -147,48 +151,34 @@
                                         $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Insurance Types & Sub-Types' &&
                                                 $permission['permissions']->contains('create')))
                                     <a class="btn btn-primary mb-3 text-white" href="#" data-toggle="modal"
-                                    data-target="#InsuranceTypesModal">Create</a>
+                                    data-target="#InsuranceTypesModal">Add Insurance Sub-Types</a>
                                 @endif
 
-                                <table class="table text-center" id="table_id_events">
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
                                             <th>Name</th>
-                                            <th>Sub-Types</th>
-                                            {{-- <th>Status</th> --}}
+                                            <th>Price</th>
+                                            <th>Status</th>
                                             <th scope="col">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($CompanyInsurances as $InsuranceType)
+                                        @foreach ($CompanyInsurancesSubTypes as $InsuranceType)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $Insurance_type_names->firstWhere('id', $InsuranceType->insurance_type_id)->name }}</td>
-                                            
+                                            <td>{{ $InsuranceSubTypeNames[$InsuranceType->insurance_subtype_id]->name ?? 'N/A' }}</td>
+                                            <td>{{ $InsuranceType->price ?? 'N/A' }}</td>
                                             <td>
-                                                <ul>
-                                                    @php
-                                                        $subtypeIds = json_decode($InsuranceType->insurance_subtype_id, true);
-                                                    @endphp
-                                                    @if (!empty($subtypeIds))
-                                                    @foreach ($subtypeIds as $subtypeId)
-                                                        <li>{{ $Insurance_subtype_names[$subtypeId]->name ?? 'N/A' }}</li>
-                                                    @endforeach
-                                                @else
-                                                    <li>N/A</li>
-                                                @endif
-                                                </ul>
-                                            </td>
-                                            {{-- <td>
                                                 @if ($InsuranceType->status == 1)
                                                 <div class="badge badge-success badge-shadow">Activated</div>
                                                 @else
                                                     <div class="badge badge-danger badge-shadow">Deactivated</div>
                                                 @endif
-                                            </td> --}}
+                                            </td>
                                             <td>
-                                                <div class="d-flex gap-4 justify-content-center">
+                                                <div class="d-flex gap-4">
                                                     @if (Auth::guard('admin')->check() ||
                                                             $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Insurance Types & Sub-Types' &&
                                                                     $permission['permissions']->contains('edit')))
@@ -201,12 +191,12 @@
                                                             $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Insurance Types & Sub-Types' &&
                                                                     $permission['permissions']->contains('delete')))
                                                         <form action="
-                                                        {{ route('insurance.type.destroy', $InsuranceType->id) }}
+                                                        {{ route('company.insurance.sub.types.destroy', $InsuranceType->id) }}
                                                             " method="POST" 
                                                             style="display:inline-block; margin-left: 10px">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <input type="hidden" name="incurance_company_id" value="{{ $Company->id }}">
+                                                            <input type="hidden" name="company_insurance_type_id" value="{{ $CompanyinsuranceType->id }}">
                                                             <button type="submit"
                                                                 class="btn btn-danger btn-flat show_confirm"
                                                                 data-toggle="tooltip">Delete</button>
@@ -265,31 +255,27 @@
                 });
         });
     </script>
-
     <script>
-        $(document).ready(function() {
-            $('#insurance_type_id ').on('change', function() {
-                var insuranceTypeId  = $(this).val();
+        $(document).ready(function () {
 
-                $.ajax({
-                    url: "{{ route('get-sub-type') }}",
-                    type: "GET",
-                    data: {
-                        insuranceType_Id: insuranceTypeId
-                    },
-                    success: function(data) {
-                        $('#insurance_subtype_id').empty();
-                        // $('#insurance_subtype_id').append(
-                        //     '<option value="" selected disabled>Select Sub-Type</option>');
+        $('#insurance_subtype_id').on('change', function () {
+            let selectedTypes = $(this).val();
+            let priceContainer = $('#priceContainer');
 
-                        $.each(data, function(key, value) {
-                            $('#insurance_subtype_id').append('<option value="' + value.id +
-                                '">' + value.name + '</option>');
-                        });
-                    }
+            priceContainer.empty();
+
+            if (selectedTypes) {
+                selectedTypes.forEach(function (subtypeId) {
+                    let inputHtml = `
+                        <div class="input-group mb-2" id="price-group-${subtypeId}">
+                            <input type="number" name="price[${subtypeId}]" class="form-control" placeholder="Enter price" required>
+                        </div>`;
+                    priceContainer.append(inputHtml);
                 });
-            });
+            }
         });
+    });
     </script>
+
 
 @endsection

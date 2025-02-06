@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UcController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\TeamAController;
 use App\Http\Controllers\Admin\FarmerController;
 use App\Http\Controllers\Admin\TehsilController;
 use App\Http\Controllers\Admin\VillageController;
@@ -17,14 +16,13 @@ use App\Http\Controllers\Admin\EnsuredCropController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\InsuranceTypeController;
 use App\Http\Controllers\Admin\EnsuredCropNameController;
-use App\Http\Controllers\Admin\EnsuredCropTypeController;
 use App\Http\Controllers\Admin\AuthorizedDealerController;
-use App\Http\Controllers\Admin\CompanyInsuranceController;
 use App\Http\Controllers\Admin\InsuranceCompanyController;
 use App\Http\Controllers\Admin\InsuranceSubTypeController;
 use App\Http\Controllers\Admin\LandDataManagementController;
+use App\Http\Controllers\Admin\CompanyInsuranceTypeController;
 use App\Http\Controllers\Admin\InsuranceClaimRequestController;
-use App\Http\Controllers\Admin\InsuranceTypesSubTypeController;
+use App\Http\Controllers\Admin\CompanyInsuranceSubTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -183,14 +181,19 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     });
 
     // ############ Company Insurance Types #################
-    Route::controller(CompanyInsuranceController::class)->group(function () {
-        Route::get('/company-insurance/{id}',  'index')->name('company.insurance.index');
-        Route::post('/company-insurance-store',  'store')->name('company.insurance.store');
-        Route::post('/company-insurance-update/{id}',  'update')->name('company.insurance.update');
-        Route::delete('/company-insurance-destroy/{id}',  'destroy')->name('company.insurance.destroy');
-        
-        
-        Route::get('/get-sub-type',  'GetSubType')->name('get-sub-type');
+    Route::controller(CompanyInsuranceTypeController::class)->group(function () {
+        Route::get('/company-insurance-types/{id}',  'index')->name('company.insurance.types.index');
+        Route::post('/company-insurance-types-store',  'store')->name('company.insurance.types.store');
+        Route::post('/company-insurance-types-update/{id}',  'update')->name('company.insurance.types.update');
+        Route::delete('/company-insurance-types-destroy/{id}',  'destroy')->name('company.insurance.types.destroy');
+    });
+    
+    // ############ Company Insurance Sub-Types #################
+    Route::controller(CompanyInsuranceSubTypeController::class)->group(function () {
+        Route::get('/company-insurance-sub-types/{id}',  'index')->name('company.insurance.sub.types.index');
+        Route::post('/company-insurance-sub-types-store',  'store')->name('company.insurance.sub.types.store');
+        Route::post('/company-insurance-sub-types-update/{id}',  'update')->name('company.insurance.sub.types.update');
+        Route::delete('/company-insurance-sub-types-destroy/{id}',  'destroy')->name('company.insurance.sub.types.destroy');
     });
 
     // ############ Insurance Types #################

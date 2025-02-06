@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCompanyInsurancesTable extends Migration
+class CreateCompanyInsuranceTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateCompanyInsurancesTable extends Migration
      */
     public function up()
     {
-        Schema::create('company_insurances', function (Blueprint $table) {
+        Schema::create('company_insurance_types', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('insurance_company_id')->constrained('insurance_companies')->onDelete('cascade');
-            $table->foreignId('insurance_type_id')->constrained('insurance_types')->onDelete('cascade');
-            $table->string('insurance_subtype_id')->nullable();
+            $table->foreignId('insurance_company_id')->constrained('insurance_companies')->cascadeOnUpdate();
+            $table->foreignId('insurance_type_id')->constrained('insurance_types')->cascadeOnUpdate();
+            $table->string('price')->nullable();
+            $table->string('status')->default(1);
             $table->timestamps();
         });
     }

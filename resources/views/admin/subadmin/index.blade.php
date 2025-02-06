@@ -154,7 +154,7 @@
                                                     @if (Auth::guard('admin')->check())
                                                     <div class="d-flex gap-4">
                                                         <a href="{{ route('subadmin.edit', $subAdmin->id) }}"
-                                                            class="btn btn-primary" style="margin-left: 10px">Edit</a>
+                                                            class="btn btn-primary">Edit</a>
                                                         <form action="{{ route('subadmin.destroy', $subAdmin->id) }}"
                                                             method="POST"
                                                             style="display:inline-block; margin-left: 10px">

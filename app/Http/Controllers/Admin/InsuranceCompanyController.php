@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Models\InsuranceCompany;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
 class InsuranceCompanyController extends Controller
 {
-    public function index() 
+    public function index()
     {
         $sideMenuName = [];
         $sideMenuPermissions = [];
@@ -26,8 +27,8 @@ class InsuranceCompanyController extends Controller
 
         return view('admin.insurance_company.index', compact('sideMenuPermissions', 'sideMenuName', 'insuranceCompanies'));
     }
-    
-    public function store(Request $request) 
+
+    public function store(Request $request)
     {
         // dd($request);
         $request->validate([
@@ -57,7 +58,7 @@ class InsuranceCompanyController extends Controller
 
         return redirect()->route('insurance.company.index')->with(['message' => 'Insurance Company Created Successfully']);
     }
-    public function update(Request $request, $id) 
+    public function update(Request $request, $id)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -93,9 +94,13 @@ class InsuranceCompanyController extends Controller
 
         return redirect()->route('insurance.company.index')->with(['message' => 'Insurance Company Updated Successfully']);
     }
-    public function destroy($id) 
+    public function destroy($id)
     {
-        InsuranceCompany::destroy($id);
-        return redirect()->route('insurance.company.index')->with(['message' => 'Insurance Company Deleted Successfully']);
+        try {
+            InsuranceCompany::destroy($id);
+            return redirect()->route('insurance.company.index')->with(['message' => 'Insurance Company Deleted Successfully']);
+        } catch (QueryException $e) {
+            return redirect()->route('insurance.company.index')->with(['error' => 'This insurance cannot be deleted because it has insurance policies.']);
+        }
     }
 }

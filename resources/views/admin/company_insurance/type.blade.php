@@ -1,8 +1,12 @@
 @extends('admin.layout.app')
-@section('title', 'Insurance Types')
+@section('title', 'Company Insurance Types')
 @section('content')
 
-
+<style>
+    .select2-container{
+        display: block;
+    }
+</style>
 
     {{-- Add Insurance Types Modal --}}
     <div class="modal fade" id="InsuranceTypesModal" tabindex="-1" role="dialog"
@@ -15,15 +19,36 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('insurance.type.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('company.insurance.types.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
+                        <input type="hidden" name="insurance_company_id" value="{{ $Company->id }}">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="name">Name</label>
-                                    <input type="text" name="name" class="form-control" value="{{ old('name') }}">
-                                    @error('name')
+                                    <label for="insurance_type_id">Types</label>
+                                    <select name="insurance_type_id[]" id="insurance_type_id" class="form-control" multiple required>
+                                        @foreach ($Insurance_types as $Insurance_type)
+                                            <option value="{{ $Insurance_type->id }}">{{ $Insurance_type->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('insurance_type_id')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            
+                            
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="status">Status</label>
+                                    <select name="status" id="status" class="form-control" required>
+                                        <option value="" selected disabled>Select an Option</option>
+                                        <option value="1" {{ old('status') }}>Active</option>
+                                        <option value="0" {{ old('status') }}>Deactive</option>
+                                    </select>
+                                    @error('status')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -31,16 +56,9 @@
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <select name="status" id="status" class="form-control" required>
-                                        <option value="" {{ old('status') === null ? 'selected' : '' }} disabled>
-                                            Select an Option</option>
-                                        <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Active
-                                        </option>
-                                        <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Deactive
-                                        </option>
-                                    </select>
-                                    @error('status')
+                                    <label for="price">Price (Optional)</label>
+                                    <div id="priceContainer"></div>
+                                    @error('price')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -59,7 +77,7 @@
 
 
     {{-- Edit Insurance Types Modal --}}
-    @foreach ($InsuranceTypes as $InsuranceType)
+    @foreach ($CompanyInsurances as $InsuranceType)
         <div class="modal fade" id="EditInsuranceTypesModal-{{ $InsuranceType->id }}" tabindex="-1" role="dialog"
             aria-labelledby="EditInsuranceTypesModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -70,18 +88,17 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="{{ route('insurance.type.update', $InsuranceType->id) }}" method="POST">
+                    <form action="{{ route('company.insurance.types.update', $InsuranceType->id) }}" method="POST">
                         @csrf
                         @method('POST')
                         <div class="modal-body">
                             <div class="row">
+                                <input type="hidden" name="incurance_company_id" value="{{ $Company->id }}">
+
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="name">Name</label>
-                                        <input type="text" name="name" class="form-control" value="{{ old('name', $InsuranceType->name) }}">
-                                        @error('name')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                                        <label for="price">Price (Optional)</label>
+                                        <input type="number" name="price" id="" value="{{ $InsuranceType->price }}" class="form-control">
                                     </div>
                                 </div>
 
@@ -124,7 +141,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="col-12">
-                                    <h4>Insurance Types</h4>
+                                    <h4>{{ $Company->name }} - (Insurance types)</h4>
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
@@ -132,7 +149,7 @@
                                         $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Insurance Types & Sub-Types' &&
                                                 $permission['permissions']->contains('create')))
                                     <a class="btn btn-primary mb-3 text-white" href="#" data-toggle="modal"
-                                    data-target="#InsuranceTypesModal">Create</a>
+                                    data-target="#InsuranceTypesModal">Add Insurance Types</a>
                                 @endif
 
                                 <table class="table responsive" id="table_id_events">
@@ -140,18 +157,29 @@
                                         <tr>
                                             <th>Sr.</th>
                                             <th>Name</th>
+                                            <th>Price</th>
                                             <th>Sub-Types</th>
                                             <th>Status</th>
                                             <th scope="col">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($InsuranceTypes as $InsuranceType)
+                                        @foreach ($CompanyInsurances as $InsuranceType)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $InsuranceType->name }}</td>
                                             <td>
-                                                <a class="btn btn-primary" href="{{ route('insurance.sub.type.index', $InsuranceType->id) }}">View</a>
+                                                {{ $InsuranceType->insuranceType->name }}
+                                            </td>
+                                            <td> 
+                                                @if ($InsuranceType->price)
+                                                    {{ $InsuranceType->price }} PKR
+                                                @else
+                                                    N/A
+                                                @endif
+                                            </td>
+                                            
+                                            <td>
+                                                <a href="{{ route('company.insurance.sub.types.index', $InsuranceType->id) }}" class="btn btn-primary">View</a>
                                             </td>
                                             <td>
                                                 @if ($InsuranceType->status == 1)
@@ -174,11 +202,12 @@
                                                             $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Insurance Types & Sub-Types' &&
                                                                     $permission['permissions']->contains('delete')))
                                                         <form action="
-                                                        {{ route('insurance.type.destroy', $InsuranceType->id) }}
+                                                        {{ route('company.insurance.types.destroy', $InsuranceType->id) }}
                                                             " method="POST" 
                                                             style="display:inline-block; margin-left: 10px">
                                                             @csrf
                                                             @method('DELETE')
+                                                            <input type="hidden" name="incurance_company_id" value="{{ $Company->id }}">
                                                             <button type="submit"
                                                                 class="btn btn-danger btn-flat show_confirm"
                                                                 data-toggle="tooltip">Delete</button>
@@ -208,6 +237,15 @@
             $('#table_id_events').DataTable()
         })
     </script>
+    
+    <script>
+        $(document).ready(function() {
+        $('#insurance_type_id').select2({
+            placeholder: "Select Type",
+            allowClear: true
+        });
+    });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
     <script type="text/javascript">
         $('.show_confirm').click(function(event) {
@@ -228,5 +266,27 @@
                 });
         });
     </script>
+    <script>
+        $(document).ready(function () {
+
+        $('#insurance_type_id').on('change', function () {
+            let selectedTypes = $(this).val();
+            let priceContainer = $('#priceContainer');
+
+            priceContainer.empty();
+
+            if (selectedTypes) {
+                selectedTypes.forEach(function (typeId) {
+                    let inputHtml = `
+                        <div class="input-group mb-2" id="price-group-${typeId}">
+                            <input type="number" name="price[${typeId}]" class="form-control" placeholder="Enter price">
+                        </div>`;
+                    priceContainer.append(inputHtml);
+                });
+            }
+        });
+    });
+    </script>
+
 
 @endsection

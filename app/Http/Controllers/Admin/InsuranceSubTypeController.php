@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\InsuranceType;
 use App\Models\InsuranceSubType;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 
 class InsuranceSubTypeController extends Controller
@@ -67,7 +68,11 @@ class InsuranceSubTypeController extends Controller
     public function destroy(Request $request, $id) 
     {
         // dd($request);
-        InsuranceSubType::destroy($id);
-        return redirect()->route('insurance.sub.type.index', ['id' => $request->incurance_type_id])->with(['message' => 'Insurance Sub-Type Deleted Successfully']);
+        try{
+            InsuranceSubType::destroy($id);
+            return redirect()->route('insurance.sub.type.index', ['id' => $request->incurance_type_id])->with(['message' => 'Insurance Sub-Type Deleted Successfully']);
+        }catch(QueryException $e){
+            return redirect()->route('insurance.sub.type.index', ['id' => $request->incurance_type_id])->with(['error' => 'This insurance Sub-type cannot be deleted because it is assigned to insurance companies.']);
+        }
     }
 }

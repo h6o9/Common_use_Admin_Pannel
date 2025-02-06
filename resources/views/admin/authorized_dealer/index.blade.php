@@ -63,7 +63,7 @@
                                                     <div class="d-flex gap-4">
                                                         @if (Auth::guard('admin')->check() || ($sideMenuPermissions->contains(fn ($permission) => $permission['side_menu_name'] === 'Authorized Dealers' && $permission['permissions']->contains('edit'))))
                                                         <div class="d-flex gap-4">
-                                                            <a href="{{ route('dealer.edit', $dealer->id) }}" class="btn btn-primary" style="margin-left: 10px">Edit</a>
+                                                            <a href="{{ route('dealer.edit', $dealer->id) }}" class="btn btn-primary">Edit</a>
                                                         </div>
                                                     @endif                                                    
                                                     @if (Auth::guard('admin')->check() || $sideMenuPermissions->contains(fn ($permission) => $permission['side_menu_name'] === 'Authorized Dealers' && $permission['permissions']->contains('delete')))

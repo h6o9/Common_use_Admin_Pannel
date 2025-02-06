@@ -137,7 +137,7 @@
                                     data-target="#InsuranceTypesModal">Create</a>
                                 @endif
 
-                                <table class="table text-center" id="table_id_events">
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
@@ -159,7 +159,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <div class="d-flex gap-4 justify-content-center">
+                                                <div class="d-flex gap-4">
                                                     @if (Auth::guard('admin')->check() ||
                                                             $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Insurance Types & Sub-Types' &&
                                                                     $permission['permissions']->contains('edit')))

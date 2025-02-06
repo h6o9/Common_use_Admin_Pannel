@@ -121,7 +121,7 @@
                                                                 $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Ensured Crops' &&
                                                                         $permission['permissions']->contains('edit')))
                                                             <a href="#"
-                                                                class="btn btn-primary" style="margin-left: 10px" data-toggle="modal" data-target="#EditEnsuredCropModal-{{ $EnsuredCrop->id }}">Edit</a>
+                                                                class="btn btn-primary" data-toggle="modal" data-target="#EditEnsuredCropModal-{{ $EnsuredCrop->id }}">Edit</a>
                                                         @endif
 
                                                         @if (Auth::guard('admin')->check() ||
