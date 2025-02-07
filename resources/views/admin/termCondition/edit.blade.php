@@ -17,7 +17,9 @@
                                     <div class="form-group">
                                         <label>Description</label>
                                         <textarea name="description" class="form-control">
-                                            {{-- {{$data->description}} --}}
+                                            @if ($data)
+                                            {{$data->description}}
+                                            @endif
                                             
                                         </textarea>
                                     </div>

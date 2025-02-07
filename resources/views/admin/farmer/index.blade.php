@@ -29,7 +29,6 @@
                                             <th>Father Name</th>
                                             <th>Email</th>
                                             <th>Image</th>
-                                            <th>Ensured Crops</th>
                                             <th>CNIC</th>
                                             <th>Contact</th>
                                             <th>DOB</th>
@@ -47,9 +46,6 @@
                                                 <td>
                                                     <img src="{{ asset($farmer->image) }}" alt=""
                                                         height="50"width="50" class="image">
-                                                </td>
-                                                <td>
-                                                    <a href="{{ route('ensured.crops.index', $farmer->id) }}" class="btn btn-primary">View</a>
                                                 </td>
                                                 <td>{{ $farmer->cnic }}</td>
                                                 <td>{{ $farmer->contact }}</td>

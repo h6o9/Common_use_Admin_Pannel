@@ -31,10 +31,21 @@
                     </a>
                 </li>
             @endif
+            
+            @if (Auth::guard('admin')->check() || $sideMenuName->contains('Dealer Items'))
+                {{-- Authorized Dealers --}}
+                <li class="dropdown {{ request()->is('admin/items*') ? 'active' : '' }}">
+                    <a href="
+                        {{ route('items.index') }}
+                        " class="nav-link">
+                        <i data-feather="layers"></i><span> Dealer Items</span>
+                    </a>
+                </li>
+            @endif
 
             @if (Auth::guard('admin')->check() || $sideMenuName->contains('Farmers'))
                 {{-- Human Resource --}}
-                <li class="dropdown {{ request()->is('admin/farmer*') || request()->is('admin/ensured-crops*') ? 'active' : '' }}">
+                <li class="dropdown {{ request()->is('admin/farmer*') ? 'active' : '' }}">
                     <a href="
                 {{ route('farmers.index') }}
                 " class="nav-link">
@@ -92,6 +103,16 @@
                 {{ route('insurance.claim.index') }}
                 " class="nav-link px-2">
                         <i class="fas fa-file-alt"></i> <span>Insurance Claim Requests</span>
+                    </a>
+                </li>
+            @endif
+            
+            @if (Auth::guard('admin')->check() || $sideMenuName->contains('Insurance History '))
+                <li class="dropdown {{ request()->is('admin/ensured-crops*') ? 'active' : '' }}">
+                    <a href="
+                {{ route('ensured.crops.index') }}
+                " class="nav-link px-2">
+                <i class="fas fa-user-shield"></i> <span>Insurance History</span>
                     </a>
                 </li>
             @endif

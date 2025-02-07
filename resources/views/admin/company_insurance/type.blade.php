@@ -54,8 +54,9 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col">
                                 <div class="form-group">
+                                    <div class="text-danger">If you want to select a sub-type, then please ignore the price field.</div>
                                     <label for="price">Price (Optional)</label>
                                     <div id="priceContainer"></div>
                                     @error('price')
@@ -172,7 +173,7 @@
                                             </td>
                                             <td> 
                                                 @if ($InsuranceType->price)
-                                                    {{ $InsuranceType->price }} PKR
+                                                    {{ number_format($InsuranceType->price) }} PKR
                                                 @else
                                                     N/A
                                                 @endif
@@ -271,15 +272,19 @@
 
         $('#insurance_type_id').on('change', function () {
             let selectedTypes = $(this).val();
+            
             let priceContainer = $('#priceContainer');
 
             priceContainer.empty();
 
             if (selectedTypes) {
                 selectedTypes.forEach(function (typeId) {
+
+                    let typeName = $('#insurance_type_id option[value="' + typeId + '"]').text();
+
                     let inputHtml = `
                         <div class="input-group mb-2" id="price-group-${typeId}">
-                            <input type="number" name="price[${typeId}]" class="form-control" placeholder="Enter price">
+                            <input type="number" name="price[${typeId}]" class="form-control" placeholder="Enter price for ${typeName}">
                         </div>`;
                     priceContainer.append(inputHtml);
                 });

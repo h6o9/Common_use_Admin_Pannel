@@ -14,4 +14,9 @@ class DealerItem extends Model
     {
         return $this->belongsTo(AuthorizedDealer::class);
     }
+
+    public function item()
+    {
+        return $this->belongsTo(Item::class);
+    }
 }

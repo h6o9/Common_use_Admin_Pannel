@@ -15,8 +15,8 @@ class CreateCompanyInsuranceSubTypesTable extends Migration
     {
         Schema::create('company_insurance_sub_types', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_insurance_type_id')->constrained('company_insurance_types')->cascadeOnDelete();
-            $table->foreignId('insurance_subtype_id')->nullable()->constrained('insurance_sub_types')->cascadeOnDelete();
+            $table->foreignId('company_insurance_type_id')->constrained('company_insurance_types')->cascadeOnUpdate();
+            $table->foreignId('insurance_subtype_id')->nullable()->constrained('insurance_sub_types')->cascadeOnUpdate();
             $table->string('price')->nullable();
             $table->string('status')->default(1);
             $table->timestamps();

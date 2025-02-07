@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Item;
 use App\Models\DealerItem;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -12,7 +13,7 @@ class DealerItemController extends Controller
     public function index($id)
     {
         $dealer_id = $id;
-        $dealerItems = DealerItem::with('authorizedDealer')->where('authorized_dealer_id', $id)->latest()->get();
+        $dealerItems = DealerItem::with('authorizedDealer')->where('authorized_dealer_id', $id)->with('item')->latest()->get();
         
         $sideMenuName = [];
         $sideMenuPermissions = [];
@@ -29,6 +30,12 @@ class DealerItemController extends Controller
     public function create($id)
     {
         $dealer_id = $id;
+        $savedItems = DealerItem::where('authorized_dealer_id', $id)->pluck('id');
+        // $items = Item::whereNotIn('id', $savedItems)->get();
+        $items = Item::whereDoesntHave('dealerItems', function ($query) use ($id) {
+            $query->where('authorized_dealer_id', $id);
+        })->orderBy('name', 'asc')->get();
+        // dd($items);
         
         $sideMenuName = [];
 
@@ -38,22 +45,22 @@ class DealerItemController extends Controller
             $sideMenuName = $subAdminData['sideMenuName'];
         }
 
-        return view('admin.authorized_dealer.items.create', compact( 'sideMenuName', 'dealer_id'));
+        return view('admin.authorized_dealer.items.create', compact( 'sideMenuName', 'dealer_id', 'items'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
-            'quantity' => 'nullable|string',
-            'price' => 'nullable|string',
-            'dealer_id' => 'required|string',
+            'dealer_id' => 'required',
+            'item_id' => 'required|string',
+            'quantity' => 'required|string',
+            'price' => 'required|string',
         ]);
         // dd($request);
 
         // Create a new dealer record
         DealerItem::create([
-            'name' => $request->name,
+            'item_id' => $request->item_id,
             'quantity' => $request->quantity,
             'price' => $request->price,
             'authorized_dealer_id' => $request->dealer_id,
@@ -66,8 +73,10 @@ class DealerItemController extends Controller
 
     public function edit($dealer_id, $item_id)
     {
-        $item = DealerItem::find($item_id);
-        
+        $dealerItem = DealerItem::find($item_id);
+        $item = Item::where('id', $dealerItem->item_id)->first();
+        // dd($item);
+
         $sideMenuName = [];
 
         if (Auth::guard('subadmin')->check()) {
@@ -76,13 +85,13 @@ class DealerItemController extends Controller
             $sideMenuName = $subAdminData['sideMenuName'];
         }
 
-        return view('admin.authorized_dealer.items.edit', compact('sideMenuName', 'item', 'dealer_id'));
+        return view('admin.authorized_dealer.items.edit', compact('sideMenuName', 'dealerItem', 'dealer_id', 'item'));
     }
     
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string',
+            // 'item_id' => 'required|string',
             'quantity' => 'nullable|string',
             'price' => 'nullable|string',
         ]);
@@ -91,7 +100,7 @@ class DealerItemController extends Controller
         $item = DealerItem::findOrFail($id);
 
         $item->update([
-            'name' => $request->name,
+            // 'item_id' => $request->item_id,
             'quantity' => $request->quantity,
             'price' => $request->price,
             'status' => $request->status,

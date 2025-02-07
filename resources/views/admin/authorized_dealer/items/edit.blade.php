@@ -5,7 +5,7 @@
         <section class="section">
             <div class="section-body">
                 <a class="btn btn-primary mb-3" href="{{ url()->previous() }}">Back</a>
-                <form id="edit_dealer" action="{{ route('dealer.item.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                <form id="edit_dealer" action="{{ route('dealer.item.update', $dealerItem->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('POST') <!-- Use PUT method for editing -->
                     <div class="row">
@@ -18,10 +18,11 @@
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
                                             <label for="name">Name</label>
-                                            <input type="text" class="form-control" id="name" name="name" 
-                                            value="{{ $item->name }}"
-                                             required>
+                                            <input type="text" value="{{ ucfirst($item->name) }}" class="form-control" readonly>
                                             <div class="invalid-feedback"></div>
+                                            @error('item_id')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -29,9 +30,12 @@
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
                                             <label for="quantity">Quantity</label>
-                                            <input type="text" class="form-control" id="quantity" name="quantity" value="{{ $item->quantity }}"
+                                            <input type="text" class="form-control" id="quantity" name="quantity" value="{{ $dealerItem->quantity }}"
                                                 required>
                                             <div class="invalid-feedback"></div>
+                                            @error('quantity')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -39,7 +43,7 @@
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
                                             <label for="price">Price</label>
-                                            <input type="number" class="form-control" id="price" name="price" value="{{ $item->price }}"
+                                            <input type="number" class="form-control" id="price" name="price" value="{{ $dealerItem->price }}"
                                                 required>
                                             <div class="invalid-feedback"></div>
                                             @error('price')
@@ -55,10 +59,10 @@
                                             <select name="status" id="status" class="form-control">
                                                 <option value="" disabled>Select an Option</option>
                                                 <option value="1" 
-                                                {{ $item->status == 1 ? 'selected' : '' }}
+                                                {{ $dealerItem->status == 1 ? 'selected' : '' }}
                                                 >Active</option>
                                                 <option value="0" 
-                                                {{ $item->status == 0 ? 'selected' : '' }}
+                                                {{ $dealerItem->status == 0 ? 'selected' : '' }}
                                                 >Deactive</option>
                                             </select>
                                         </div>

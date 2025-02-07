@@ -32,9 +32,9 @@
                                         @foreach ($dealerItems as $items)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $items->name }}</td>
-                                                <td>{{ $items->quantity }}</td>
-                                                <td>{{ $items->price }}</td>
+                                                <td>{{ ucfirst($items->item->name) }}</td>
+                                                <td>{{ number_format($items->quantity) }}</td>
+                                                <td>{{ number_format($items->price) }} PKR</td>
                                                 <td>
                                                     @if ($items->status == 1)
                                                     <div class="badge badge-success badge-shadow">Activated</div>

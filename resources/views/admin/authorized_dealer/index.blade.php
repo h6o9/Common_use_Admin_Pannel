@@ -49,7 +49,7 @@
                                                 <td>{{ $dealer->contact }}</td>
                                                 <td>
                                                     <a href="
-                                                    {{-- {{ route('dealer.item.index', $dealer->id) }} --}}
+                                                    {{ route('dealer.item.index', $dealer->id) }}
                                                      " class="btn btn-primary">View</a>
                                                 </td>
                                                 <td>

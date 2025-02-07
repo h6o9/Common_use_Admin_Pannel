@@ -38,8 +38,13 @@ class SecurityController extends Controller
         ]);
 
         $data = PrivacyPolicy::first();
-        PrivacyPolicy::find($data->id)->update($request->all());
-        return redirect('/admin/Privacy-policy')->with(['status' => true, 'message' => 'Privacy Policy Updated Successfully']);
+        // PrivacyPolicy::find($data->id)->update($request->all());
+        if ($data) {
+            $data->update($request->all());
+        } else {
+            PrivacyPolicy::create($request->all());
+        }
+        return redirect('/admin/privacy-policy')->with(['status' => true, 'message' => 'Privacy Policy Updated Successfully']);
     }
     public function TermCondition()
     {
@@ -64,15 +69,20 @@ class SecurityController extends Controller
         $request->validate([
             'description' => 'required'
         ]);
-
+        // dd($request);
         $data = TermCondition::first();
-        TermCondition::find($data->id)->update($request->all());
-        return redirect('/admin/term-condition')->with(['status' => true, 'message' => 'Term&Condition Updated Successfully']);
+        // TermCondition::find($data->id)->update($request->all());
+        if ($data) {
+            $data->update($request->all());
+        } else {
+            TermCondition::create($request->all());
+        }
+        return redirect('/admin/term-condition')->with(['status' => true, 'message' => 'Term & Condition Updated Successfully']);
     }
 
     public function AboutUs()
     {
-        $data = TermCondition::first();
+        $data = AboutUs::first();
         $sideMenuName = [];
 
         if (Auth::guard('subadmin')->check()) {
@@ -85,7 +95,7 @@ class SecurityController extends Controller
     }
     public function AboutUsEdit()
     {
-        $data = TermCondition::first();
+        $data = AboutUs::first();
         return view('admin.aboutUs.edit', compact('data'));
     }
     public function AboutUsUpdate(Request $request)
@@ -93,9 +103,15 @@ class SecurityController extends Controller
         $request->validate([
             'description' => 'required'
         ]);
+        
 
         $data = AboutUs::first();
-        AboutUs::find($data->id)->update($request->all());
+        // AboutUs::find($data->id)->update($request->all());
+        if ($data) {
+            $data->update($request->all());
+        } else {
+            AboutUs::create($request->all());
+        }
         return redirect('/admin/about-us')->with(['status' => true, 'message' => 'About Us Updated Successfully']);
     }
 }

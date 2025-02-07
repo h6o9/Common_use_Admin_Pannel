@@ -137,7 +137,7 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex justify-content-center align-items-center">
-                                                        <button class="btn btn-info mb-3 text-white updatePermissionBtn"
+                                                        <button class="btn btn-info text-white updatePermissionBtn"
                                                             data-toggle="modal"
                                                             data-target="#createSubadminModal-{{ $subAdmin->id }}"><i
                                                                 class="fas fa-user"></i></button>

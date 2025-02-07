@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 
 class EnsuredCropController extends Controller
 {
-    public function index($id)
+    public function index()
     {
         $sideMenuName = [];
         $sideMenuPermissions = [];
@@ -26,15 +26,15 @@ class EnsuredCropController extends Controller
             $sideMenuPermissions = $subAdminData['sideMenuPermissions'];
         }
 
-        $farmer = Farmer::find($id);
-        $EnsuredCrops = EnsuredCrop::where('farmer_id', $id)->with('cropName')->latest()->get();
+        // $farmer = Farmer::find($id);
+        // $EnsuredCrops = EnsuredCrop::where('farmer_id', $id)->with('cropName')->latest()->get();
 
-        $cropNames = EnsuredCropName::orderBy('name', 'asc')->get();
-        $Units = AreaUnit::orderBy('unit', 'asc')->get();
-        $Insurance_companies = InsuranceCompany::orderBy('name', 'asc')->get();
+        // $cropNames = EnsuredCropName::orderBy('name', 'asc')->get();
+        // $Units = AreaUnit::orderBy('unit', 'asc')->get();
+        // $Insurance_companies = InsuranceCompany::orderBy('name', 'asc')->get();
         // dd($EnsuredCrops);
 
-        return view('admin.ensured_crops.index', compact('sideMenuPermissions', 'sideMenuName', 'EnsuredCrops', 'farmer', 'cropNames', 'Units', 'Insurance_companies'));
+        return view('admin.ensured_crops.index', compact('sideMenuPermissions', 'sideMenuName'));
     }
 
     public function store(Request $request)

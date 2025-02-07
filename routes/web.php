@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UcController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\FarmerController;
 use App\Http\Controllers\Admin\TehsilController;
@@ -98,6 +99,14 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::delete('/dealer-item-destroy/{id}',  'destroy')->name('dealer.item.destroy');
     });
 
+    // ############ Items for Dealers Selection #################
+    Route::controller(ItemController::class)->group(function () {
+        Route::get('/items',  'index')->name('items.index');
+        Route::post('/item-store',  'store')->name('item.store');
+        Route::post('/item-update/{id}',  'update')->name('item.update');
+        Route::delete('/item-destroy/{id}',  'destroy')->name('item.destroy');
+    });
+
     // ############ Farmers #################
     Route::controller(FarmerController::class)->group(function () {
         Route::get('/farmers',  'index')->name('farmers.index');
@@ -110,7 +119,7 @@ Route::prefix('admin')->middleware('admin')->group(function () {
 
     // ############ Ensured Crops For Farmer #################
     Route::controller(EnsuredCropController::class)->group(function () {
-        Route::get('/ensured-crops/{id}',  'index')->name('ensured.crops.index');
+        Route::get('/ensured-crops',  'index')->name('ensured.crops.index');
         Route::post('/ensured-crops-store',  'store')->name('ensured.crops.store');
         Route::post('/ensured-crops-update/{id}',  'update')->name('ensured.crops.update');
         Route::delete('/ensured-crops-destroy/{id}',  'destroy')->name('ensured.crops.destroy');

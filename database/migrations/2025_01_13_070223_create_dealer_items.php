@@ -16,7 +16,7 @@ class CreateDealerItems extends Migration
         Schema::create('dealer_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('authorized_dealer_id')->constrained()->cascadeOnDelete();
-            $table->string('name')->nullable();
+            $table->foreignId('item_id')->constrained('items')->cascadeOnUpdate();
             $table->string('quantity')->nullable();
             $table->string('price')->nullable();
             $table->string('status')->default(1);

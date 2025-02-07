@@ -17,8 +17,15 @@
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
                                             <label for="name">Name</label>
-                                            <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}"
-                                                required>
+                                            <select name="item_id" id="" class="form-control">
+                                                <option value="" selected disabled>Select Item</option>
+                                                @foreach ($items as $item)
+                                                <option value="{{ $item->id }}">{{ ucfirst($item->name) }}</option>
+                                                @endforeach
+                                                @error('item_id')
+                                                    <span class="text-danger">{{ $mesage }}</span>
+                                                @enderror
+                                            </select>
                                             <div class="invalid-feedback"></div>
                                         </div>
                                     </div>

@@ -26,8 +26,12 @@
                                     <tr>
                                         <th scope="row">1</th>
                                         <td>
-                                            {{-- {!! $data->description !!} --}}
-                                            description is here
+                                            @if ($data)
+                                            
+                                            {!! $data->description !!}
+                                            @else
+                                                N/A
+                                            @endif
                                         </td>
                                         @if (Auth::guard('admin')->check())
                                             
@@ -46,9 +50,5 @@
     </div>
 @endsection
 @section('js')
-    @if(\Illuminate\Support\Facades\Session::has('message'))
-        <script>
-            toastr.success('{{\Illuminate\Support\Facades\Session::get('message')}}');
-        </script>
-    @endif
+    
 @endsection

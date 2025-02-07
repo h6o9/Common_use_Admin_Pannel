@@ -20,6 +20,7 @@ class CreateEnsuredCropsTable extends Migration
             $table->foreignId('crop_name_id')->constrained('ensured_crop_name')->cascadeOnUpdate();
             $table->string('land_area');
             $table->foreignId('area_unit_id')->constrained('area_units')->cascadeOnUpdate();
+            $table->string('insured_amount');
             $table->foreignId('company_id')->constrained('insurance_companies')->cascadeOnUpdate();
             $table->foreignId('insurance_type_id')->constrained('insurance_types')->cascadeOnUpdate();
             $table->foreignId('insurance_subtype_id')->constrained('insurance_sub_types')->cascadeOnUpdate();

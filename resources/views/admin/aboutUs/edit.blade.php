@@ -5,7 +5,7 @@
     <div class="main-content">
         <section class="section">
             <div class="section-body">
-                <form action="{{url('admin/term-condition-update')}}" method="POST">
+                <form action="{{url('admin/about-us-update')}}" method="POST">
                     @csrf
                     <div class="row">
                         <div class="col-12 col-md-12 col-lg-12">
@@ -17,7 +17,9 @@
                                     <div class="form-group">
                                         <label>Description</label>
                                         <textarea name="description" class="form-control">
-                                            {{-- {{$data->description}} --}}
+                                            @if ($data)
+                                            {{$data->description}}
+                                            @endif
                                             
                                         </textarea>
                                     </div>
