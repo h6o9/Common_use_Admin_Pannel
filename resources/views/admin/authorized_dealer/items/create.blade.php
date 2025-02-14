@@ -16,7 +16,7 @@
                                     <!-- Name Field -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="name">Name</label>
+                                            <label for="name">Item</label>
                                             <select name="item_id" id="" class="form-control">
                                                 <option value="" selected disabled>Select Item</option>
                                                 @foreach ($items as $item)

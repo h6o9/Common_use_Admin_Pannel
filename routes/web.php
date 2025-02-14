@@ -77,6 +77,8 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::delete('/subadmin-destroy/{id}',  'destroy')->name('subadmin.destroy');
 
         Route::post('/update-permissions/{id}', 'updatePermissions')->name('update.permissions');
+
+        Route::post('/subadmin-StatusChange', 'StatusChange')->name('subadmin.StatusChange');
     });
 
     // ############ Authorized Dealers #################

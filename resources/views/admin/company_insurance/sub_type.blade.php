@@ -169,7 +169,7 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $InsuranceSubTypeNames[$InsuranceType->insurance_subtype_id]->name ?? 'N/A' }}</td>
-                                            <td>{{ number_format($InsuranceType->price) ?? 'N/A' }}</td>
+                                            <td>{{ number_format($InsuranceType->price) ?? 'N/A' }} PKR</td>
                                             <td>
                                                 @if ($InsuranceType->status == 1)
                                                 <div class="badge badge-success badge-shadow">Activated</div>

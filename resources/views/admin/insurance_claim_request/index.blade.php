@@ -15,53 +15,68 @@
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
-                                
-                                <table class="table text-center" id="table_id_events">
+
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
-                                            <th>Name</th>
-                                            <th>Description</th>
-                                            <th>Status</th>
+                                            <th>Farmer Name</th>
+                                            <th>Insured Crop</th>
+                                            <th>Land Area</th>
+                                            <th>Insurance Company</th>
+                                            <th>Insurance Type</th>
+                                            <th>Insurance Sub-Type</th>
+                                            <th>Insured Amount</th>
+                                            <th>Insurance Start Date</th>
+                                            <th>Insurance End Date</th>
+                                            {{-- <th>Policy Number</th> --}}
+                                            <th>Remarks</th>
                                             <th scope="col">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
+                                        {{-- <tr> --}}
+                                            {{-- <td>1</td>
                                             <td>Premium</td>
                                             <td>Desctiption is here</td>
-                                            <td>
+                                            <td> --}}
                                                 {{-- @if ($subAdmin->status == 1) --}}
-                                                    <div class="badge badge-success badge-shadow">Activated</div>
+                                                {{-- <div class="badge badge-success badge-shadow">Activated</div> --}}
                                                 {{-- @else
                                                     <div class="badge badge-danger badge-shadow">Deactivated</div>
                                                 @endif --}}
-                                            </td>
+                                            {{-- </td>
                                             <td>
                                                 <div class="d-flex gap-4 justify-content-center">
-                                                    @if (Auth::guard('admin')->check() || $sideMenuPermissions->contains(fn ($permission) => $permission['side_menu_name'] === 'Insurance Claim Requests' && $permission['permissions']->contains('edit')))
-                                                        <a class="btn btn-primary text-white" href="
+                                                    @if (Auth::guard('admin')->check() ||
+                                                            $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Insurance Claim Requests' &&
+                                                                    $permission['permissions']->contains('edit')))
+                                                        <a class="btn btn-primary text-white"
+                                                            href=" --}}
                                                         {{-- {{ route('insurance.claim.edit', $insuranceClaim->id) }} --}}
-                                                            ">Edit</a>
+                                                            {{-- ">Edit</a>
                                                     @endif
 
                                                     <!-- Delete Button -->
-                                                    @if (Auth::guard('admin')->check() || $sideMenuPermissions->contains(fn ($permission) => $permission['side_menu_name'] === 'Insurance Claim Requests' && $permission['permissions']->contains('delete')))
-                                                        <form 
-                                                        action=
-                                                        "{{ route('insurance.claim.index') }}" 
-                                                        {{-- method="POST" --}}
-                                                             style="display:inline-block; margin-left: 10px">
+                                                    @if (Auth::guard('admin')->check() ||
+                                                            $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Insurance Claim Requests' &&
+                                                                    $permission['permissions']->contains('delete')))
+                                                        <form
+                                                            action=
+                                                        "{{ route('insurance.claim.index') }}" --}}
+                                                            {{-- method="POST" --}}
+                                                            {{-- style="display:inline-block; margin-left: 10px"> --}}
                                                             {{-- @csrf
                                                             @method('DELETE') --}}
-                                                            <button type="submit" class="btn btn-danger btn-flat show_confirm" data-toggle="tooltip">Delete</button>
+                                                            {{-- <button type="submit"
+                                                                class="btn btn-danger btn-flat show_confirm"
+                                                                data-toggle="tooltip">Delete</button>
                                                         </form>
-@endif
+                                                    @endif
 
                                                 </div>
-                                            </td>
-                                        </tr>
+                                            </td> --}}
+                                        {{-- </tr> --}}
                                     </tbody>
                                 </table>
                             </div>

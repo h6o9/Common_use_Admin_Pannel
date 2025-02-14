@@ -138,7 +138,7 @@
             </li>
             <li class="dropdown {{ request()->is('admin/term-condition*') ? 'active' : '' }}">
                 <a href="{{ url('/admin/term-condition') }}" class="nav-link"><i
-                        data-feather="clipboard"></i><span>Term&Condition</span></a>
+                        data-feather="clipboard"></i><span>Terms & Conditions</span></a>
             </li>
         </ul>
     </aside>

@@ -57,7 +57,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <div class="text-danger">If you want to select a sub-type, then please ignore the price field.</div>
-                                    <label for="price">Price (Optional)</label>
+                                    <label for="price" id="priceLabel" style="display: none;">Price (Optional)</label>
                                     <div id="priceContainer"></div>
                                     @error('price')
                                         <span class="text-danger">{{ $message }}</span>
@@ -272,23 +272,26 @@
 
         $('#insurance_type_id').on('change', function () {
             let selectedTypes = $(this).val();
-            
             let priceContainer = $('#priceContainer');
+            let priceLabel = $('#priceLabel');
 
             priceContainer.empty();
 
-            if (selectedTypes) {
-                selectedTypes.forEach(function (typeId) {
+            if (selectedTypes && selectedTypes.length > 0) {
+            priceLabel.show();
+                
+            selectedTypes.forEach(function (typeId) {
+                let typeName = $('#insurance_type_id option[value="' + typeId + '"]').text();
 
-                    let typeName = $('#insurance_type_id option[value="' + typeId + '"]').text();
-
-                    let inputHtml = `
-                        <div class="input-group mb-2" id="price-group-${typeId}">
-                            <input type="number" name="price[${typeId}]" class="form-control" placeholder="Enter price for ${typeName}">
-                        </div>`;
-                    priceContainer.append(inputHtml);
-                });
-            }
+                let inputHtml = `
+                    <div class="input-group mb-2" id="price-group-${typeId}">
+                        <input type="number" name="price[${typeId}]" class="form-control" placeholder="Enter price for ${typeName}">
+                    </div>`;
+                priceContainer.append(inputHtml);
+            });
+        } else {
+            priceLabel.hide(); // Hide label if no types are selected
+        }
         });
     });
     </script>

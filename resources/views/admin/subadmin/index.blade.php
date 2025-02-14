@@ -43,7 +43,7 @@
                                                     <input type="checkbox" class="form-check-input"
                                                         id="view-{{ $subAdmin->id }}-{{ $sideMenu->id }}"
                                                         name="side_menu_id[{{ $sideMenu->id }}][]" value="view"
-                                                        {{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->pluck('permissions')->contains('view')? 'checked': '' }}>
+                                                        {{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->pluck('permissions')->contains('view') ? 'checked' : '' }}>
                                                     <label class="form-check-label"
                                                         for="view-{{ $subAdmin->id }}-{{ $sideMenu->id }}">View</label>
                                                 </div>
@@ -52,25 +52,25 @@
                                                     <input type="checkbox" class="form-check-input"
                                                         id="create-{{ $subAdmin->id }}-{{ $sideMenu->id }}"
                                                         name="side_menu_id[{{ $sideMenu->id }}][]" value="create"
-                                                        {{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->pluck('permissions')->contains('create')? 'checked': '' }}>
+                                                        {{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->pluck('permissions')->contains('create') ? 'checked' : '' }}>
                                                     <label class="form-check-label"
                                                         for="create-{{ $subAdmin->id }}-{{ $sideMenu->id }}">Create</label>
                                                 </div>
-                                                
+
                                                 <div class="form-check">
                                                     <input type="checkbox" class="form-check-input"
                                                         id="edit-{{ $subAdmin->id }}-{{ $sideMenu->id }}"
                                                         name="side_menu_id[{{ $sideMenu->id }}][]" value="edit"
-                                                        {{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->pluck('permissions')->contains('edit')? 'checked': '' }}>
+                                                        {{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->pluck('permissions')->contains('edit') ? 'checked' : '' }}>
                                                     <label class="form-check-label"
                                                         for="edit-{{ $subAdmin->id }}-{{ $sideMenu->id }}">Edit</label>
                                                 </div>
-                                                
+
                                                 <div class="form-check">
                                                     <input type="checkbox" class="form-check-input"
                                                         id="delete-{{ $subAdmin->id }}-{{ $sideMenu->id }}"
                                                         name="side_menu_id[{{ $sideMenu->id }}][]" value="delete"
-                                                        {{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->pluck('permissions')->contains('delete')? 'checked': '' }}>
+                                                        {{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->pluck('permissions')->contains('delete') ? 'checked' : '' }}>
                                                     <label class="form-check-label"
                                                         for="delete-{{ $subAdmin->id }}-{{ $sideMenu->id }}">Delete</label>
                                                 </div>
@@ -92,8 +92,6 @@
     @endforeach
 
 
-
-
     <div class="main-content" style="min-height: 562px;">
         <section class="section">
             <div class="section-body">
@@ -108,7 +106,8 @@
                             <div class="card-body table-striped table-bordered table-responsive">
 
                                 @if (Auth::guard('admin')->check())
-                                    <a class="btn btn-primary mb-3 text-white" href="{{ route('subadmin.create') }}">Create</a>
+                                    <a class="btn btn-primary mb-3 text-white"
+                                        href="{{ route('subadmin.create') }}">Create</a>
                                 @endif
 
                                 <table class="table responsive" id="table_id_events">
@@ -144,27 +143,32 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    @if ($subAdmin->status == 1)
-                                                        <div class="badge badge-success badge-shadow">Activated</div>
-                                                    @else
-                                                        <div class="badge badge-danger badge-shadow">Deactivated</div>
-                                                    @endif
+                                                    <label class="custom-switch p-0">
+                                                        <input type="checkbox" class="custom-switch-input toggle-status"
+                                                            data-id="{{ $subAdmin->id }}"
+                                                            {{ $subAdmin->status == 1 ? 'checked' : '' }}>
+                                                        <span class="custom-switch-indicator"></span>
+                                                        <span class="custom-switch-description">
+                                                            {{ $subAdmin->status == 1 ? 'Activated' : 'Deactivated' }}
+                                                        </span>
+                                                    </label>
                                                 </td>
+
                                                 <td>
                                                     @if (Auth::guard('admin')->check())
-                                                    <div class="d-flex gap-4">
-                                                        <a href="{{ route('subadmin.edit', $subAdmin->id) }}"
-                                                            class="btn btn-primary">Edit</a>
-                                                        <form action="{{ route('subadmin.destroy', $subAdmin->id) }}"
-                                                            method="POST"
-                                                            style="display:inline-block; margin-left: 10px">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                class="btn btn-danger btn-flat show_confirm"
-                                                                data-toggle="tooltip">Delete</button>
-                                                        </form>
-                                                    </div>
+                                                        <div class="d-flex gap-4">
+                                                            <a href="{{ route('subadmin.edit', $subAdmin->id) }}"
+                                                                class="btn btn-primary">Edit</a>
+                                                            <form action="{{ route('subadmin.destroy', $subAdmin->id) }}"
+                                                                method="POST"
+                                                                style="display:inline-block; margin-left: 10px">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit"
+                                                                    class="btn btn-danger btn-flat show_confirm"
+                                                                    data-toggle="tooltip">Delete</button>
+                                                            </form>
+                                                        </div>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -227,6 +231,38 @@
                 });
             }
         }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.toggle-status').on('change', function() {
+                var subAdminId = $(this).data('id');
+                var status = $(this).is(':checked') ? 1 : 0;
+                var toggleSwitch = $(this);
+                var statusText = $(this).siblings('.custom-switch-description');
+
+                $.ajax({
+                    url: "{{ route('subadmin.StatusChange') }}", // Change this to your actual route
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: subAdminId,
+                        status: status
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            statusText.text(status ? 'Activated' : 'Deactivated');
+                        } else {
+                            alert('Something went wrong!');
+                            toggleSwitch.prop('checked', !status); // Revert on failure
+                        }
+                    },
+                    error: function() {
+                        alert('Failed to update status');
+                        toggleSwitch.prop('checked', !status); // Revert on error
+                    }
+                });
+            });
+        });
     </script>
 
 @endsection

@@ -2,42 +2,74 @@
 @section('title', 'Notifications')
 @section('content')
 
-<div class="modal fade" id="notificationModal" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="notificationModalLabel">Send Notification</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <style>
+        .select2-container {
+            display: block;
+        }
+    </style>
+
+    <div class="modal fade" id="notificationModal" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="notificationModalLabel">Send Notification</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('notification.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <!-- User Type Dropdown -->
+                        <div class="form-group">
+                            <label for="userType">Select User Type</label>
+                            <select class="form-control" name="user_type" id="userType" required multiple>
+                                <option value="farmers">Farmers</option>
+                                <option value="dealers">Authorized Dealers</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group d-none" id="farmers-group">
+                            <label for="farmers">Select Farmers</label>
+                            <div>
+                                <input type="checkbox" id="selectAllFarmers"> <label for="selectAllFarmers">Select All</label>
+                            </div>
+                            <select class="form-control" id="farmers" name="farmers[]" required multiple>
+                                @foreach ($farmers as $farmer)
+                                    <option value="{{ $farmer->id }}">{{ $farmer->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group d-none" id="dealers-group">
+                            <label for="dealers">Select Authorized Dealer</label>
+                            <div>
+                                <input type="checkbox" id="selectAllDealers"> <label for="selectAllDealers">Select All</label>
+                            </div>
+                            <select class="form-control" id="dealers" name="dealers[]" required multiple>
+                                @foreach ($dealers as $dealer)
+                                    <option value="{{ $dealer->id }}">{{ $dealer->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+
+                        <!-- Message Textbox -->
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" placeholder="Enter your message here"
+                                required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Send Notification</button>
+                    </div>
+                </form>
             </div>
-            <form action="{{ route('notification.store') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <!-- User Type Dropdown -->
-                    <div class="form-group">
-                        <label for="userType">Select User Type</label>
-                        <select class="form-control" id="userType" name="user_type" required>
-                            <option value="" disabled selected>Select User Type</option>
-                            <option value="all">All</option>
-                            <option value="farmers">Farmers</option>
-                            <option value="dealers">Authorized Dealers</option>
-                        </select>
-                    </div>
-                    <!-- Message Textbox -->
-                    <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea class="form-control" id="message" name="message" rows="5" placeholder="Enter your message here" required></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Send Notification</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 
 
 
@@ -53,48 +85,43 @@
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
-                                @if (Auth::guard('admin')->check() || $sideMenuPermissions->contains(fn ($permission) => $permission['side_menu_name'] === 'Notifications' && $permission['permissions']->contains('create')))
-                                    <a class="btn btn-primary mb-3 text-white" href="#" data-toggle="modal" data-target="#notificationModal">Create</a>
+                                @if (Auth::guard('admin')->check() ||
+                                        $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Notifications' &&
+                                                $permission['permissions']->contains('create')))
+                                    <a class="btn btn-primary mb-3 text-white" href="#" data-toggle="modal"
+                                        data-target="#notificationModal">Create</a>
                                 @endif
 
-                                                                
+
                                 <table class="table text-center" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
                                             <th>Name</th>
                                             <th>Description</th>
-                                            <th>Status</th>
-                                            <th scope="col">Actions</th>
+                                            {{-- <th scope="col">Actions</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>1</td>
-                                            <td>John Deo</td>
-                                            <td>Description</td>
-                                            <td>
-                                                {{-- @if ($subAdmin->status == 0) --}}
-                                                    <div class="badge badge-danger badge-shadow">Sending</div>
-                                                {{-- @else --}}
-                                                    {{-- <div class="badge badge-success badge-shadow">Sent</div> --}}
-                                                {{-- @endif --}}
-                                            </td>
-                                            <td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            {{-- <td>
                                                 <div class="d-flex gap-4 justify-content-center">
-                                                    @if (Auth::guard('admin')->check() || $sideMenuPermissions->contains(fn ($permission) => $permission['side_menu_name'] === 'Notifications' && $permission['permissions']->contains('delete')))
+                                                    @if (Auth::guard('admin')->check() || $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Notifications' && $permission['permissions']->contains('delete')))
                                                         <form action=
                                                         "{{ route('notification.index') }}"
-                                                            {{--  method="POST" --}}
+                                                             method="POST"
                                                              style="display:inline-block; margin-left: 10px">
-                                                            {{-- @csrf
-                                                            @method('DELETE') --}}
+                                                            @csrf
+                                                            @method('DELETE')
                                                             <button type="submit" class="btn btn-danger btn-flat show_confirm" data-toggle="tooltip">Delete</button>
                                                         </form>
                                                     @endif
 
                                                 </div>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                     </tbody>
                                 </table>
@@ -134,6 +161,51 @@
                         form.submit();
                     }
                 });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#userType, #dealers, #farmers').select2({
+                placeholder: "Select User",
+                allowClear: true
+            });
+
+            $('#userType').on('change', function() {
+                var selectedValues = $(this).val();
+
+                // Hide both groups initially
+                $('#farmers-group, #dealers-group').addClass('d-none');
+
+                // Show respective groups based on selection
+                if (selectedValues) {
+                    if (selectedValues.includes('farmers')) {
+                        $('#farmers-group').removeClass('d-none');
+                    }
+                    if (selectedValues.includes('dealers')) {
+                        $('#dealers-group').removeClass('d-none');
+                    }
+                }
+            });
+
+            $('#selectAllFarmers').on('change', function() {
+            if ($(this).is(':checked')) {
+                $('#farmers option').prop('selected', true);
+            } else {
+                $('#farmers option').prop('selected', false);
+            }
+            $('#farmers').trigger('change'); // Update Select2 if used
+        });
+
+        $('#selectAllDealers').on('change', function() {
+            if ($(this).is(':checked')) {
+                $('#dealers option').prop('selected', true);
+            } else {
+                $('#dealers option').prop('selected', false);
+            }
+            $('#dealers').trigger('change'); // Update Select2 if used
+        });
+
         });
     </script>
 

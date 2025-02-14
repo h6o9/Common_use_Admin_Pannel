@@ -39,7 +39,6 @@ class SubAdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:sub_admins,email',
             'phone' => 'required|unique:sub_admins,phone',
-            'status' => 'required',
         ]);
 
         if ($request->hasFile('image')) {
@@ -61,7 +60,7 @@ class SubAdminController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => bcrypt($password),
-            'status' => $request->status,
+            'status' => $request->status ?? 1,
             'image' => $image
         ]);
 
@@ -89,7 +88,6 @@ class SubAdminController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
-            'status' => 'required',
             'phone' => 'required',
         ]);
 
@@ -115,7 +113,7 @@ class SubAdminController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'status' => $request->status,
+            // 'status' => $request->status,
             'image' => $image,
         ]);
 
@@ -155,5 +153,14 @@ class SubAdminController extends Controller
         SubAdminPermission::insert($permissions);
 
         return redirect()->route('subadmin.index')->with('message', 'Permissions Updated Successfully');
+    }
+
+    public function StatusChange(Request $request)
+    {
+        $subAdmin = SubAdmin::find($request->id);
+        $subAdmin->update([
+            'status' => $request->status
+        ]);
+        return response()->json(['success' => true]);
     }
 }

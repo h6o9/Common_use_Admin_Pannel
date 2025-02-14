@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Farmer;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Models\AuthorizedDealer;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,6 +13,9 @@ class NotificationController extends Controller
 {
     public function index() 
     {
+        $farmers = Farmer::get();
+        $dealers = AuthorizedDealer::get();
+
         $sideMenuName = [];
         $sideMenuPermissions = [];
 
@@ -21,20 +26,9 @@ class NotificationController extends Controller
             $sideMenuPermissions = $subAdminData['sideMenuPermissions'];
         }
 
-        return view('admin.notification.index', compact('sideMenuPermissions', 'sideMenuName'));
+        return view('admin.notification.index', compact('sideMenuPermissions', 'sideMenuName', 'farmers', 'dealers'));
     }
-    public function create() 
-    {
-        $sideMenuName = [];
-
-        if (Auth::guard('subadmin')->check()) {
-            $getSubAdminPermissions = new AdminController();
-            $subAdminData = $getSubAdminPermissions->getSubAdminPermissions();
-            $sideMenuName = $subAdminData['sideMenuName'];
-        }
-
-        return view('admin.notification.create', compact('sideMenuName'));
-    }
+    
     public function store(Request $request) 
     {
         $validated = $request->validate([
