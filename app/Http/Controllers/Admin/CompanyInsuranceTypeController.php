@@ -27,7 +27,7 @@ class CompanyInsuranceTypeController extends Controller
             ->pluck('insurance_type_id')
             ->toArray();
         $Insurance_types = InsuranceType::where('status', 1)
-            ->whereNotIn('id', $savedInsuranceTypeIds)
+            // ->whereNotIn('id', $savedInsuranceTypeIds)
             ->orderBy('name', 'asc')
             ->get();
 
@@ -61,7 +61,20 @@ class CompanyInsuranceTypeController extends Controller
 
         foreach ($request->crop as $index => $crop) {
             foreach ($request->insurance_type_id as $insuranceTypeId) {
-                
+                $exists = CompanyInsuranceType::where([
+                ['insurance_company_id', '=', $request->insurance_company_id],
+                ['insurance_type_id', '=', $insuranceTypeId],
+                ['crop', '=', $crop],
+                ['district_name', '=', $request->district_name[$index] ?? null],
+                ['tehsil', '=', $request->tehsil[$index] ?? null],
+            ])->exists();
+
+            if ($exists) {
+                return redirect()->route('company.insurance.types.index', ['id' => $request->insurance_company_id])->with([
+                    'error' => "The Crop, Destrict and Tehsil already exists for this Insurance."
+                ]);
+            }
+            
                 CompanyInsuranceType::create([
                     'insurance_company_id' => $request->insurance_company_id,
                     'insurance_type_id' => $insuranceTypeId,
@@ -85,6 +98,7 @@ class CompanyInsuranceTypeController extends Controller
     {
 
         try {
+            // dd($request->all());
             // Find Company Insurance Type
             $company = CompanyInsuranceType::findOrFail($id);
     
@@ -106,7 +120,18 @@ class CompanyInsuranceTypeController extends Controller
             $company->save();
     
             // DB::commit();
-    
+            // if (!empty($request->crop_new[$id])) {
+            //     foreach ($request->crop_new[$id] as $index => $newCrop) {
+            //         CompanyInsuranceType::create([
+            //             'crop'           => $newCrop,
+            //             'district_name'  => $request->district_name_new[$id][$index] ?? '',
+            //             'tehsil'         => $request->tehsil_new[$id][$index] ?? '',
+            //             'benchmark'      => isset($request->benchmark_new[$id][$index]) ? implode("\n", array_filter($request->benchmark[$id][$index])) : '',
+            //             'price_benchmark' => isset($request->price_benchmark_new[$id][$index]) ? implode("\n", array_filter($request->price_benchmark[$id][$index])) : '',
+            //         ]);
+            //     }
+            // }
+            
             return redirect()
                 ->route('company.insurance.types.index', ['id' => $request->incurance_company_id])
                 ->with(['message' => 'Company Insurance Updated Successfully']);

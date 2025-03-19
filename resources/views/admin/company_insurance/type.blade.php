@@ -199,6 +199,12 @@
                         <input type="hidden" name="incurance_company_id" value="{{ $Company->id }}">
 
                         <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Insurance Type</label>
+                                    <input type="text" class="form-control" value="{{ $InsuranceType->insuranceType->name ?? 'N/A' }}" readonly>
+                                </div>
+                            </div>
                             <!-- Crop -->
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -274,10 +280,10 @@
 
                         <!-- Secondary Benchmark Fields (Loaded via jQuery) -->
                         <div id="benchmarksContainer-{{ $InsuranceType->id }}"></div>
-
-                        {{-- <!-- Add More Button -->
+                        {{-- <div id="editfieldsContainer-{{ $InsuranceType->id }}"></div>
+                        <!-- Add More Button -->
                         <div class="col-">
-                            <button type="button" class="btn btn-success addMore" data-insurance-id="{{ $InsuranceType->id }}">
+                            <button type="button" class="btn btn-success addMore"  data-insurance-id="{{ $InsuranceType->id }}">
                                 <i class="fa fa-plus mr-2"></i> Add More
                             </button>
                         </div> --}}
@@ -358,7 +364,7 @@
                                                     @endphp
                                                     <ul>
                                                         @foreach ($benchmarks as $index => $benchmark)
-                                                            <li>{{ trim($benchmark) }}% - {{ $pricebenchmarks[$index] ?? 'N/A' }}</li>
+                                                            <li>{{ trim($benchmark) }}% - {{ $pricebenchmarks[$index] ?? 'N/A' }} PKR</li>
                                                         @endforeach
                                                     </ul>
                                                 @else
@@ -859,4 +865,119 @@
 });
 
     </script>
+    {{-- <script>
+       $(document).ready(function () {
+    let rowIndex = $('.field-group').length;
+
+    // Delegate click event for dynamically added elements
+    $(document).on('click', '.addMore', function () {
+        let insuranceId = $(this).data('insurance-id'); 
+        rowIndex++; 
+
+        // New field HTML
+        let fieldHTML = `
+            <div class="row align-items-end field-group mt-4" data-index="${rowIndex}">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <select name="crop_new[${insuranceId}][]" class="form-control">
+                            <option value="" disabled selected>Select Crop</option>
+                            @foreach($ensuredCrops as $crop)
+                                <option value="{{ $crop->name }}">{{ $crop->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <select name="district_name_new[${insuranceId}][]" class="form-control">
+                            <option value="" disabled selected>Select District</option>
+                            @foreach($districts as $district)
+                                <option value="{{ $district->name }}">{{ $district->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <select name="tehsil_new[${insuranceId}][]" class="form-control">
+                            <option value="" disabled selected>Select Tehsil</option>
+                            @foreach($tehsils as $tehsil)
+                                <option value="{{ $tehsil->name }}">{{ $tehsil->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Benchmark & Price Benchmark Fields -->
+                <div class="col-md-12 benchmarkContainer" data-index="${rowIndex}">
+                    <div class="row align-items-end benchmark-group">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" name="benchmark_new[${insuranceId}][${rowIndex}][]" class="form-control" placeholder="Enter Benchmark">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="d-flex">
+                                    <input type="text" name="price_benchmark_new[${insuranceId}][${rowIndex}][]" class="form-control" placeholder="Enter Price Benchmark">
+                                    <span class="btn btn-danger ml-2 removeField">
+                                        <i class="fa fa-trash"></i>
+                                    </span>
+                                    <span class="btn btn-success ml-2 editaddBenchmark" data-insurance-id="${insuranceId}">
+                                        <i class="fa fa-plus"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Append new row inside the correct modal
+        $(`#editfieldsContainer-${insuranceId}`).append(fieldHTML);
+    });
+
+    // Add additional Benchmark & Price Benchmark fields dynamically in the correct benchmarkContainer
+    $(document).on('click', '.editaddBenchmark', function () {
+        let insuranceId = $(this).data('insurance-id');
+        let benchmarkContainer = $(this).closest('.benchmarkContainer'); // Get the correct benchmark container
+
+        let extraBenchmarkHTML = `
+            <div class="row align-items-end benchmark-group">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="text" name="benchmark_new[${insuranceId}][]" class="form-control" placeholder="Enter Benchmark">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="d-flex">
+                            <input type="text" name="price_benchmark_new[${insuranceId}][]" class="form-control" placeholder="Enter Price Benchmark">
+                            <span class="btn btn-danger ml-2 removeBenchmark">
+                                <i class="fa fa-trash"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Append inside the correct benchmark container
+        benchmarkContainer.append(extraBenchmarkHTML);
+    });
+
+    // Remove the entire row (Crop, District, Tehsil & first benchmark set)
+    $(document).on('click', '.removeField', function () {
+        $(this).closest('.field-group').remove();
+    });
+
+    // Remove an individual benchmark field
+    $(document).on('click', '.removeBenchmark', function () {
+        $(this).closest('.benchmark-group').remove();
+    });
+});
+
+
+        </script> --}}
 @endsection

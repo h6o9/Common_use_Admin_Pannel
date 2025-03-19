@@ -75,7 +75,12 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="current_yield">Current yield</label>
+                                    <div class="input-group">
                                     <input type="number" name="current_yield" class="form-control" value="{{ old('current_yield') }}">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text   font-weight-bold" style="border: 2px solid #cbd2d8;">%</span>
+                                    </div>
+                                </div>
                                     @error('current_yield')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -196,7 +201,12 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="current_yield">Current yield</label>
-                                            <input type="text" name="current_yield" class="form-control" value="{{ old('current_yield', $InsuranceSubType->current_yield) }}">
+                                            <div class="input-group">
+                                                <input type="text" name="current_yield" class="form-control" value="{{ old('current_yield', $InsuranceSubType->current_yield) }}">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text   font-weight-bold" style="border: 2px solid #cbd2d8;">%</span>
+                                                </div>
+                                            </div>
                                             @error('current_yield')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
