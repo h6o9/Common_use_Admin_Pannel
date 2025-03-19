@@ -527,10 +527,10 @@
     $(document).ready(function () {
     // Add Benchmark Field
     $(document).on('click', '#addBenchmark', function () {
-        // let index = $('.benchmark-field').length; // Get the next index
-        let index = $(this).closest('.benchmark-field').data('index');
+        let index = $('.benchmark-field').length; // Get the correct index dynamically
+
         let benchmarkField = `
-           <div class="row align-items-end benchmark-field">
+           <div class="row align-items-end benchmark-field" data-index="${index}">
                 <div class="col-md-6">
                     <div class="form-group">
                         <input type="text" name="benchmark[${index}][]" class="form-control" placeholder="Enter Benchmark" required>
@@ -548,17 +548,17 @@
                 </div>
             </div>
         `;
-        // $('#benchmarksContainer').append(benchmarkField);
-        $(this).closest('#benchmarksContainer').append(benchmarkField);
+
+        // Append to the container
+        $('#benchmarksContainer').append(benchmarkField);
     });
 
     // Remove Benchmark Field
     $(document).on('click', '.removeBenchmark', function () {
         $(this).closest('.benchmark-field').remove();
     });
-
-
 });
+
 
 </script>
 {{-- <script>
