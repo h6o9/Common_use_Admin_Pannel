@@ -221,6 +221,10 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::post('/insurance-sub-type-store',  'store')->name('insurance.sub.type.store');
         Route::post('/insurance-sub-type-update/{id}',  'update')->name('insurance.sub.type.update');
         Route::delete('/insurance-sub-type-destroy/{id}',  'destroy')->name('insurance.sub.type.destroy');
+        Route::get('/insurance-sub-type-production-price/{id}',  'production_price')->name('insurance.sub.type.productionPrice');
+        Route::post('/insurance-sub-type-production-price-store',  'production_price_store')->name('insurance.sub.type.productionPrice.store');
+        Route::post('/insurance-sub-type-production-price-update/{id}',  'production_price_update')->name('insurance.sub.type.productionPrice.update');
+        Route::delete('/insurance-sub-type-production-price-destroy/{id}',  'production_price_destroy')->name('insurance.sub.type.productionPrice.destroy');
     });
 
     // ############ Insurance Claim Requests #################

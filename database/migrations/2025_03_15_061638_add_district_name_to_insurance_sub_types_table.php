@@ -14,10 +14,10 @@ class AddDistrictNameToInsuranceSubTypesTable extends Migration
     public function up()
     {
         Schema::table('insurance_sub_types', function (Blueprint $table) {
-            $table->string('district_name')->nullable()->nullable()->after('name');
-            $table->string('tehsil')->nullable()->after('district_name');
-            $table->string('current_yield')->nullable()->after('tehsil');
-            $table->string('year')->nullable()->after('current_yield');
+            // $table->string('district_name')->nullable()->nullable()->after('name');
+            // $table->string('tehsil')->nullable()->after('district_name');
+            // $table->string('current_yield')->nullable()->after('tehsil');
+            // $table->string('year')->nullable()->after('current_yield');
         });
     }
 

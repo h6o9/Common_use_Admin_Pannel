@@ -140,7 +140,7 @@
                                         <tr>
                                             <th>Sr.</th>
                                             <th>Name</th>
-                                            <th>Current Yield</th>
+                                            <th>Results</th>
                                             <th>Status</th>
                                             <th scope="col">Actions</th>
                                         </tr>
@@ -152,7 +152,11 @@
                                             <td>{{ $InsuranceType->name }}</td>
                                             @if( $InsuranceType->name == "Area Yield index")
                                             <td>
-                                                <a class="btn btn-primary" href="{{ route('insurance.sub.type.index', $InsuranceType->id) }}">Results</a>
+                                                <a class="btn btn-primary" href="{{ route('insurance.sub.type.index', $InsuranceType->id) }}">Current Yield</a>
+                                            </td>
+                                            @elseif( $InsuranceType->name == "Production Price Index")
+                                            <td>
+                                                <a class="btn btn-primary" href="{{ route('insurance.sub.type.productionPrice', $InsuranceType->id) }}">Average Yield</a>
                                             </td>
                                             @else
                                             <td>--</td>
