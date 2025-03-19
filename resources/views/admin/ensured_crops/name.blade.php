@@ -17,9 +17,9 @@
                 <form action="{{ route('ensured.crop.name.store') }}" method="POST">
                     @csrf
                     <div class="modal-body">
-                        <div class="row">
+                        <div class="row mb-3">
                             <div class="col">
-                                <div class="form-group">
+                                <div class="form-group mb-0">
                                     <label for="name">Name</label>
                                     <input type="text" name="name" class="form-control" value="{{ old('name') }}">
                                     @error('name')
@@ -27,7 +27,53 @@
                                     @enderror
                                 </div>
                             </div>
-                        </div>                        
+                            
+                                <div class="col">
+                                    <div class="form-group mb-0">
+                                        <label for="name">Sum Insured</label>
+                                        <input type="number" name="sum" class="form-control" value="{{ old('sum') }}">
+                                        @error('sum')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <small class="text-muted ml-3">(Note:The sum insured value applied to 100% benchmark against 1 acre)</small>
+                            </div> 
+                           
+                    
+                        <div class="form-group">
+                            <label>Harvest Time Period</label>
+                            <div class="d-flex">
+                                <select name="harvest_start" class="form-control">
+                                    @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                                        <option value="{{ $month }}">{{ $month }}</option>
+                                    @endforeach
+                                </select>
+                                <span class="mx-2"></span>
+                                <select name="harvest_end" class="form-control">
+                                    @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                                        <option value="{{ $month  }}">{{ $month }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Insurance Purchase Period</label>
+                            <div class="d-flex">
+                                <select name="insurance_start" class="form-control">
+                                    @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                                        <option value="{{ $month }}">{{ $month }}</option>
+                                    @endforeach
+                                </select>
+                                <span class="mx-2"></span>
+                                <select name="insurance_end" class="form-control">
+                                    @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                                        <option value="{{ $month  }}">{{ $month }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -59,15 +105,56 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label for="name">Crop Name</label>
+                                        <label for="name">Name</label>
                                         <input type="text" name="name" class="form-control" value="{{ old('name', $EnsuredCrop->name) }}">
                                         @error('name')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Sum Insured</label>
+                                        <input type="number" name="sum" class="form-control" value="{{ old('sum', $EnsuredCrop->sum_insured_value) }}">
+                                        @error('sum')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
-                            
+                        <div class="form-group">
+                            <label>Harvest Time Period</label>
+                            <div class="d-flex">
+                                <select name="harvest_start" class="form-control">
+                                    @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                                        <option value="{{ $month }}" {{ old('harvest_start', $EnsuredCrop->harvest_start_time) == $month ? 'selected' : '' }}>{{ $month }}</option>
+                                    @endforeach
+                                </select>
+                                <span class="mx-2"></span>
+                                <select name="harvest_end" class="form-control">
+                                    @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                                        <option value="{{ $month }}"  {{ old('harvest_end', $EnsuredCrop->harvest_end_time) == $month ? 'selected' : '' }}>{{ $month }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Insurance Purchase Period</label>
+                            <div class="d-flex">
+                                <select name="insurance_start" class="form-control">
+                                    @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                                        <option value="{{ $month }}"  {{ old('insurance_start', $EnsuredCrop->insurance_start_time) == $month ? 'selected' : '' }}>{{ $month }}</option>
+                                    @endforeach
+                                </select>
+                                <span class="mx-2"></span>
+                                <select name="insurance_end" class="form-control">
+                                    @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                                        <option value="{{ $month  }}"  {{ old('insurance_end', $EnsuredCrop->insurance_end_time) == $month ? 'selected' : '' }}>{{ $month }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -106,7 +193,12 @@
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
-                                            <th>Crop Name</th>
+                                            <th>Name</th>
+                                            <th>Sum Insured</th>
+                                            <th>Harvest Start</th>
+                                            <th>Harvest End</th>
+                                            <th>Insurance Start</th>
+                                            <th>Insurance End</th>
                                             <th scope="col">Actions</th>
                                         </tr>
                                     </thead>
@@ -115,6 +207,11 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $EnsuredCrop->name }}</td>
+                                                <td>{{ number_format($EnsuredCrop->sum_insured_value) }}</td>
+                                                <td>{{ $EnsuredCrop->harvest_start_time }} {{ $currentYear }}</td>
+                                                <td>{{ $EnsuredCrop->harvest_end_time }} {{ $currentYear }}</td>
+                                                <td>{{ $EnsuredCrop->insurance_start_time }} {{ $currentYear }}</td>
+                                                <td>{{ $EnsuredCrop->insurance_end_time }} {{ $currentYear }}</td>
                                                 <td>
                                                     <div class="d-flex gap-4">
                                                         @if (Auth::guard('admin')->check() ||

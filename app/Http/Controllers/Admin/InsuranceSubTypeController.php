@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Tehsil;
+use App\Models\District;
 use Illuminate\Http\Request;
 use App\Models\InsuranceType;
+use App\Models\EnsuredCropName;
 use App\Models\InsuranceSubType;
 use App\Http\Controllers\Controller;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
 
 class InsuranceSubTypeController extends Controller
 {
@@ -22,11 +25,13 @@ class InsuranceSubTypeController extends Controller
             $sideMenuName = $subAdminData['sideMenuName'];
             $sideMenuPermissions = $subAdminData['sideMenuPermissions'];
         }
-
+        $ensuredCrops = EnsuredCropName::all();  // Fetch all crops
+        $districts = District::all();         // Fetch all districts
+        $tehsils = Tehsil::all();             // Fetch all tehsils
         $InsuranceType = InsuranceType::find($id);
         $InsuranceSubTypes = InsuranceSubType::where('incurance_type_id', $id)->orderBy('status', 'desc')->latest()->get();
 
-        return view('admin.insurance_types_and_sub_types.sub_types', compact('sideMenuPermissions', 'sideMenuName', 'InsuranceSubTypes', 'InsuranceType'));
+        return view('admin.insurance_types_and_sub_types.sub_types', compact('sideMenuPermissions', 'sideMenuName', 'InsuranceSubTypes', 'InsuranceType','ensuredCrops', 'districts', 'tehsils'));
     }
     
     public function store(Request $request) 
@@ -35,14 +40,18 @@ class InsuranceSubTypeController extends Controller
         $request->validate([
             'incurance_type_id' => 'required|string|max:255',
             'name' => 'required|string|max:255',
-            'status' => 'nullable'
+            // 'status' => 'nullable'
         ]);
         // dd($request);
 
         InsuranceSubType::create([
             'incurance_type_id' => $request->incurance_type_id,
             'name' => $request->name,
-            'status' => $request->status,
+            'district_name' => $request->district_name,
+            'tehsil' => $request->tehsil,
+            'current_yield' => $request->current_yield,
+            'year' => $request->year,
+            // 'status' => $request->status,
         ]);
 
         return redirect()->route('insurance.sub.type.index', ['id' => $request->incurance_type_id])->with(['message' => 'Insurance Sub-Type Created Successfully']);
@@ -54,13 +63,17 @@ class InsuranceSubTypeController extends Controller
         $request->validate([
             'incurance_type_id' => 'required|string|max:255',
             'name' => 'required|string|max:255',
-            'status' => 'nullable'
+            // 'status' => 'nullable'
         ]);
         $data = InsuranceSubType::findOrFail($id);
         // dd($data);
         $data->update([
             'name' => $request->name,
-            'status' => $request->status,
+            'district_name' => $request->district_name,
+            'tehsil' => $request->tehsil,
+            'current_yield' => $request->current_yield,
+            'year' => $request->year,
+            // 'status' => $request->status,
         ]);
 
         return redirect()->route('insurance.sub.type.index', ['id' => $request->incurance_type_id])->with(['message' => 'Insurance Sub-Type Updated Successfully']);

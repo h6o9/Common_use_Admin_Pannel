@@ -131,8 +131,8 @@
                                 @if (Auth::guard('admin')->check() ||
                                         $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Insurance Types & Sub-Types' &&
                                                 $permission['permissions']->contains('create')))
-                                    <a class="btn btn-primary mb-3 text-white" href="#" data-toggle="modal"
-                                    data-target="#InsuranceTypesModal">Create</a>
+                                    {{-- <a class="btn btn-primary mb-3 text-white" href="#" data-toggle="modal"
+                                    data-target="#InsuranceTypesModal">Create</a> --}}
                                 @endif
 
                                 <table class="table responsive" id="table_id_events">
@@ -140,7 +140,7 @@
                                         <tr>
                                             <th>Sr.</th>
                                             <th>Name</th>
-                                            <th>Sub-Types</th>
+                                            <th>Current Yield</th>
                                             <th>Status</th>
                                             <th scope="col">Actions</th>
                                         </tr>
@@ -150,9 +150,13 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $InsuranceType->name }}</td>
+                                            @if( $InsuranceType->name == "Area Yield index")
                                             <td>
-                                                <a class="btn btn-primary" href="{{ route('insurance.sub.type.index', $InsuranceType->id) }}">View</a>
+                                                <a class="btn btn-primary" href="{{ route('insurance.sub.type.index', $InsuranceType->id) }}">Results</a>
                                             </td>
+                                            @else
+                                            <td>--</td>
+                                            @endif
                                             <td>
                                                 @if ($InsuranceType->status == 1)
                                                 <div class="badge badge-success badge-shadow">Activated</div>
@@ -173,7 +177,7 @@
                                                     @if (Auth::guard('admin')->check() ||
                                                             $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Insurance Types & Sub-Types' &&
                                                                     $permission['permissions']->contains('delete')))
-                                                        <form action="
+                                                        {{-- <form action="
                                                         {{ route('insurance.type.destroy', $InsuranceType->id) }}
                                                             " method="POST" 
                                                             style="display:inline-block; margin-left: 10px">
@@ -182,7 +186,7 @@
                                                             <button type="submit"
                                                                 class="btn btn-danger btn-flat show_confirm"
                                                                 data-toggle="tooltip">Delete</button>
-                                                        </form>
+                                                        </form> --}}
                                                     @endif
                                                 </div>
                                             </td>

@@ -92,7 +92,7 @@
                     <a href="
                 {{ route('insurance.type.index') }}
                 " class="nav-link px-2">
-                        <i class="fas fa-cogs"></i> <span>Insurance & Sub-Types</span>
+                        <i class="fas fa-cogs"></i> <span>Insurances</span>
                     </a>
                 </li>
             @endif

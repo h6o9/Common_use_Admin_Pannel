@@ -10,7 +10,8 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="InsuranceTypesModalLabel">Add ({{ $InsuranceType->name }}) Sub-Type</h5>
+                    <h5 class="modal-title" id="InsuranceTypesModalLabel">Add</h5>
+                    {{-- ({{ $InsuranceType->name }}) --}}
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -22,15 +23,74 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="name">Name</label>
-                                    <input type="text" name="name" class="form-control" value="{{ old('name') }}">
+                                    <label for="name">Crop</label>
+                                    <select name="name" class="form-control form-select">
+                                        <option value="">Select Crop</option>
+                                        @foreach ($ensuredCrops as $crop)
+                                            <option value="{{ $crop->name }}" {{ old('name') == $crop->name ? 'selected' : '' }}>
+                                                {{ $crop->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                     @error('name')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
-
+                            
                             <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="district_name">District</label>
+                                    <select name="district_name" class="form-control form-select">
+                                        <option value="">Select District</option>
+                                        @foreach ($districts as $district)
+                                            <option value="{{ $district->name }}" {{ old('district_name') == $district->name ? 'selected' : '' }}>
+                                                {{ $district->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('district_name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="tehsil">Tehsil</label>
+                                    <select name="tehsil" class="form-control form-select">
+                                        <option value="">Select Tehsil</option>
+                                        @foreach ($tehsils as $tehsil)
+                                            <option value="{{ $tehsil->name }}" {{ old('tehsil') == $tehsil->name ? 'selected' : '' }}>
+                                                {{ $tehsil->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('tehsil')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="current_yield">Current yield</label>
+                                    <input type="number" name="current_yield" class="form-control" value="{{ old('current_yield') }}">
+                                    @error('current_yield')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="year">Year</label>
+                                    <input type="text" name="year" class="form-control" value="{{ old('year', now()->year) }}" readonly>
+                                    @error('year')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            {{-- <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="status">Status</label>
                                     <select name="status" id="status" class="form-control" required>
@@ -45,7 +105,7 @@
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -66,7 +126,8 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="EditInsuranceTypesModalLabel">Edit ({{ $InsuranceType->name }}) Sub-Type</h5>
+                        <h5 class="modal-title" id="EditInsuranceTypesModalLabel">Edit </h5>
+                        {{-- ({{ $InsuranceType->name }}) --}}
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -79,15 +140,80 @@
                                 <input type="hidden" name="incurance_type_id" value="{{ $InsuranceType->id }}">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="name">Name</label>
-                                        <input type="text" name="name" class="form-control" value="{{ old('name', $InsuranceSubType->name) }}">
+                                        <label for="name">Crop</label>
+                                        <select name="name" class="form-control form-select">
+                                            <option value="">Select Crop</option>
+                                            @foreach ($ensuredCrops as $crop)
+                                                <option value="{{ $crop->name }}" 
+                                                    {{ old('name', $InsuranceSubType->name) == $crop->name ? 'selected' : '' }}>
+                                                    {{ $crop->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                         @error('name')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
-
+                                
+                                <!-- District Dropdown -->
                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="district_name">District</label>
+                                        <select name="district_name" class="form-control form-select">
+                                            <option value="">Select District</option>
+                                            @foreach ($districts as $district)
+                                                <option value="{{ $district->name }}" 
+                                                    {{ old('district_name', $InsuranceSubType->district_name) == $district->name ? 'selected' : '' }}>
+                                                    {{ $district->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('district_name')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                
+                                <!-- Tehsil Dropdown -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="tehsil">Tehsil</label>
+                                        <select name="tehsil" class="form-control form-select">
+                                            <option value="">Select Tehsil</option>
+                                            @foreach ($tehsils as $tehsil)
+                                                <option value="{{ $tehsil->name }}" 
+                                                    {{ old('tehsil', $InsuranceSubType->tehsil) == $tehsil->name ? 'selected' : '' }}>
+                                                    {{ $tehsil->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('tehsil')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="current_yield">Current yield</label>
+                                            <input type="text" name="current_yield" class="form-control" value="{{ old('current_yield', $InsuranceSubType->current_yield) }}">
+                                            @error('current_yield')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="year">Year</label>
+                                            <input type="text" name="year" class="form-control" value="{{ old('year', $InsuranceSubType->year) }}" readonly>
+                                            @error('year')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                
+
+                                {{-- <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="status">Status</label>
                                         <select name="status" id="status" class="form-control" required>
@@ -99,7 +225,7 @@
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                             
                         </div>
@@ -124,10 +250,44 @@
                     <div class="col-12 col-md-12 col-lg-12">
                         <a class="btn btn-primary mb-2" href="{{ route('insurance.type.index') }}">Back</a>
                         <div class="card">
-                            <div class="card-header">
-                                <div class="col-12">
-                                    <h4>{{ $InsuranceType->name }} - Sub-Types</h4>
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">{{ $InsuranceType->name }}</h4>
+                                
+                                <div class="d-flex gap-5">
+                                    <select id="cropFilter" class="form-control form-select w-auto rounded mr-2" >
+                                        <option value="">Crops</option>
+                                        @foreach ($InsuranceSubTypes->pluck('name')->unique() as $name)
+                                            <option value="{{ $name }}">{{ $name }}</option>
+                                        @endforeach
+                                    </select>
+                                
+                                    <select id="districtFilter" class="form-control form-select w-auto rounded mr-2" >
+                                        <option value="">Districts</option>
+                                        @foreach ($InsuranceSubTypes->pluck('district_name')->unique() as $district)
+                                            <option value="{{ $district }}">{{ $district }}</option>
+                                        @endforeach
+                                    </select>
+                                
+                                    <select id="tehsilFilter" class="form-control form-select w-auto rounded mr-2" >
+                                        <option value="">Tehsil</option>
+                                        @foreach ($InsuranceSubTypes->pluck('tehsil')->unique() as $tehsil)
+                                            <option value="{{ $tehsil }}">{{ $tehsil }}</option>
+                                        @endforeach
+                                    </select>
+                                
+                                    <select id="yearFilter" class="form-control form-select w-auto rounded mr-2" >
+                                        <option value="">Year</option>
+                                        @foreach ($InsuranceSubTypes->pluck('year')->unique() as $year)
+                                            <option value="{{ $year }}">{{ $year }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
+                                {{-- <select id="yieldFilter" class="form-control "style="width: 160px;">
+                                    <option value="">Current Yield</option>
+                                    @foreach ($InsuranceSubTypes->pluck('current_yield')->unique() as $yield)
+                                        <option value="{{ $yield }}">{{ $yield }}</option>
+                                    @endforeach
+                                </select> --}}
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
                                 @if (Auth::guard('admin')->check() ||
@@ -141,8 +301,11 @@
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
-                                            <th>Name</th>
-                                            <th>Status</th>
+                                            <th>Crop</th>
+                                            <th>District</th>
+                                            <th>Tehsil</th>
+                                            <th>Current Yield</th>
+                                            <th>Year</th>
                                             <th scope="col">Actions</th>
                                         </tr>
                                     </thead>
@@ -150,14 +313,18 @@
                                         @foreach ($InsuranceSubTypes as $InsuranceSubType)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $InsuranceSubType->name }}</td>
-                                            <td>
+                                            <td class="crop">{{ $InsuranceSubType->name }}</td>
+                                            <td class="district">{{ $InsuranceSubType->district_name }}</td>
+                                            <td class="tehsil">{{ $InsuranceSubType->tehsil }}</td>
+                                            <td>{{ $InsuranceSubType->current_yield }}%</td>
+                                            <td class="year">{{ $InsuranceSubType->year }}</td>
+                                            {{-- <td>
                                                 @if ($InsuranceSubType->status == 1)
                                                 <div class="badge badge-success badge-shadow">Activated</div>
                                                 @else
                                                     <div class="badge badge-danger badge-shadow">Deactivated</div>
                                                 @endif
-                                            </td>
+                                            </td> --}}
                                             <td>
                                                 <div class="d-flex gap-4">
                                                     @if (Auth::guard('admin')->check() ||
@@ -200,7 +367,53 @@
 
 @endsection
 
+    
 @section('js')
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get all filter dropdowns
+        let cropFilter = document.getElementById("cropFilter");
+        let districtFilter = document.getElementById("districtFilter");
+        let tehsilFilter = document.getElementById("tehsilFilter");
+        let yearFilter = document.getElementById("yearFilter");
+    
+        // Get all table rows
+        let tableRows = document.querySelectorAll("#table_id_events tbody tr");
+    
+        function filterTable() {
+            let cropValue = cropFilter.value.toLowerCase();
+            let districtValue = districtFilter.value.toLowerCase();
+            let tehsilValue = tehsilFilter.value.toLowerCase();
+            let yearValue = yearFilter.value.toLowerCase();
+    
+            tableRows.forEach(row => {
+                let crop = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+                let district = row.querySelector("td:nth-child(3)").textContent.toLowerCase();
+                let tehsil = row.querySelector("td:nth-child(4)").textContent.toLowerCase();
+                let year = row.querySelector("td:nth-child(6)").textContent.toLowerCase();
+    
+                // Check if the row matches all filters
+                let matchesCrop = cropValue === "" || crop.includes(cropValue);
+                let matchesDistrict = districtValue === "" || district.includes(districtValue);
+                let matchesTehsil = tehsilValue === "" || tehsil.includes(tehsilValue);
+                let matchesYear = yearValue === "" || year.includes(yearValue);
+    
+                // Show or hide the row based on matching filters
+                if (matchesCrop && matchesDistrict && matchesTehsil && matchesYear) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+    
+        // Add event listeners to all filters
+        cropFilter.addEventListener("change", filterTable);
+        districtFilter.addEventListener("change", filterTable);
+        tehsilFilter.addEventListener("change", filterTable);
+        yearFilter.addEventListener("change", filterTable);
+    });
+    </script>
 
     <script>
         $(document).ready(function() {
@@ -227,5 +440,5 @@
                 });
         });
     </script>
-
+    
 @endsection
