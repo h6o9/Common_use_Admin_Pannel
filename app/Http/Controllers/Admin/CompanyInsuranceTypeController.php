@@ -74,7 +74,8 @@ class CompanyInsuranceTypeController extends Controller
                     'error' => "The Crop, Destrict and Tehsil already exists for this Insurance."
                 ]);
             }
-            
+            // dd($request->all());
+            // return $request;
                 CompanyInsuranceType::create([
                     'insurance_company_id' => $request->insurance_company_id,
                     'insurance_type_id' => $insuranceTypeId,
