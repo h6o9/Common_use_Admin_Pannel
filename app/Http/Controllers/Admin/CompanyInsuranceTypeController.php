@@ -76,19 +76,19 @@ class CompanyInsuranceTypeController extends Controller
             }
             // dd($request->all());
             // return $request;
+        
+            foreach($request->benchmark as $index => $benchmark) {
                 CompanyInsuranceType::create([
                     'insurance_company_id' => $request->insurance_company_id,
                     'insurance_type_id' => $insuranceTypeId,
                     'crop' => $crop,
                     'district_name' => $request->district_name[$index] ?? null,
                     'tehsil' => $request->tehsil[$index] ?? null,
-                    'benchmark' => isset($request->benchmark[$index] ) 
-                        ? implode("\n", $request->benchmark[$index]) 
-                        : null,
-                    'price_benchmark' => isset($request->price_benchmark[$index]) 
-                        ? implode("\n", $request->price_benchmark[$index]) 
-                        : null,
+                    'benchmark' => isset($benchmark) ? implode("\n", $benchmark) : null,
+                    'price_benchmark' => isset($request->price_benchmark[$index]) ? implode("\n", $request->price_benchmark[$index]) : null,
                 ]);
+            }
+            // dd($request->all());
         }
     }
         // Return success message

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\District;
+use App\Models\Tehsil;
 
 class DistrictController extends Controller
 {
@@ -41,5 +42,11 @@ class DistrictController extends Controller
     {
         District::destroy($id);
         return redirect()->route('land.index')->with(['message' => 'District Deleted Successfully']);
+    }
+
+    //get tehsils along with districts
+    public function getTehsils($district_id) {
+        $tehsils = Tehsil::where('district_id', $district_id)->get();
+        return response()->json($tehsils);
     }
 }

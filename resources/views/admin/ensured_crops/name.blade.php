@@ -41,39 +41,52 @@
                             </div> 
                            
                     
-                        <div class="form-group">
-                            <label>Harvest Time Period</label>
-                            <div class="d-flex">
-                                <select name="harvest_start" class="form-control">
-                                    @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
-                                        <option value="{{ $month }}">{{ $month }}</option>
-                                    @endforeach
-                                </select>
-                                <span class="mx-2"></span>
-                                <select name="harvest_end" class="form-control">
-                                    @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
-                                        <option value="{{ $month  }}">{{ $month }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="form-group">
+                                <label>Harvest Time Period</label>
+                                <div class="d-flex">
+                                    <!-- Harvest Start Month Dropdown -->
+                                    <select name="harvest_start" class="form-control">
+                                        <option value="" disabled selected>Start Month</option>
+                                        @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                                            <option value="{{ $month }}">{{ $month }}</option>
+                                        @endforeach
+                                    </select>
+                            
+                                    <span class="mx-2"></span>
+                            
+                                    <!-- Harvest End Month Dropdown -->
+                                    <select name="harvest_end" class="form-control">
+                                        <option value="" disabled selected>End Month</option>
+                                        @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                                            <option value="{{ $month }}">{{ $month }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
+                            
 
-                        <div class="form-group">
-                            <label>Insurance Purchase Period</label>
-                            <div class="d-flex">
-                                <select name="insurance_start" class="form-control">
-                                    @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
-                                        <option value="{{ $month }}">{{ $month }}</option>
-                                    @endforeach
-                                </select>
-                                <span class="mx-2"></span>
-                                <select name="insurance_end" class="form-control">
-                                    @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
-                                        <option value="{{ $month  }}">{{ $month }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="form-group">
+                                <label>Insurance Purchase Period</label>
+                                <div class="d-flex">
+                                    <!-- Insurance Start Month Dropdown -->
+                                    <select name="insurance_start" class="form-control">
+                                        <option value="" disabled selected>Start Month</option>
+                                        @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                                            <option value="{{ $month }}">{{ $month }}</option>
+                                        @endforeach
+                                    </select>
+                            
+                                    <span class="mx-2"></span>
+                            
+                                    <!-- Insurance End Month Dropdown -->
+                                    <select name="insurance_end" class="form-control">
+                                        <option value="" disabled selected>End Month</option>
+                                        @foreach(['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                                            <option value="{{ $month }}">{{ $month }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

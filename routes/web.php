@@ -181,6 +181,7 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::post('/district-store',  'store')->name('district.store');
         Route::post('/district-update/{id}',  'update')->name('district.update');
         Route::delete('/district-destroy/{id}',  'destroy')->name('district.destroy');
+        Route::get('/get-tehsils/{district_id}', 'getTehsils')->name('get.tehsils');
     });
 
     // ############ Insurance Company #################

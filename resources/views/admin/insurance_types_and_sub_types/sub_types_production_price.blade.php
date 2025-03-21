@@ -40,12 +40,10 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="district_name">District</label>
-                                    <select name="district_name" class="form-control form-select">
+                                    <select id="districtFilter" name="district_name" class="form-control form-select">
                                         <option value="">Select District</option>
                                         @foreach ($districts as $district)
-                                            <option value="{{ $district->name }}" {{ old('district_name') == $district->name ? 'selected' : '' }}>
-                                                {{ $district->name }}
-                                            </option>
+                                            <option value="{{ $district->id }}">{{ $district->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('district_name')
@@ -57,13 +55,9 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="tehsil">Tehsil</label>
-                                    <select name="tehsil" class="form-control form-select">
+                                    <select id="tehsilFilter" name="tehsil" class="form-control form-select">
                                         <option value="">Select Tehsil</option>
-                                        @foreach ($tehsils as $tehsil)
-                                            <option value="{{ $tehsil->name }}" {{ old('tehsil') == $tehsil->name ? 'selected' : '' }}>
-                                                {{ $tehsil->name }}
-                                            </option>
-                                        @endforeach
+                                        <!-- Tehsils will be populated here -->
                                     </select>
                                     @error('tehsil')
                                         <span class="text-danger">{{ $message }}</span>
@@ -116,6 +110,16 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="year">Year</label>
+                                    <input type="text" name="year" class="form-control" value="{{ old('year', now()->year) }}" readonly>
+                                    @error('year')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
                             {{-- <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="status">Status</label>
@@ -264,6 +268,15 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="year">Year</label>
+                                            <input type="text" name="year" class="form-control" value="{{ old('year', $InsuranceSubType->year) }}" readonly>
+                                            @error('year')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 
 
                                 {{-- <div class="col-md-6">
@@ -362,6 +375,7 @@
                                             <th>Historical Average Market Price</th>
                                             <th>Real-time Market Price (AMP)</th>
                                             <th>Insured Yield (IY)</th>
+                                            <th>Year</th>
                                             <th scope="col">Actions</th>
                                         </tr>
                                     </thead>
@@ -370,13 +384,14 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $InsuranceSubType->name }}</td>
-                                            <td class="district">{{ $InsuranceSubType->district_name }}</td>
-                                            <td class="tehsil">{{ $InsuranceSubType->tehsil }}</td>
+                                            <td class="district">{{ $InsuranceSubType->district->name ?? '' }}</td>
+                                            <td class="tehsil">{{ $InsuranceSubType->tehsil->name ?? '' }}</td> 
                                             <td>{{ $InsuranceSubType->cost_of_production }}</td>
                                             <td>{{ $InsuranceSubType->average_yield }}%</td>
                                             <td>{{ $InsuranceSubType->historical_average_market_price }}</td>
                                             <td>{{ $InsuranceSubType->real_time_market_price }}</td>
                                             <td>{{ $InsuranceSubType->ensured_yield }}</td>
+                                            <td class="year">{{ $InsuranceSubType->year }}</td>
                                             {{-- <td>
                                                 @if ($InsuranceSubType->status == 1)
                                                 <div class="badge badge-success badge-shadow">Activated</div>
@@ -428,6 +443,30 @@
 
     
 @section('js')
+<script>
+    $(document).ready(function () {
+    $('#districtFilter').change(function () {
+        let districtId = $(this).val();
+
+        $('#tehsilFilter').empty().append('<option value="">Select Tehsil</option>');
+
+        if (districtId) {
+            $.ajax({
+                url: `{{ route('get.tehsils', ':districtId') }}`.replace(':districtId', districtId),
+                method: 'GET',
+                success: function(data) {
+                    data.forEach(function(tehsil) {
+                        $('#tehsilFilter').append(`<option value="${tehsil.id}">${tehsil.name}</option>`);
+                    });
+                },
+                error: function(xhr) {
+                    console.error('Error fetching tehsils:', xhr);
+                }
+            });
+        }
+    });
+});
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Get all filter dropdowns

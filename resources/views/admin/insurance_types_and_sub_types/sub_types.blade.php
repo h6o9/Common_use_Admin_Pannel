@@ -38,15 +38,15 @@
                                 </div>
                             </div>
                             
+                           <!-- District Dropdown -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="district_name">District</label>
-                                    <select name="district_name" class="form-control form-select">
+                                   <!-- ADD FORM -->
+                                    <select id="districtAdd" name="district_name" class="form-control form-select">
                                         <option value="">Select District</option>
                                         @foreach ($districts as $district)
-                                            <option value="{{ $district->name }}" {{ old('district_name') == $district->name ? 'selected' : '' }}>
-                                                {{ $district->name }}
-                                            </option>
+                                            <option value="{{ $district->id }}">{{ $district->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('district_name')
@@ -54,17 +54,12 @@
                                     @enderror
                                 </div>
                             </div>
-                            
+                        
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="tehsil">Tehsil</label>
-                                    <select name="tehsil" class="form-control form-select">
+                                    <label for="tehsil">Tehsil</label>                      
+                                    <select id="tehsilAdd" name="tehsil" class="form-control form-select">
                                         <option value="">Select Tehsil</option>
-                                        @foreach ($tehsils as $tehsil)
-                                            <option value="{{ $tehsil->name }}" {{ old('tehsil') == $tehsil->name ? 'selected' : '' }}>
-                                                {{ $tehsil->name }}
-                                            </option>
-                                        @endforeach
                                     </select>
                                     @error('tehsil')
                                         <span class="text-danger">{{ $message }}</span>
@@ -162,42 +157,40 @@
                                 </div>
                                 
                                 <!-- District Dropdown -->
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="district_name">District</label>
-                                        <select name="district_name" class="form-control form-select">
+                                <!-- District Dropdown -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="district_name">District</label>
+                                        <select id="districtEdit" name="district_name" class="form-control form-select">
                                             <option value="">Select District</option>
                                             @foreach ($districts as $district)
-                                                <option value="{{ $district->name }}" 
-                                                    {{ old('district_name', $InsuranceSubType->district_name) == $district->name ? 'selected' : '' }}>
+                                                <option value="{{ $district->id }}" 
+                                                    {{ old('district_name', $InsuranceSubType->district_name ?? '') == $district->id ? 'selected' : '' }}>
                                                     {{ $district->name }}
                                                 </option>
                                             @endforeach
                                         </select>
-                                        @error('district_name')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
+                                                @error('district_name')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                 </div>
-                                
-                                <!-- Tehsil Dropdown -->
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="tehsil">Tehsil</label>
-                                        <select name="tehsil" class="form-control form-select">
-                                            <option value="">Select Tehsil</option>
-                                            @foreach ($tehsils as $tehsil)
-                                                <option value="{{ $tehsil->name }}" 
-                                                    {{ old('tehsil', $InsuranceSubType->tehsil) == $tehsil->name ? 'selected' : '' }}>
-                                                    {{ $tehsil->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('tehsil')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
+                            </div>
+
+                                    <!-- Tehsil Dropdown -->
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="tehsil">Tehsil</label>
+                                            <!-- Tehsil Dropdown -->
+                                            <select id="tehsilEdit" name="tehsil" class="form-control form-select">
+                                                <option value="">Select Tehsil</option>
+                                                <!-- Tehsils will be populated dynamically -->
+                                            </select>
+                                            @error('tehsil')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
                                     </div>
-                                </div>
+
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="current_yield">Current yield</label>
@@ -324,8 +317,8 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td class="crop">{{ $InsuranceSubType->name }}</td>
-                                            <td class="district">{{ $InsuranceSubType->district_name }}</td>
-                                            <td class="tehsil">{{ $InsuranceSubType->tehsil }}</td>
+                                            <td class="district">{{ $InsuranceSubType->district->name ?? 'No district' }}</td>
+                                            <td class="tehsil">{{ $InsuranceSubType->tehsil->name ?? 'No tehsil' }}</td>                                            
                                             <td>{{ $InsuranceSubType->current_yield }}%</td>
                                             <td class="year">{{ $InsuranceSubType->year }}</td>
                                             {{-- <td>
@@ -379,6 +372,73 @@
 
     
 @section('js')
+
+
+<script>
+    $(document).ready(function () {
+        /** ========== ADD FORM HANDLING ========== */
+        $('#districtAdd').change(function () {
+            let districtId = $(this).val();
+            $('#tehsilAdd').empty().append('<option value="">Select Tehsil</option>');
+    
+            if (districtId) {
+                $.ajax({
+                    url: `{{ route('get.tehsils', ':districtId') }}`.replace(':districtId', districtId),
+                    method: 'GET',
+                    success: function (data) {
+                        data.forEach(function (tehsil) {
+                            $('#tehsilAdd').append(`<option value="${tehsil.id}">${tehsil.name}</option>`);
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Error fetching tehsils:', xhr);
+                    }
+                });
+            }
+        });
+    
+        /** ========== EDIT FORM HANDLING ========== */
+        function loadTehsilsForEdit(districtId, selectedTehsil = null) {
+            $('#tehsilEdit').empty().append('<option value="">Select Tehsil</option>');
+    
+            if (districtId) {
+                $.ajax({
+                    url: `{{ route('get.tehsils', ':districtId') }}`.replace(':districtId', districtId),
+                    method: 'GET',
+                    success: function (data) {
+                        data.forEach(function (tehsil) {
+                            let isSelected = selectedTehsil == tehsil.id ? 'selected' : '';
+                            $('#tehsilEdit').append(
+                                `<option value="${tehsil.id}" ${isSelected}>${tehsil.name}</option>`
+                            );
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Error fetching tehsils:', xhr);
+                    }
+                });
+            }
+        }
+    
+        // Auto-load tehsils in edit form when the page loads
+        let selectedDistrict = "{{ old('district_name', $InsuranceSubType->district_name ?? '') }}"; 
+        let selectedTehsil = "{{ old('tehsil', $InsuranceSubType->tehsil ?? '') }}"; 
+    
+        if (selectedDistrict) {
+            $('#districtEdit').val(selectedDistrict).trigger('change'); // Set district
+            loadTehsilsForEdit(selectedDistrict, selectedTehsil); // Load tehsils and set selected one
+        }
+    
+        // Update tehsils when changing district in edit form
+        $('#districtEdit').change(function () {
+            let districtId = $(this).val();
+            loadTehsilsForEdit(districtId);
+        });
+    });
+    </script>
+    
+    
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Get all filter dropdowns

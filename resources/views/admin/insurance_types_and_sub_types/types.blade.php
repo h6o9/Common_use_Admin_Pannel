@@ -150,7 +150,7 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $InsuranceType->name }}</td>
-                                            @if( $InsuranceType->name == "Area Yield index")
+                                            @if( $InsuranceType->name == "Area Yield Index")
                                             <td>
                                                 <a class="btn btn-primary" href="{{ route('insurance.sub.type.index', $InsuranceType->id) }}">Current Yield</a>
                                             </td>

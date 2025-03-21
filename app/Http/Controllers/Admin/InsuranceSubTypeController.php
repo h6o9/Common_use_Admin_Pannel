@@ -105,7 +105,11 @@ class InsuranceSubTypeController extends Controller
         $districts = District::all();         // Fetch all districts
         $tehsils = Tehsil::all();             // Fetch all tehsils
         $InsuranceType = InsuranceType::find($id);
-        $InsuranceSubTypes = InsuranceSubType::where('incurance_type_id', $id)->orderBy('status', 'desc')->latest()->get();
+        $InsuranceSubTypes = InsuranceSubType::with(['district', 'tehsil'])
+        ->where('incurance_type_id', $id)
+        ->orderBy('status', 'desc')
+        ->latest()
+        ->get();
 
         return view('admin.insurance_types_and_sub_types.sub_types_production_price', compact('sideMenuPermissions', 'sideMenuName', 'InsuranceSubTypes', 'InsuranceType','ensuredCrops', 'districts', 'tehsils'));
     }
@@ -130,6 +134,7 @@ class InsuranceSubTypeController extends Controller
             'historical_average_market_price' => $request->historical_average_market_price,
             'real_time_market_price' => $request->real_time_market_price,
             'ensured_yield' => $request->ensured_yield,
+            'year' => $request->year,
         ]);
 
         return redirect()->route('insurance.sub.type.productionPrice', ['id' => $request->incurance_type_id])->with(['message' => 'Insurance Sub-Type Created Successfully']);
@@ -155,6 +160,7 @@ class InsuranceSubTypeController extends Controller
             'historical_average_market_price' => $request->historical_average_market_price,
             'real_time_market_price' => $request->real_time_market_price,
             'ensured_yield' => $request->ensured_yield,
+            'year' => $request->year,
             // 'status' => $request->status,
         ]);
 

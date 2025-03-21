@@ -25,19 +25,20 @@
                         <input type="hidden" name="insurance_company_id" value="{{ $Company->id }}">
                         <div class="row">
                             
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="insurance_type_id">Types</label>
-                                <select name="insurance_type_id[]" id="insurance_type_id" class="form-control" multiple required>
-                                    @foreach ($Insurance_types as $Insurance_type)
-                                        <option value="{{ $Insurance_type->id }}">{{ $Insurance_type->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('insurance_type_id')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="insurance_type_id">Types</label>
+                                    <select name="insurance_type_id[]" id="insurance_type_id" class="form-control" multiple required>
+                                        @foreach ($Insurance_types->whereIn('name', ['Area Yield Index', 'Production Price Index']) as $Insurance_type)
+                                            <option value="{{ $Insurance_type->id }}">{{ $Insurance_type->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('insurance_type_id')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
                             </div>
-                        </div>
+                            
                         </div>
                         <div class="row align-items-end">
                             <div class="col-md-4">
@@ -468,67 +469,7 @@
                 });
         });
     </script>
-    {{-- <script>
-        $(document).ready(function () {
 
-        $('#insurance_type_id').on('change', function () {
-            let selectedTypes = $(this).val();
-            let priceContainer = $('#priceContainer');
-            let priceLabel = $('#priceLabel');
-
-            priceContainer.empty();
-
-            if (selectedTypes && selectedTypes.length > 0) {
-            priceLabel.show();
-                
-            selectedTypes.forEach(function (typeId) {
-                let typeName = $('#insurance_type_id option[value="' + typeId + '"]').text();
-
-                let inputHtml = `
-                    <div class="input-group mb-2" id="price-group-${typeId}">
-                        <input type="number" name="price[${typeId}]" class="form-control" placeholder="Enter price for ${typeName}">
-                    </div>`;
-                priceContainer.append(inputHtml);
-            });
-        } else {
-            priceLabel.hide(); // Hide label if no types are selected
-        }
-        });
-    });
-    </script> --}}
-
-
-    {{-- // $(document).ready(function () {
-    //     // Add Benchmark Button Click
-    //     $(document).on('click', '#addBenchmark', function () {
-    //         const benchmarkField = `
-    //            <div class="row align-items-end benchmark-field">
-    //                 <div class="col-md-6">
-    //                     <div class="form-group">
-    //                         <input type="text" name="benchmark[]" class="form-control" placeholder="Enter Benchmark" required>
-    //                     </div>
-    //                 </div>
-    //                 <div class="col-md-6">
-    //                     <div class="form-group">
-    //                         <div class="d-flex">
-    //                             <input type="text" name="price_benchmark[]" class="form-control" placeholder="Enter Price Benchmark" required>
-    //                             <span class="btn btn-danger ml-2 removeBenchmark">
-    //                                 <i class="fa fa-trash"></i>
-    //                             </span>
-    //                         </div>
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         `;
-    //         // Append the new field to the container
-    //         $('#benchmarksContainer').append(benchmarkField);
-    //     });
-
-    //     // Remove Benchmark Button Click
-    //     $(document).on('click', '.removeBenchmark', function () {
-    //         $(this).closest('.benchmark-field').remove();
-    //     });
-    // }); --}}
 <script>
     $(document).ready(function () {
     // Add Benchmark Field
@@ -557,151 +498,21 @@
 
         // Append to the container
         $('#benchmarksContainer').append(benchmarkField);
+
+        console.log("Added benchmark field. Current number of fields: " + $('.benchmark-field').length);
+
     });
 
     // Remove Benchmark Field
     $(document).on('click', '.removeBenchmark', function () {
         $(this).closest('.benchmark-field').remove();
     });
+
+    console.log("Removed a benchmark field. Current number of fields: " + $('.benchmark-field').length);
+
 });
-
-
 </script>
-{{-- <script>
-    $(document).ready(function () {
-        // Add More Fields
-        $('#addMore').click(function () {
-            const fieldHTML = `
-                <div class="row align-items-end field-group">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="text" name="crop[]" class="form-control" placeholder="Enter Crop">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="text" name="district[]" class="form-control" placeholder="Enter District">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="text" name="tehsil[]" class="form-control" placeholder="Enter Tehsil">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="text" name="benchmark[]" class="form-control" placeholder="Enter Benchmark">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <div class="d-flex">
-                                <input type="text" name="price_benchmark[]" class="form-control" placeholder="Enter Price Benchmark">
-                                <span class="btn btn-danger ml-2 removeField">
-                                    <i class="fa fa-trash"></i>
-                                </span>
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            $('#fieldsContainer').append(fieldHTML);
-        });
 
-        // Remove Field
-        $(document).on('click', '.removeField', function () {
-            $(this).closest('.field-group').remove();
-        });
-    });
-</script> --}}
-{{-- <script>
-    $(document).ready(function () {
-        // Add More Fields (Complete Set)
-        $('#addMore').click(function () {
-            const fieldHTML = `
-                <div class="row align-items-end field-group">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="text" name="crop[]" class="form-control" placeholder="Enter Crop">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="text" name="district[]" class="form-control" placeholder="Enter District">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="text" name="tehsil[]" class="form-control" placeholder="Enter Tehsil">
-                        </div>
-                    </div>
-                    
-                    <!-- Benchmark & Price Benchmark Fields -->
-                    <div class="col-md-12 benchmarkContainer">
-                        <div class="row align-items-end benchmark-group">
-                            <div class="col-md-5">
-                                <div class="form-group">
-                                    <input type="text" name="benchmark[]" class="form-control" placeholder="Enter Benchmark">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <div class="d-flex">
-                                        <input type="text" name="price_benchmark[]" class="form-control" placeholder="Enter Price Benchmark">
-                                        <span class="btn btn-danger ml-2 removeField">
-                                            <i class="fa fa-trash"></i>
-                                        </span>
-                                        <span class="btn btn-success ml-2 addBenchmark">
-                                            <i class="fa fa-plus"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            $('#fieldsContainer').append(fieldHTML);
-        });
-
-        // Append Additional Benchmark & Price Benchmark Fields
-        $(document).on('click', '.addBenchmark', function () {
-            const extraBenchmarkHTML = `
-                <div class="row align-items-end benchmark-group">
-                    <div class="col-md-5">
-                        <div class="form-group">
-                            <input type="text" name="benchmark[]" class="form-control" placeholder="Enter Benchmark">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <div class="d-flex">
-                                <input type="text" name="price_benchmark[]" class="form-control" placeholder="Enter Price Benchmark">
-                                <span class="btn btn-danger ml-2 removeBenchmark">
-                                    <i class="fa fa-trash"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // Append extraBenchmarkHTML inside the closest `.benchmarkContainer`
-            $(this).closest('.benchmarkContainer').append(extraBenchmarkHTML);
-        });
-
-        // Remove Field (Crop, District, Tehsil & First Benchmark Set)
-        $(document).on('click', '.removeField', function () {
-            $(this).closest('.field-group').remove();
-        });
-
-        // Remove Individual Benchmark Fields
-        $(document).on('click', '.removeBenchmark', function () {
-            $(this).closest('.benchmark-group').remove();
-        });
-    });
-</script> --}}
 <script>
     $(document).ready(function () {
     let rowIndex = 0; // Track each set of Crop, District, Tehsil, and Benchmark
@@ -864,7 +675,7 @@
     }
 });
 
-    </script>
+</script>
     {{-- <script>
        $(document).ready(function () {
     let rowIndex = $('.field-group').length;

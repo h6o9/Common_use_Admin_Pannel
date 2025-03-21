@@ -9,4 +9,14 @@ class InsuranceSubType extends Model
 {
     use HasFactory;
     protected $guarded=[];
+
+    public function district()
+    {
+        return $this->belongsTo(District::class, 'district_name', 'id'); 
+    }
+
+    public function tehsil()
+    {
+        return $this->belongsTo(Tehsil::class, 'tehsil', 'id');
+    }
 }
