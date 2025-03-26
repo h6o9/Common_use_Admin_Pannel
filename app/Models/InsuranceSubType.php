@@ -17,6 +17,7 @@ class InsuranceSubType extends Model
 
     public function tehsil()
     {
-        return $this->belongsTo(Tehsil::class, 'tehsil', 'id');
+        return $this->belongsTo(Tehsil::class, 'tehsil_id', 'id');
     }
+
 }

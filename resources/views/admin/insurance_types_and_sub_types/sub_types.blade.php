@@ -57,8 +57,8 @@
                         
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="tehsil">Tehsil</label>                      
-                                    <select id="tehsilAdd" name="tehsil" class="form-control form-select">
+                                    <label for="tehsil_id">Tehsil</label>                      
+                                    <select id="tehsilAdd" name="tehsil_id" class="form-control form-select">
                                         <option value="">Select Tehsil</option>
                                     </select>
                                     @error('tehsil')
@@ -157,7 +157,6 @@
                                 </div>
                                 
                                 <!-- District Dropdown -->
-                                <!-- District Dropdown -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="district_name">District</label>
@@ -170,18 +169,18 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                                @error('district_name')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
+                                            @error('district_name')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                 </div>
                             </div>
 
                                     <!-- Tehsil Dropdown -->
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="tehsil">Tehsil</label>
+                                            <label for="tehsil_id">Tehsil</label>
                                             <!-- Tehsil Dropdown -->
-                                            <select id="tehsilEdit" name="tehsil" class="form-control form-select">
+                                            <select id="tehsilEdit" name="tehsil_id" class="form-control form-select">
                                                 <option value="">Select Tehsil</option>
                                                 <!-- Tehsils will be populated dynamically -->
                                             </select>
@@ -266,14 +265,14 @@
                                 
                                     <select id="districtFilter" class="form-control form-select w-auto rounded mr-2" >
                                         <option value="">Districts</option>
-                                        @foreach ($InsuranceSubTypes->pluck('district_name')->unique() as $district)
+                                        @foreach ($InsuranceSubTypes->pluck('district.name')->unique() as $district)
                                             <option value="{{ $district }}">{{ $district }}</option>
                                         @endforeach
                                     </select>
                                 
                                     <select id="tehsilFilter" class="form-control form-select w-auto rounded mr-2" >
                                         <option value="">Tehsil</option>
-                                        @foreach ($InsuranceSubTypes->pluck('tehsil')->unique() as $tehsil)
+                                        @foreach ($InsuranceSubTypes->pluck('tehsil.name')->unique() as $tehsil)
                                             <option value="{{ $tehsil }}">{{ $tehsil }}</option>
                                         @endforeach
                                     </select>
@@ -422,7 +421,7 @@
     
         // Auto-load tehsils in edit form when the page loads
         let selectedDistrict = "{{ old('district_name', $InsuranceSubType->district_name ?? '') }}"; 
-        let selectedTehsil = "{{ old('tehsil', $InsuranceSubType->tehsil ?? '') }}"; 
+        let selectedTehsil = "{{ old('tehsil_id', $InsuranceSubType->tehsil_id ?? '') }}"; 
     
         if (selectedDistrict) {
             $('#districtEdit').val(selectedDistrict).trigger('change'); // Set district

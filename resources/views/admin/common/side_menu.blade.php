@@ -59,7 +59,7 @@
                     <a href="
                 {{ route('ensured.crop.name.index') }}
                 " class="nav-link  px-2">
-                        <i class="fas fa-leaf"></i><span> Ensured Crops</span>
+                        <i class="fas fa-leaf"></i><span> Insured Crops</span>
                     </a>
                 </li>
             @endif

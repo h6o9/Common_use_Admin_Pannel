@@ -49,51 +49,61 @@ class CompanyInsuranceTypeController extends Controller
         return view('admin.company_insurance.type', compact('sideMenuPermissions', 'sideMenuName', 'CompanyInsurances', 'Company', 'Insurance_types','ensuredCrops', 'districts', 'tehsils'));
     }
 
-    public function store(Request $request)
-    {
-        // dd($request);
-        $request->validate([
-            'insurance_company_id' => 'required',
-            'insurance_type_id' => 'required|array',
-        ]);
-        // dd($request);
-        // dd($request->all()); // Check if the input structure is correct
+   public function store(Request $request)
+{
+    $request->validate([
+        'insurance_company_id' => 'required',
+        'insurance_type_id' => 'required|array',
+        'crop' => 'required|array',
+        'district_name' => 'required|array',
+        'tehsil_id' => 'required|array',
+        'benchmark' => 'required|array',
+        'price_benchmark' => 'required|array',
+    ]);
 
-        foreach ($request->crop as $index => $crop) {
-            foreach ($request->insurance_type_id as $insuranceTypeId) {
-                $exists = CompanyInsuranceType::where([
+    foreach ($request->crop as $index => $crop) {
+        foreach ($request->insurance_type_id as $insuranceTypeId) {
+            $exists = CompanyInsuranceType::where([
                 ['insurance_company_id', '=', $request->insurance_company_id],
                 ['insurance_type_id', '=', $insuranceTypeId],
                 ['crop', '=', $crop],
                 ['district_name', '=', $request->district_name[$index] ?? null],
-                ['tehsil', '=', $request->tehsil[$index] ?? null],
+                ['tehsil_id', '=', $request->tehsil_id[$index] ?? null],
             ])->exists();
 
             if ($exists) {
-                return redirect()->route('company.insurance.types.index', ['id' => $request->insurance_company_id])->with([
-                    'error' => "The Crop, Destrict and Tehsil already exists for this Insurance."
-                ]);
+                return redirect()->route('company.insurance.types.index', ['id' => $request->insurance_company_id])
+                    ->with(['error' => "The Crop, District, and Tehsil already exist for this Insurance."]);
             }
-            // dd($request->all());
-            // return $request;
-        
-            foreach($request->benchmark as $index => $benchmark) {
-                CompanyInsuranceType::create([
-                    'insurance_company_id' => $request->insurance_company_id,
-                    'insurance_type_id' => $insuranceTypeId,
-                    'crop' => $crop,
-                    'district_name' => $request->district_name[$index] ?? null,
-                    'tehsil' => $request->tehsil[$index] ?? null,
-                    'benchmark' => isset($benchmark) ? implode("\n", $benchmark) : null,
-                    'price_benchmark' => isset($request->price_benchmark[$index]) ? implode("\n", $request->price_benchmark[$index]) : null,
-                ]);
-            }
-            // dd($request->all());
+
+            // **Ensure the benchmarks and price benchmarks are stored separately but paired**
+            $benchmarkArray = $request->benchmark[$index] ?? [];
+            $priceBenchmarkArray = $request->price_benchmark[$index] ?? [];
+
+            // **Convert arrays to new-line separated strings**
+            $formattedBenchmarks = implode("\n", array_map('trim', $benchmarkArray));
+            $formattedPriceBenchmarks = implode("\n", array_map('trim', $priceBenchmarkArray));
+
+            // **Save to database**
+            CompanyInsuranceType::create([
+                'insurance_company_id' => $request->insurance_company_id,
+                'insurance_type_id' => $insuranceTypeId,
+                'crop' => $crop,
+                'district_name' => $request->district_name[$index] ?? null,
+                'tehsil_id' => $request->tehsil_id[$index] ?? null,
+                'benchmark' => $formattedBenchmarks,  
+                'price_benchmark' => $formattedPriceBenchmarks, 
+            ]);
         }
     }
-        // Return success message
-        return redirect()->route('company.insurance.types.index', ['id' => $request->insurance_company_id])->with(['message' => 'Company Insurance Created Successfully']);
-    }
+
+    return redirect()->route('company.insurance.types.index', ['id' => $request->insurance_company_id])
+        ->with(['message' => 'Company Insurance Created Successfully']);
+}
+
+    
+
+
 
     public function update(Request $request, $id)
     {
@@ -107,7 +117,7 @@ class CompanyInsuranceTypeController extends Controller
             $company->update([
                 'crop'           => is_array($request->crop) ? implode(',', $request->crop) : $request->crop,
                 'district_name'  => is_array($request->district_name) ? implode(',', $request->district_name) : $request->district_name,
-                'tehsil'         => is_array($request->tehsil) ? implode(',', $request->tehsil) : $request->tehsil,
+                'tehsil_id'         => is_array($request->tehsil_id) ? implode(',', $request->tehsil_id) : $request->tehsil_id,
             
             ]);
     

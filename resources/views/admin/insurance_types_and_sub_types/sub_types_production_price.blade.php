@@ -40,7 +40,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="district_name">District</label>
-                                    <select id="districtFilter" name="district_name" class="form-control form-select">
+                                    <select id="districtAdd" name="district_name" class="form-control form-select">
                                         <option value="">Select District</option>
                                         @foreach ($districts as $district)
                                             <option value="{{ $district->id }}">{{ $district->name }}</option>
@@ -55,7 +55,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="tehsil">Tehsil</label>
-                                    <select id="tehsilFilter" name="tehsil" class="form-control form-select">
+                                    <select id="tehsilAdd" name="tehsil" class="form-control form-select">
                                         <option value="">Select Tehsil</option>
                                         <!-- Tehsils will be populated here -->
                                     </select>
@@ -186,43 +186,40 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <!-- District Dropdown -->
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="district_name">District</label>
-                                        <select name="district_name" class="form-control form-select">
+                                 <!-- District Dropdown -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="district_name">District</label>
+                                        <select id="districtEdit" name="district_name" class="form-control form-select">
                                             <option value="">Select District</option>
                                             @foreach ($districts as $district)
-                                                <option value="{{ $district->name }}" 
-                                                    {{ old('district_name', $InsuranceSubType->district_name) == $district->name ? 'selected' : '' }}>
+                                                <option value="{{ $district->id }}" 
+                                                    {{ old('district_name', $InsuranceSubType->district_name ?? '') == $district->id ? 'selected' : '' }}>
                                                     {{ $district->name }}
                                                 </option>
                                             @endforeach
                                         </select>
-                                        @error('district_name')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
+                                            @error('district_name')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                 </div>
+                            </div>
                                 
                                 <!-- Tehsil Dropdown -->
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="tehsil">Tehsil</label>
-                                        <select name="tehsil" class="form-control form-select">
+                                        <label for="tehsil_id">Tehsil</label>
+                                        <!-- Tehsil Dropdown -->
+                                        <select id="tehsilEdit" name="tehsil_id" class="form-control form-select">
                                             <option value="">Select Tehsil</option>
-                                            @foreach ($tehsils as $tehsil)
-                                                <option value="{{ $tehsil->name }}" 
-                                                    {{ old('tehsil', $InsuranceSubType->tehsil) == $tehsil->name ? 'selected' : '' }}>
-                                                    {{ $tehsil->name }}
-                                                </option>
-                                            @endforeach
+                                            <!-- Tehsils will be populated dynamically -->
                                         </select>
                                         @error('tehsil')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
+
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="average_yield">Average Yield</label>
@@ -329,14 +326,14 @@
                                     
                                     <select id="districtFilter" class="form-control form-select w-auto rounded mr-2" >
                                         <option value="">Districts</option>
-                                        @foreach ($InsuranceSubTypes->pluck('district_name')->unique() as $district)
+                                        @foreach ($InsuranceSubTypes->pluck('district.name')->unique() as $district)
                                             <option value="{{ $district }}">{{ $district }}</option>
                                         @endforeach
                                     </select>
                                 
                                     <select id="tehsilFilter" class="form-control form-select w-auto rounded mr-2" >
                                         <option value="">Tehsil</option>
-                                        @foreach ($InsuranceSubTypes->pluck('tehsil')->unique() as $tehsil)
+                                        @foreach ($InsuranceSubTypes->pluck('tehsil.name')->unique() as $tehsil)
                                             <option value="{{ $tehsil }}">{{ $tehsil }}</option>
                                         @endforeach
                                     </select>
@@ -384,8 +381,8 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $InsuranceSubType->name }}</td>
-                                            <td class="district">{{ $InsuranceSubType->district->name ?? '' }}</td>
-                                            <td class="tehsil">{{ $InsuranceSubType->tehsil->name ?? '' }}</td> 
+                                            <td class="district">{{ $InsuranceSubType->district->name ?? 'No district' }}</td>
+                                            <td class="tehsil">{{ $InsuranceSubType->tehsil->name ?? 'No tehsil' }}</td> 
                                             <td>{{ $InsuranceSubType->cost_of_production }}</td>
                                             <td>{{ $InsuranceSubType->average_yield }}%</td>
                                             <td>{{ $InsuranceSubType->historical_average_market_price }}</td>
@@ -444,28 +441,66 @@
     
 @section('js')
 <script>
-    $(document).ready(function () {
-    $('#districtFilter').change(function () {
-        let districtId = $(this).val();
-
-        $('#tehsilFilter').empty().append('<option value="">Select Tehsil</option>');
-
-        if (districtId) {
-            $.ajax({
-                url: `{{ route('get.tehsils', ':districtId') }}`.replace(':districtId', districtId),
-                method: 'GET',
-                success: function(data) {
-                    data.forEach(function(tehsil) {
-                        $('#tehsilFilter').append(`<option value="${tehsil.id}">${tehsil.name}</option>`);
-                    });
-                },
-                error: function(xhr) {
-                    console.error('Error fetching tehsils:', xhr);
-                }
-            });
+     $(document).ready(function () {
+        /** ========== ADD FORM HANDLING ========== */
+        $('#districtAdd').change(function () {
+            let districtId = $(this).val();
+            $('#tehsilAdd').empty().append('<option value="">Select Tehsil</option>');
+    
+            if (districtId) {
+                $.ajax({
+                    url: `{{ route('get.tehsils', ':districtId') }}`.replace(':districtId', districtId),
+                    method: 'GET',
+                    success: function (data) {
+                        data.forEach(function (tehsil) {
+                            $('#tehsilAdd').append(`<option value="${tehsil.id}">${tehsil.name}</option>`);
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Error fetching tehsils:', xhr);
+                    }
+                });
+            }
+        });
+    
+        /** ========== EDIT FORM HANDLING ========== */
+        function loadTehsilsForEdit(districtId, selectedTehsil = null) {
+            $('#tehsilEdit').empty().append('<option value="">Select Tehsil</option>');
+    
+            if (districtId) {
+                $.ajax({
+                    url: `{{ route('get.tehsils', ':districtId') }}`.replace(':districtId', districtId),
+                    method: 'GET',
+                    success: function (data) {
+                        data.forEach(function (tehsil) {
+                            let isSelected = selectedTehsil == tehsil.id ? 'selected' : '';
+                            $('#tehsilEdit').append(
+                                `<option value="${tehsil.id}" ${isSelected}>${tehsil.name}</option>`
+                            );
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Error fetching tehsils:', xhr);
+                    }
+                });
+            }
         }
+    
+        // Auto-load tehsils in edit form when the page loads
+        let selectedDistrict = "{{ old('district_name', $InsuranceSubType->district_name ?? '') }}"; 
+        let selectedTehsil = "{{ old('tehsil_id', $InsuranceSubType->tehsil_id ?? '') }}"; 
+    
+        if (selectedDistrict) {
+            $('#districtEdit').val(selectedDistrict).trigger('change'); // Set district
+            loadTehsilsForEdit(selectedDistrict, selectedTehsil); // Load tehsils and set selected one
+        }
+    
+        // Update tehsils when changing district in edit form
+        $('#districtEdit').change(function () {
+            let districtId = $(this).val();
+            loadTehsilsForEdit(districtId);
+        });
     });
-});
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {

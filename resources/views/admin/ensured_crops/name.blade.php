@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('title', 'Ensured Crops')
+@section('title', 'Insured Crops')
 @section('content')
 
 
@@ -9,7 +9,7 @@
         <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="EnsuredCropModalLabel">Add Ensured Crop</h5>
+                    <h5 class="modal-title" id="EnsuredCropModalLabel">Add Insured Crop</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -106,7 +106,7 @@
             <div class="modal-dialog modal-md" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="EditEnsuredCropModalLabel">Edit Ensured Crop</h5>
+                        <h5 class="modal-title" id="EditEnsuredCropModalLabel">Edit Insured Crop</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -191,7 +191,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="col-12">
-                                    <h4>Ensured Crops</h4>
+                                    <h4>Insured Crops</h4>
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">

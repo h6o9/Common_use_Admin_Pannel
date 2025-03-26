@@ -29,7 +29,7 @@ class InsuranceSubTypeController extends Controller
         $districts = District::all();         // Fetch all districts
         $tehsils = Tehsil::all();             // Fetch all tehsils
         $InsuranceType = InsuranceType::find($id);
-        $InsuranceSubTypes = InsuranceSubType::where('incurance_type_id', $id)->orderBy('status', 'desc')->latest()->get();
+        $InsuranceSubTypes = InsuranceSubType::with(['district', 'tehsil'])->where('incurance_type_id', $id)->orderBy('status', 'desc')->latest()->get();
 
         return view('admin.insurance_types_and_sub_types.sub_types', compact('sideMenuPermissions', 'sideMenuName', 'InsuranceSubTypes', 'InsuranceType','ensuredCrops', 'districts', 'tehsils'));
     }
@@ -48,7 +48,7 @@ class InsuranceSubTypeController extends Controller
             'incurance_type_id' => $request->incurance_type_id,
             'name' => $request->name,
             'district_name' => $request->district_name,
-            'tehsil' => $request->tehsil,
+            'tehsil_id' => $request->tehsil_id,
             'current_yield' => $request->current_yield,
             'year' => $request->year,
             // 'status' => $request->status,
@@ -70,7 +70,7 @@ class InsuranceSubTypeController extends Controller
         $data->update([
             'name' => $request->name,
             'district_name' => $request->district_name,
-            'tehsil' => $request->tehsil,
+            'tehsil_id' => $request->tehsil_id,
             'current_yield' => $request->current_yield,
             'year' => $request->year,
             // 'status' => $request->status,
@@ -128,7 +128,7 @@ class InsuranceSubTypeController extends Controller
             'name' => $request->name,
             'incurance_type_id' => $request->incurance_type_id,
             'district_name' => $request->district_name,
-            'tehsil' => $request->tehsil,
+            'tehsil_id' => $request->tehsil_id,
             'cost_of_production' => $request->cost_of_production,
             'average_yield' => $request->average_yield,
             'historical_average_market_price' => $request->historical_average_market_price,
@@ -154,7 +154,7 @@ class InsuranceSubTypeController extends Controller
             'name' => $request->name,
             'incurance_type_id' => $request->incurance_type_id,
             'district_name' => $request->district_name,
-            'tehsil' => $request->tehsil,
+            'tehsil_id' => $request->tehsil_id,
             'cost_of_production' => $request->cost_of_production,
             'average_yield' => $request->average_yield,
             'historical_average_market_price' => $request->historical_average_market_price,

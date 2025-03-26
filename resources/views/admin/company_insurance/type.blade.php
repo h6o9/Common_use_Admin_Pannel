@@ -38,7 +38,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            
+
                         </div>
                         <div class="row align-items-end">
                             <div class="col-md-4">
@@ -60,10 +60,11 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="district_name">District</label>
-                                    <select name="district_name[]" class="form-control">
-                                        <option value="" disabled selected>Select District</option>
-                                        @foreach($districts as $district)
-                                            <option value="{{ $district->name }}">{{ $district->name }}</option>
+                                   <!-- ADD FORM -->
+                                    <select id="districtAdd" name="district_name" class="form-control form-select">
+                                        <option value="">Select District</option>
+                                        @foreach ($districts as $district)
+                                            <option value="{{ $district->id }}">{{ $district->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('district_name')
@@ -72,67 +73,18 @@
                                 </div>
                             </div>
                         
-                            <!-- Tehsil Dropdown -->
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="tehsil">Tehsil</label>
-                                    <select name="tehsil[]" class="form-control">
-                                        <option value="" disabled selected>Select Tehsil</option>
-                                        @foreach($tehsils as $tehsil)
-                                            <option value="{{ $tehsil->name }}">{{ $tehsil->name }}</option>
-                                        @endforeach
+                                    <label for="tehsil_id">Tehsil</label>                      
+                                    <select id="tehsilAdd" name="tehsil_id" class="form-control form-select">
+                                        <option value="">Select Tehsil</option>
                                     </select>
                                     @error('tehsil')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
-                            {{-- <div class="col-md-5">
-                                <div class="form-group">
-                                    <label for="benchmark">Benchmark</label>
-                                    <input type="text" name="benchmark" class="form-control" value="{{ old('benchmark') }}">
-                                    @error('benchmark')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="form-group">
-                                    <label for="price_benchmark">Price Benchmark</label>
-                                    <input type="text" name="price_benchmark" class="form-control" value="{{ old('price_benchmark') }}">
-                                    @error('price_benchmark')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div> --}}
-                            
-                            
-                            
 
-                            {{-- <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <select name="status" id="status" class="form-control" required>
-                                        <option value="" selected disabled>Select an Option</option>
-                                        <option value="1" {{ old('status') }}>Active</option>
-                                        <option value="0" {{ old('status') }}>Deactive</option>
-                                    </select>
-                                    @error('status')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div> --}}
-
-                            {{-- <div class="col">
-                                <div class="form-group">
-                                    <div class="text-danger">If you want to select a sub-type, then please ignore the price field.</div>
-                                    <label for="price" id="priceLabel" style="display: none;">Price (Optional)</label>
-                                    <div id="priceContainer"></div>
-                                    @error('price')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div> --}}
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="benchmark">Benchmark</label>
@@ -156,13 +108,17 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div id="benchmarksContainer" class="mb-3"></div>
-                        <div id="fieldsContainer"></div>
-                        <div class="col-">
-                            <button type="button" class="btn btn-success" id="addMore">
-                                Add More <span class="ml-2 fa fa-plus"></span>
-                            </button>
+                            
+                            <!-- Container for dynamically added fields -->
+                            <div id="benchmarksContainer" class="col-md-12"></div>
+                            <div id="fieldsContainer"></div>
+                            <div class="col-" style="margin-left: 20px;">
+                                <button type="button" class="btn btn-success" id="addMore">
+                                    Add More <span class="ml-2 fa fa-plus"></span>
+                                </button>
+                            </div>
+                            
+                            
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -174,141 +130,139 @@
         </div>
     </div>
 
+        {{-- Edit Insurance Types Modal --}}
+@foreach ($CompanyInsurances as $InsuranceType)
+@php
+    $existingBenchmarks = explode("\n", $InsuranceType->benchmark ?? '');
+    $existingPriceBenchmarks = explode("\n", $InsuranceType->price_benchmark ?? '');
+@endphp
 
+<div class="modal fade" id="EditInsuranceTypesModal-{{ $InsuranceType->id }}" tabindex="-1" role="dialog"
+    aria-labelledby="EditInsuranceTypesModalLabel-{{ $InsuranceType->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Insurance Type</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('company.insurance.types.update', $InsuranceType->id) }}" method="POST">
+                @csrf
+                @method('POST')
+                <div class="modal-body">
+                    <input type="hidden" name="incurance_company_id" value="{{ $Company->id }}">
 
-    {{-- Edit Insurance Types Modal --}}
-    @foreach ($CompanyInsurances as $InsuranceType)
-    @php
-        $existingBenchmarks = explode("\n", $InsuranceType->benchmark ?? '');
-        $existingPriceBenchmarks = explode("\n", $InsuranceType->price_benchmark ?? '');
-    @endphp
-
-    <div class="modal fade" id="EditInsuranceTypesModal-{{ $InsuranceType->id }}" tabindex="-1" role="dialog"
-        aria-labelledby="EditInsuranceTypesModalLabel-{{ $InsuranceType->id }}" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Insurance Type</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span>&times;</span>
-                    </button>
-                </div>
-                <form action="{{ route('company.insurance.types.update', $InsuranceType->id) }}" method="POST">
-                    @csrf
-                    @method('POST')
-                    <div class="modal-body">
-                        <input type="hidden" name="incurance_company_id" value="{{ $Company->id }}">
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Insurance Type</label>
-                                    <input type="text" class="form-control" value="{{ $InsuranceType->insuranceType->name ?? 'N/A' }}" readonly>
-                                </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Insurance Type</label>
+                                <input type="text" class="form-control" value="{{ $InsuranceType->insuranceType->name ?? 'N/A' }}" readonly>
                             </div>
-                            <!-- Crop -->
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Crop</label>
-                                    <select name="crop[]" class="form-control">
-                                        <option value="" disabled>Select Crop</option>
-                                        @foreach ($ensuredCrops as $crop)
-                                            <option value="{{ $crop->name }}" {{ old('crop.0', $InsuranceType->crop) == $crop->name ? 'selected' : '' }}>
-                                                {{ $crop->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                        </div>
+                        <!-- Crop -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Crop</label>
+                                <select name="crop[]" class="form-control">
+                                    <option value="" disabled>Select Crop</option>
+                                    @foreach ($ensuredCrops as $crop)
+                                        <option value="{{ $crop->name }}" {{ old('crop.0', $InsuranceType->crop) == $crop->name ? 'selected' : '' }}>
+                                            {{ $crop->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
-                            
-                            <!-- District -->
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>District</label>
-                                    <select name="district_name[]" class="form-control">
-                                        <option value="" disabled>Select District</option>
+                        </div>
+                        
+                        <!-- District -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="district_name">District</label>
+                                    <select id="districtEdit" name="district_name" class="form-control form-select">
+                                        <option value="">Select District</option>
                                         @foreach ($districts as $district)
-                                            <option value="{{ $district->name }}" {{ old('district_name.0', $InsuranceType->district_name) == $district->name ? 'selected' : '' }}>
+                                            <option value="{{ $district->id }}" 
+                                                {{ old('district_name', $InsuranceSubType->district_name ?? '') == $district->id ? 'selected' : '' }}>
                                                 {{ $district->name }}
                                             </option>
                                         @endforeach
                                     </select>
-                                </div>
-                            </div>
-                        
-                            <!-- Tehsil -->
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Tehsil</label>
-                                    <select name="tehsil[]" class="form-control">
-                                        <option value="" disabled>Select Tehsil</option>
-                                        @foreach ($tehsils as $tehsil)
-                                            <option value="{{ $tehsil->name }}" {{ old('tehsil.0', $InsuranceType->tehsil) == $tehsil->name ? 'selected' : '' }}>
-                                                {{ $tehsil->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                        @error('district_name')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                             </div>
                         </div>
-                        
 
-                        <!-- Benchmark Fields -->
-                        <div class="row">
-                            <!-- Initial Benchmark Field -->
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Benchmark</label>
-                                    <input type="text" name="benchmark[{{ $InsuranceType->id }}][]" class="form-control"
-                                        value="{{ old('benchmark', trim($existingBenchmarks[0] ?? '')) }}">
-                                </div>
-                            </div>
-                            <!-- Initial Price Benchmark Field -->
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Price Benchmark</label>
-                                    <div class="d-flex">
-                                        <input type="text" name="price_benchmark[{{ $InsuranceType->id }}][]" class="form-control"
-                                            value="{{ old('price_benchmark', trim($existingPriceBenchmarks[0] ?? '')) }}">
-                                        <button type="button" class="btn btn-success ml-2 addBenchmark"
-                                            data-insurance-id="{{ $InsuranceType->id }}">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
+                                <!-- Tehsil Dropdown -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="tehsil_id">Tehsil</label>
+                                        <!-- Tehsil Dropdown -->
+                                        <select id="tehsilEdit" name="tehsil_id" class="form-control form-select">
+                                            <option value="">Select Tehsil</option>
+                                        </select>
+                                        @error('tehsil')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                     </div>
                                 </div>
+
+                    </div>
+                    
+
+                    <!-- Benchmark Fields -->
+                    <div class="row">
+                        <!-- Initial Benchmark Field -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Benchmark</label>
+                                <input type="text" name="benchmark[{{ $InsuranceType->id }}][]" class="form-control"
+                                    value="{{ old('benchmark', trim($existingBenchmarks[0] ?? '')) }}">
                             </div>
                         </div>
-
-                        <!-- Secondary Benchmark Fields (Loaded via jQuery) -->
-                        <div id="benchmarksContainer-{{ $InsuranceType->id }}"></div>
-                        {{-- <div id="editfieldsContainer-{{ $InsuranceType->id }}"></div>
-                        <!-- Add More Button -->
-                        <div class="col-">
-                            <button type="button" class="btn btn-success addMore"  data-insurance-id="{{ $InsuranceType->id }}">
-                                <i class="fa fa-plus mr-2"></i> Add More
-                            </button>
-                        </div> --}}
+                        <!-- Initial Price Benchmark Field -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Price Benchmark</label>
+                                <div class="d-flex">
+                                    <input type="text" name="price_benchmark[{{ $InsuranceType->id }}][]" class="form-control"
+                                        value="{{ old('price_benchmark', trim($existingPriceBenchmarks[0] ?? '')) }}">
+                                    <button type="button" class="btn btn-success ml-2 addBenchmark"
+                                        data-insurance-id="{{ $InsuranceType->id }}">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Update</button>
-                    </div>
-                </form>
-            </div>
+                    <!-- Secondary Benchmark Fields (Loaded via jQuery) -->
+                    <div id="benchmarksContainer-{{ $InsuranceType->id }}"></div>
+                    {{-- <div id="editfieldsContainer-{{ $InsuranceType->id }}"></div>
+                    <!-- Add More Button -->
+                    <div class="col-">
+                        <button type="button" class="btn btn-success addMore"  data-insurance-id="{{ $InsuranceType->id }}">
+                            <i class="fa fa-plus mr-2"></i> Add More
+                        </button>
+                    </div> --}}
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <!-- Pass existing benchmark data for this modal -->
-    <script>
-        var existingBenchmarks_{{ $InsuranceType->id }} = @json(array_slice($existingBenchmarks, 1)); // Skip first
-        var existingPriceBenchmarks_{{ $InsuranceType->id }} = @json(array_slice($existingPriceBenchmarks, 1));
-    </script>
+<!-- Pass existing benchmark data for this modal -->
+<script>
+    var existingBenchmarks_{{ $InsuranceType->id }} = @json(array_slice($existingBenchmarks, 1)); // Skip first
+    var existingPriceBenchmarks_{{ $InsuranceType->id }} = @json(array_slice($existingPriceBenchmarks, 1));
+</script>
 @endforeach
-
-
-
-
 
 
     <div class="main-content" style="min-height: 562px;">
@@ -340,10 +294,6 @@
                                             <th>District</th>
                                             <th>Tehsil</th>
                                             <th>Benchmark % - Price</th>
-                                            {{-- <th>Price Benchmark</th> --}}
-                                            {{-- <th>Price</th> --}}
-                                            {{-- <th>Sub-Types</th> --}}
-                                            {{-- <th>Status</th> --}}
                                             <th scope="col">Actions</th>
                                         </tr>
                                     </thead>
@@ -355,17 +305,19 @@
                                                 {{ $InsuranceType->insuranceType->name }}
                                             </td>
                                             <td>{{ $InsuranceType->crop }}</td>
-                                            <td>{{ $InsuranceType->district_name }}</td>
-                                            <td>{{ $InsuranceType->tehsil }}</td>
+                                            <td class="district">{{ $InsuranceSubType->district->name ?? 'No district' }}</td>
+                                            <td class="tehsil">{{ $InsuranceSubType->tehsil->name ?? 'No tehsil' }}</td> 
                                             <td>
                                                 @if (!empty($InsuranceType->benchmark) && !empty($InsuranceType->price_benchmark))
                                                     @php
-                                                        $benchmarks = explode("\n", $InsuranceType->benchmark);
-                                                        $pricebenchmarks = explode("\n", $InsuranceType->price_benchmark);
+                                                        $benchmarks = explode("\n", trim($InsuranceType->benchmark));
+                                                        $priceBenchmarks = explode("\n", trim($InsuranceType->price_benchmark));
                                                     @endphp
                                                     <ul>
                                                         @foreach ($benchmarks as $index => $benchmark)
-                                                            <li>{{ trim($benchmark) }}% - {{ $pricebenchmarks[$index] ?? 'N/A' }} PKR</li>
+                                                            @if (!empty(trim($benchmark)) && !empty(trim($priceBenchmarks[$index] ?? '')))
+                                                                <li>{{ trim($benchmark) }}% - {{ trim($priceBenchmarks[$index]) }} PKR</li>
+                                                            @endif
                                                         @endforeach
                                                     </ul>
                                                 @else
@@ -373,24 +325,9 @@
                                                 @endif
                                             </td>
                                             
-                                            {{-- <td> 
-                                                @if ($InsuranceType->price)
-                                                    {{ number_format($InsuranceType->price) }} PKR
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </td> --}}
                                             
-                                            {{-- <td>
-                                                <a href="{{ route('company.insurance.sub.types.index', $InsuranceType->id) }}" class="btn btn-primary">View</a>
-                                            </td> --}}
-                                            {{-- <td>
-                                                @if ($InsuranceType->status == 1)
-                                                <div class="badge badge-success badge-shadow">Activated</div>
-                                                @else
-                                                    <div class="badge badge-danger badge-shadow">Deactivated</div>
-                                                @endif
-                                            </td> --}}
+                                            
+                                          
                                             <td>
                                                 <div class="d-flex gap-4">
                                                     @if (Auth::guard('admin')->check() ||
@@ -472,21 +409,86 @@
 
 <script>
     $(document).ready(function () {
-    // Add Benchmark Field
+        /** ========== ADD FORM HANDLING ========== */
+        $('#districtAdd').change(function () {
+            let districtId = $(this).val();
+            $('#tehsilAdd').empty().append('<option value="">Select Tehsil</option>');
+    
+            if (districtId) {
+                $.ajax({
+                    url: `{{ route('get.tehsils', ':districtId') }}`.replace(':districtId', districtId),
+                    method: 'GET',
+                    success: function (data) {
+                        data.forEach(function (tehsil) {
+                            $('#tehsilAdd').append(`<option value="${tehsil.id}">${tehsil.name}</option>`);
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Error fetching tehsils:', xhr);
+                    }
+                });
+            }
+        });
+    
+        /** ========== EDIT FORM HANDLING ========== */
+        function loadTehsilsForEdit(districtId, selectedTehsil = null) {
+            $('#tehsilEdit').empty().append('<option value="">Select Tehsil</option>');
+    
+            if (districtId) {
+                $.ajax({
+                    url: `{{ route('get.tehsils', ':districtId') }}`.replace(':districtId', districtId),
+                    method: 'GET',
+                    success: function (data) {
+                        data.forEach(function (tehsil) {
+                            let isSelected = selectedTehsil == tehsil.id ? 'selected' : '';
+                            $('#tehsilEdit').append(
+                                `<option value="${tehsil.id}" ${isSelected}>${tehsil.name}</option>`
+                            );
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Error fetching tehsils:', xhr);
+                    }
+                });
+            }
+        }
+    
+        // Auto-load tehsils in edit form when the page loads
+        let selectedDistrict = "{{ old('district_name', $InsuranceSubType->district_name ?? '') }}"; 
+        let selectedTehsil = "{{ old('tehsil_id', $InsuranceSubType->tehsil_id ?? '') }}"; 
+    
+        if (selectedDistrict) {
+            $('#districtEdit').val(selectedDistrict).trigger('change'); // Set district
+            loadTehsilsForEdit(selectedDistrict, selectedTehsil); // Load tehsils and set selected one
+        }
+    
+        // Update tehsils when changing district in edit form
+        $('#districtEdit').change(function () {
+            let districtId = $(this).val();
+            loadTehsilsForEdit(districtId);
+        });
+    });
+</script>
+
+
+<script>
+$(document).ready(function () {
+    let benchmarkIndex = 0; 
+
     $(document).on('click', '#addBenchmark', function () {
-        let index = $('.benchmark-field').length; // Get the correct index dynamically
+        benchmarkIndex++;
 
         let benchmarkField = `
-           <div class="row align-items-end benchmark-field" data-index="${index}">
+            <div class="row align-items-end benchmark-field" data-index="${benchmarkIndex}">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <input type="text" name="benchmark[${index}][]" class="form-control" placeholder="Enter Benchmark" required>
+                        <input type="text" name="benchmark[0][]" class="form-control" placeholder="Enter Benchmark" required>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <div class="d-flex">
-                            <input type="text" name="price_benchmark[${index}][]" class="form-control" placeholder="Enter Price Benchmark" required>
+                            <input type="text" name="price_benchmark[0][]" class="form-control" placeholder="Enter Price Benchmark" required>
                             <span class="btn btn-danger ml-2 removeBenchmark">
                                 <i class="fa fa-trash"></i>
                             </span>
@@ -496,28 +498,18 @@
             </div>
         `;
 
-        // Append to the container
         $('#benchmarksContainer').append(benchmarkField);
-
-        console.log("Added benchmark field. Current number of fields: " + $('.benchmark-field').length);
-
     });
 
     // Remove Benchmark Field
     $(document).on('click', '.removeBenchmark', function () {
         $(this).closest('.benchmark-field').remove();
     });
-
-    console.log("Removed a benchmark field. Current number of fields: " + $('.benchmark-field').length);
-
 });
-</script>
 
-<script>
-    $(document).ready(function () {
-    let rowIndex = 0; // Track each set of Crop, District, Tehsil, and Benchmark
+$(document).ready(function () {
+    let rowIndex = 0; 
     
-    // Add More Fields (Complete Set)hello
     $('#addMore').click(function () {
         rowIndex++; // Increase index for each new row
         
@@ -546,7 +538,7 @@
                     </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                         <select name="tehsil[${rowIndex}]" class="form-control">
+                         <select name="tehsil_id[${rowIndex}]" class="form-control">
                             <option value="" disabled selected>Select Tehsil</option>
                             @foreach($tehsils as $tehsil)
                             <option value="{{ $tehsil->name }}">{{ $tehsil->name }}</option>
@@ -676,119 +668,4 @@
 });
 
 </script>
-    {{-- <script>
-       $(document).ready(function () {
-    let rowIndex = $('.field-group').length;
-
-    // Delegate click event for dynamically added elements
-    $(document).on('click', '.addMore', function () {
-        let insuranceId = $(this).data('insurance-id'); 
-        rowIndex++; 
-
-        // New field HTML
-        let fieldHTML = `
-            <div class="row align-items-end field-group mt-4" data-index="${rowIndex}">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <select name="crop_new[${insuranceId}][]" class="form-control">
-                            <option value="" disabled selected>Select Crop</option>
-                            @foreach($ensuredCrops as $crop)
-                                <option value="{{ $crop->name }}">{{ $crop->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <select name="district_name_new[${insuranceId}][]" class="form-control">
-                            <option value="" disabled selected>Select District</option>
-                            @foreach($districts as $district)
-                                <option value="{{ $district->name }}">{{ $district->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <select name="tehsil_new[${insuranceId}][]" class="form-control">
-                            <option value="" disabled selected>Select Tehsil</option>
-                            @foreach($tehsils as $tehsil)
-                                <option value="{{ $tehsil->name }}">{{ $tehsil->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Benchmark & Price Benchmark Fields -->
-                <div class="col-md-12 benchmarkContainer" data-index="${rowIndex}">
-                    <div class="row align-items-end benchmark-group">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <input type="text" name="benchmark_new[${insuranceId}][${rowIndex}][]" class="form-control" placeholder="Enter Benchmark">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <div class="d-flex">
-                                    <input type="text" name="price_benchmark_new[${insuranceId}][${rowIndex}][]" class="form-control" placeholder="Enter Price Benchmark">
-                                    <span class="btn btn-danger ml-2 removeField">
-                                        <i class="fa fa-trash"></i>
-                                    </span>
-                                    <span class="btn btn-success ml-2 editaddBenchmark" data-insurance-id="${insuranceId}">
-                                        <i class="fa fa-plus"></i>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Append new row inside the correct modal
-        $(`#editfieldsContainer-${insuranceId}`).append(fieldHTML);
-    });
-
-    // Add additional Benchmark & Price Benchmark fields dynamically in the correct benchmarkContainer
-    $(document).on('click', '.editaddBenchmark', function () {
-        let insuranceId = $(this).data('insurance-id');
-        let benchmarkContainer = $(this).closest('.benchmarkContainer'); // Get the correct benchmark container
-
-        let extraBenchmarkHTML = `
-            <div class="row align-items-end benchmark-group">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <input type="text" name="benchmark_new[${insuranceId}][]" class="form-control" placeholder="Enter Benchmark">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <div class="d-flex">
-                            <input type="text" name="price_benchmark_new[${insuranceId}][]" class="form-control" placeholder="Enter Price Benchmark">
-                            <span class="btn btn-danger ml-2 removeBenchmark">
-                                <i class="fa fa-trash"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Append inside the correct benchmark container
-        benchmarkContainer.append(extraBenchmarkHTML);
-    });
-
-    // Remove the entire row (Crop, District, Tehsil & first benchmark set)
-    $(document).on('click', '.removeField', function () {
-        $(this).closest('.field-group').remove();
-    });
-
-    // Remove an individual benchmark field
-    $(document).on('click', '.removeBenchmark', function () {
-        $(this).closest('.benchmark-group').remove();
-    });
-});
-
-
-        </script> --}}
 @endsection

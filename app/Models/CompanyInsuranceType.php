@@ -19,4 +19,14 @@ class CompanyInsuranceType extends Model
     {
         return $this->belongsTo(InsuranceCompany::class);
     }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class, 'district_name', 'id'); 
+    }
+
+    public function tehsil()
+    {
+        return $this->belongsTo(Tehsil::class, 'tehsil_id', 'id');
+    }
 }
