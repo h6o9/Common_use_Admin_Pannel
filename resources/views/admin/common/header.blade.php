@@ -73,10 +73,10 @@
             </div>
         </li> --}}
         <li class="dropdown"><a href="#" data-toggle="dropdown"
-                class="nav-link dropdown-toggle nav-link-lg nav-link-user"> 
-                <img alt="image"
-                    src="{{ Auth::guard('admin')->check() ? asset(Auth::guard('admin')->user()->image) : asset(Auth::guard('subadmin')->user()->image) }}" class="user-img-radious-style">
-                    <span class="d-sm-none d-lg-inline-block"></span></a>
+                class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                <img alt="image" src="{{ asset('public/admin/assets/img/logo2.png') }}"
+                    class="user-img-radious-style">
+                <span class="d-sm-none d-lg-inline-block"></span></a>
             <div class="dropdown-menu dropdown-menu-right pullDown">
                 <div class="dropdown-title">
                     {{ Auth::guard('admin')->check() ? Auth::guard('admin')->user()->name : (Auth::guard('subadmin')->check() ? Auth::guard('subadmin')->user()->name : 'Guest') }}

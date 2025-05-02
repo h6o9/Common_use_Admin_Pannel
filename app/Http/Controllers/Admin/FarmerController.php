@@ -16,17 +16,17 @@ class FarmerController extends Controller
     {
         $farmers =  Farmer::orderBy('status', 'desc')->latest()->get();
         
-        $sideMenuName = [];
-        $sideMenuPermissions = [];
+            $sideMenuName = [];
+            $sideMenuPermissions = [];
 
-        if (Auth::guard('subadmin')->check()) {
-            $getSubAdminPermissions = new AdminController();
-            $subAdminData = $getSubAdminPermissions->getSubAdminPermissions();
-            $sideMenuName = $subAdminData['sideMenuName'];
-            $sideMenuPermissions = $subAdminData['sideMenuPermissions'];
-        }
+            if (Auth::guard('subadmin')->check()) {
+                $getSubAdminPermissions = new AdminController();
+                $subAdminData = $getSubAdminPermissions->getSubAdminPermissions();
+                $sideMenuName = $subAdminData['sideMenuName'];
+                $sideMenuPermissions = $subAdminData['sideMenuPermissions'];
+            }
 
-        return view('admin.farmer.index', compact('farmers', 'sideMenuPermissions', 'sideMenuName'));
+        return view('admin.farmer.index', compact('farmers', 'sideMenuPermissions', '   '));
     }
     public function create()
     {

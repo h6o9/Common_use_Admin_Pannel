@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EventsController;
 use App\Http\Controllers\Admin\UcController;
+use App\Http\Controllers\HighlightController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\AdminController;
@@ -243,5 +245,67 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::get('/notification',  'index')->name('notification.index');
         Route::post('/notification-store',  'store')->name('notification.store');
         Route::delete('/notification-destroy/{id}',  'destroy')->name('notification.destroy');
+
+        //hightlights 
+
+    Route::get('/hightlight-view', [HighlightController::class, 'highlightview'])->name('highlight.view');
+
+    Route::get('/hightlight-createview', [HighlightController::class, 'highlightcrview'])->name('highlight.createview');
+
+    Route::post('/hightlight-create', [HighlightController::class, 'store'])->name('highlight.create');
+
+    
+    Route::get('/hightlight-mainview', [HighlightController::class, 'index'])->name('highlight.mainview');
+
+    Route::delete('/highlight-delete/{id}', [HighlightController::class, 'Delete'])->name('highlight.delete');
+
+  
+
+    
+    Route::post('/highlight-update/{id}', [HighlightController::class, 'Update'])->name('video.update');
+    
+    Route::get('/highlight-updatedview/{id}', [HighlightController::class, 'Updateview'])->name('highlight.updateview');
+
+
+    Route::get('/highlights', [HighlightController::class, 'searchindex'])->name('highlight.index');
+
+    
+ //events routes 
+
+
+ Route::get('/event-createview', [EventsController::class, 'createEvent'])->name('event.createview');
+
+ Route::post('/event-create', [EventsController::class, 'store'])->name('event.create');
+
+ //add more
+
+ Route::get('/add-imagesview/{id}', [EventsController::class, 'addmoreivew'])->name('event.addMoreview');
+ Route::post('/add-images/{id}', [EventsController::class, 'addMoreImages'])->name('event.addMoreImages');
+
+ //sidler image routes
+
+Route::get('/admin/slider-imagesview/{id}', [EventsController::class, 'SliderimgView'])->name('event.sliderimagesview');
+
+ Route::post('/slider-imagesedit/{id}', [EventsController::class, 'SlidereditImage'])->name('event.slidereditimage');
+
+ // Route::post('/slider-imagesview/{id}', [EventsController::class, 'SlidereditImage'])->name('event.sliderimages');
+
+ Route::get('/slider-imagesview/{id}', [EventsController::class, 'SliderimgView'])->name('event.addimage');
+
+
+ Route::get('/event-view', [EventsController::class, 'eventsView'])->name('event.view');
+
+ Route::get('/event-updateview/{id}', [EventsController::class, 'UpdateView'])->name('event.updateview');
+
+ Route::post('/event-update/{id}', [EventsController::class, 'Update'])->name('event.update');
+
+ Route::delete('/event-delete/{id}', [EventsController::class, 'Delete'])->name('event.delete');
+
+ Route::get('/events', [EventsController::class, 'index'])->name('event.index');
+
+    
     });
+
+
+
 });

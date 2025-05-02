@@ -17,12 +17,13 @@
     <!-- Custom style CSS -->
     <link rel="stylesheet" href="{{ asset('public/admin/assets/toastr/css/toastr.css') }}">
     <link rel="stylesheet" href="{{ asset('public/admin/assets/css/custom.css') }}">
-    <link rel='shortcut icon' type='image/x-icon' href='{{ asset('public/admin/assets/img/favicon.png') }}' />
+    <link rel='shortcut icon' type='image/x-icon' href='{{ asset('public/admin/assets/img/logo2.png') }}' />
     <link rel="stylesheet" href="{{ asset('public/admin/assets/css/datatables.css') }}">
 
-    <link rel="stylesheet" href="{{ asset('public/admin/assets/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/admin/assets/bundles/datatables/datatables.min.css') }}"> 
-    
+    <link rel="stylesheet"
+        href="{{ asset('public/admin/assets/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/admin/assets/bundles/datatables/datatables.min.css') }}">
+
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
 
@@ -51,7 +52,7 @@
     <script src="{{ asset('public/admin/assets/js/custom.js') }}"></script>
     <script src="{{ asset('public/admin/assets/toastr/js/toastr.min.js') }}"></script>
     <script src="{{ asset('public/admin/assets/js/datatables.js') }}"></script>
-    
+
     <script src="{{ asset('public/admin/assets/bundles/datatables/datatables.min.js') }}"></script>
     <script src="{{ asset('public/admin/assets/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js') }}">
     </script>
