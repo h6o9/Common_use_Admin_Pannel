@@ -5,7 +5,7 @@
     <div class="main-content">
         <section class="section">
             <div class="section-body">
-                <form action="{{url('admin/privacy-policy-update')}}" method="POST">
+                <form action="{{ url('admin/privacy-policy-update') }}" method="POST">
                     @csrf
                     <div class="row">
                         <div class="col-12 col-md-12 col-lg-12">
@@ -18,14 +18,14 @@
                                         <label>Description</label>
                                         <textarea name="description" class="form-control">
                                             @if ($data)
-                                            {{$data->description}}
-                                            @endif
+{{ $data->description }}
+@endif
 
                                         </textarea>
                                     </div>
                                 </div>
                                 <div class="card-footer text-right">
-                                    <button type="submit" class="btn btn-primary mr-1" type="submit">Submit</button>
+                                    <button type="submit" class="btn btn-primary mr-1" type="submit">Save Changes</button>
                                 </div>
                             </div>
                         </div>
@@ -39,8 +39,6 @@
 @section('js')
     <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
     <script>
-        CKEDITOR.replace( 'description');
+        CKEDITOR.replace('description');
     </script>
 @endsection
-
-

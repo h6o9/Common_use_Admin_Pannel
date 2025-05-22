@@ -2,7 +2,7 @@
     <aside" id="sidebar-wrapper">
         <div class="sidebar-brand">
             <a href="{{ url('/admin/dashboard') }}">
-                <img alt="image" src="{{ asset('public/admin/assets/img/logo2.png') }}" class="header-logo" />
+                <img alt="image" src="{{ asset('public/admin/assets/img/logo.png') }}" class="header-logo" />
                 {{-- <span class="logo-name">Crop Secure</span> --}}
             </a>
         </div>
@@ -13,123 +13,101 @@
                         data-feather="home"></i><span>Dashboard</span></a>
             </li>
 
-            @if (Auth::guard('admin')->check())
-                {{-- SubAdmin --}}
-                <li class="dropdown {{ request()->is('/hightlight-view*') ? 'active' : '' }}">
-                    <a href="{{ route('highlight.view') }}" class="nav-link"><i
-                            data-feather="user-check"></i><span>Highlights</span></a>
-                </li>
-            @endif
 
-            @if (Auth::guard('admin')->check() || $sideMenuName->contains('/event-view'))
-                {{-- Authorized Dealers --}}
-                <li class="dropdown {{ request()->is('/event-view*') ? 'active' : '' }}">
-                    <a href="
-                    {{ route('event.view') }}
-                    " class="nav-link">
-                        <i data-feather="layers"></i><span> Events</span>
-                    </a>
-                </li>
-            @endif
 
-            @if (Auth::guard('admin')->check() || $sideMenuName->contains('Authorized Dealers'))
-                {{-- Authorized Dealers --}}
-                <li class="dropdown {{ request()->is('admin/dealer*') ? 'active' : '' }}">
-                    <a href="
-                        {{ route('dealer.index') }}
-                        "
-                        class="nav-link">
-                        <i data-feather="shopping-bag"></i><span> Authorized Dealers</span>
-                    </a>
+            {{--  Roles --}}
+
+            @if (Auth::guard('admin')->check() ||
+                    ($sideMenuPermissions->has('role') && $sideMenuPermissions['role']->contains('view')))
+                {{-- FAQS --}}
+                <li class="dropdown {{ request()->is('admin/roles*') ? 'active' : '' }}">
+                    <a href="{{ url('admin/roles') }}" class="nav-link"><i
+                            data-feather="user"></i><span>Roles</span></a>
                 </li>
             @endif
 
 
 
-            {{-- @if (Auth::guard('admin')->check() || $sideMenuName->contains('Farmers')) --}}
-            {{-- Human Resource --}}
-            {{-- <li class="dropdown {{ request()->is('admin/farmer*') ? 'active' : '' }}">
-                    <a href="
-                {{ route('farmers.index') }}
-                " class="nav-link">
-                        <i data-feather="user"></i><span>Farmers</span>
-                    </a>
-                </li> --}}
-            {{-- @endif --}}
+            {{--  SubAdmin --}}
 
-            @if (Auth::guard('admin')->check() || $sideMenuName->contains('Ensured Crops'))
-                <li
-                    class="dropdown {{ request()->is('admin/ensured-crop-name*') || request()->is('admin/crop-type*') ? 'active' : '' }}">
-                    <a href="
-                {{ route('ensured.crop.name.index') }}
-                "
-                        class="nav-link  px-2">
-                        <i class="fas fa-leaf"></i><span> Insured Crops</span>
+            @if (Auth::guard('admin')->check() ||
+                    ($sideMenuPermissions->has('subadmin') && $sideMenuPermissions['subadmin']->contains('view')))
+                {{-- FAQS --}}
+                <li class="dropdown {{ request()->is('admin/subadmin*') ? 'active' : '' }}">
+                    <a href="{{ url('admin/subadmin') }}" class="nav-link"><i data-feather="user"></i><span>Sub
+                            Admin</span></a>
+                </li>
+            @endif
+
+            {{--  Users --}}
+
+            @if (Auth::guard('admin')->check() ||
+                    ($sideMenuPermissions->has('users') && $sideMenuPermissions['users']->contains('view')))
+                <li class="dropdown {{ request()->is('admin/user*') ? 'active' : '' }}">
+                    <a href="{{ url('admin/user') }}" class="nav-link">
+                        <i data-feather="users"></i>
+                        <span>Users</span>
                     </a>
                 </li>
             @endif
 
-            @if (Auth::guard('admin')->check() || $sideMenuName->contains('Land Data Management'))
-                {{-- Company --}}
-                <li
-                    class="dropdown {{ request()->is('admin/land-data-management*') || request()->is('admin/village*') || request()->is('admin/union*') || request()->is('admin/tehsil*') || request()->is('admin/unit*') ? 'active' : '' }}">
-                    <a href="
-                {{ route('land.index') }}
-                " class="nav-link">
-                        <i data-feather="map"></i><span>Land Data Management</span>
-                    </a>
+
+
+
+
+
+            {{--  FAQS --}}
+
+            @if (Auth::guard('admin')->check() ||
+                    ($sideMenuPermissions->has('faq') && $sideMenuPermissions['faq']->contains('view')))
+                {{-- FAQS --}}
+                <li class="dropdown {{ request()->is('admin/faq*') ? 'active' : '' }}">
+                    <a href="{{ url('admin/faq-index') }}" class="nav-link"><i
+                            data-feather="settings"></i><span>FAQ's</span></a>
                 </li>
             @endif
 
-            @if (Auth::guard('admin')->check() || $sideMenuName->contains('Insurance Companies'))
-                {{-- Demands --}}
-                <li
-                    class="dropdown {{ request()->is('admin/insurance-company*') || request()->is('admin/company-insurance*') ? 'active' : '' }}">
-                    <a href="
-                {{ route('insurance.company.index') }}
-                "
-                        class="nav-link px-2">
-                        <i class="fas fa-shield-alt"></i> <span>Insurance Companies</span>
-                    </a>
+            {{--  About Us --}}
+
+            @if (Auth::guard('admin')->check() ||
+                    ($sideMenuPermissions->has('aboutus') && $sideMenuPermissions['aboutus']->contains('view')))
+                {{-- About Us --}}
+                <li class="dropdown {{ request()->is('admin/about-us*') ? 'active' : '' }}">
+                    <a href="{{ url('admin/about-us') }}" class="nav-link"><i
+                            data-feather="help-circle"></i><span>About
+                            Us</span></a>
                 </li>
             @endif
 
-            {{-- Insurance Types & Sub-types --}}
-            @if (Auth::guard('admin')->check() || $sideMenuName->contains('Insurance Types & Sub-Types'))
-                <li
-                    class="dropdown {{ request()->is('admin/insurance-type*') || request()->is('admin/insurance-sub-type*') ? 'active' : '' }}">
-                    <a href="
-                {{ route('insurance.type.index') }}
-                "
-                        class="nav-link px-2">
-                        <i class="fas fa-cogs"></i> <span>Insurances</span>
-                    </a>
+            {{--  Blogs --}}
+
+            @if (Auth::guard('admin')->check() ||
+                    ($sideMenuPermissions->has('Blogs') && $sideMenuPermissions['Blogs']->contains('view')))
+                {{-- FAQS --}}
+                <li class="dropdown {{ request()->is('admin/blogs*') ? 'active' : '' }}">
+                    <a href="{{ url('admin/blogs-index') }}" class="nav-link"><i
+                            data-feather="book-open"></i><span>Blogs</span></a>
                 </li>
             @endif
 
-            @if (Auth::guard('admin')->check() || $sideMenuName->contains('Insurance Claim Requests'))
-                <li class="dropdown {{ request()->is('admin/insurance-claim*') ? 'active' : '' }}">
-                    <a href="
-                {{ route('insurance.claim.index') }}
-                "
-                        class="nav-link px-2">
-                        <i class="fas fa-file-alt"></i> <span>Insurance Claim Requests</span>
-                    </a>
+
+            {{--  Privacy Policy --}}
+
+            @if (Auth::guard('admin')->check() ||
+                    ($sideMenuPermissions->has('privacypolicy') && $sideMenuPermissions['privacypolicy']->contains('view')))
+                {{--  Privacy Policy --}}
+                <li class="dropdown {{ request()->is('admin/privacy-policy*') ? 'active' : '' }}">
+                    <a href="{{ url('admin/privacy-policy') }}" class="nav-link"><i
+                            data-feather="shield"></i><span>Privacy
+                            & Policy</span></a>
                 </li>
             @endif
 
-            @if (Auth::guard('admin')->check() || $sideMenuName->contains('Insurance History '))
-                <li class="dropdown {{ request()->is('admin/ensured-crops*') ? 'active' : '' }}">
-                    <a href="
-                {{ route('ensured.crops.index') }}
-                "
-                        class="nav-link px-2">
-                        <i class="fas fa-user-shield"></i> <span>Insurance History</span>
-                    </a>
-                </li>
-            @endif
+            {{-- Notification --}}
 
-            @if (Auth::guard('admin')->check() || $sideMenuName->contains('Notifications'))
+            @if (Auth::guard('admin')->check() ||
+                    ($sideMenuPermissions->has('notification') && $sideMenuPermissions['notification']->contains('view')))
+                {{-- Notification --}}
                 {{-- Notifications --}}
                 <li class="dropdown {{ request()->is('admin/notification*') ? 'active' : '' }}">
                     <a href="
@@ -140,18 +118,35 @@
                 </li>
             @endif
 
-            <li class="dropdown {{ request()->is('admin/about-us*') ? 'active' : '' }}">
-                <a href="{{ url('/admin/about-us') }}" class="nav-link"><i data-feather="info"></i><span>About
-                        Us</span></a>
-            </li>
-            <li class="dropdown {{ request()->is('admin/privacy-policy*') ? 'active' : '' }}">
-                <a href="{{ url('/admin/privacy-policy') }}" class="nav-link"><i
-                        data-feather="file-text"></i><span>Privacy policy</span></a>
-            </li>
-            <li class="dropdown {{ request()->is('admin/term-condition*') ? 'active' : '' }}">
-                <a href="{{ url('/admin/term-condition') }}" class="nav-link"><i
-                        data-feather="clipboard"></i><span>Terms & Conditions</span></a>
-            </li>
+            {{-- Contact Us  --}}
+
+
+            @if (Auth::guard('admin')->check() ||
+                    ($sideMenuPermissions->has('contact') && $sideMenuPermissions['contact']->contains('view')))
+                {{-- Contact Us --}}
+                <li class="dropdown {{ request()->is('admin/admin/contact-us*') ? 'active' : '' }}">
+                    <a href="{{ url('admin/admin/contact-us') }}" class="nav-link"><i
+                            data-feather="mail"></i><span>Contact
+                            Us</span></a>
+                </li>
+            @endif
+
+
+
+            {{--  Terms & Conditions --}}
+
+            @if (Auth::guard('admin')->check() ||
+                    ($sideMenuPermissions->has('termcondition') && $sideMenuPermissions['termcondition']->contains('view')))
+                {{-- Terms and Conditions --}}
+                <li class="dropdown {{ request()->is('admin/term-condition*') ? 'active' : '' }}">
+                    <a href="{{ url('admin/term-condition') }}" class="nav-link"><i
+                            data-feather="file-text"></i><span>Terms
+                            & Conditions</span></a>
+                </li>
+            @endif
+
+
+
         </ul>
         </aside>
 </div>

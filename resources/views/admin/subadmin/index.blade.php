@@ -1,88 +1,57 @@
 @extends('admin.layout.app')
 @section('title', 'Sub Admins')
-@section('content')
 
+@section('content')
+    {{-- Assign Permissions Modal --}}
     @foreach ($subAdmins as $subAdmin)
         <div class="modal fade" id="createSubadminModal-{{ $subAdmin->id }}" tabindex="-1" role="dialog"
             aria-labelledby="permissionModalLabel-{{ $subAdmin->id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="permissionModalLabel-{{ $subAdmin->id }}">Assign Permissions</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                        <h5 class="modal-title">Assign Permissions</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('update.permissions', [$subAdmin->id]) }}"
-                            id="createSubadminForm-{{ $subAdmin->id }}" enctype="multipart/form-data" method="POST">
+                        <form action="{{ route('update.permissions', $subAdmin->id) }}" method="POST"
+                            id="createSubadminForm-{{ $subAdmin->id }}">
                             @csrf
                             @method('POST')
-                            <div class="row">
-                                <input type="hidden" id="sub_admin_id" name="sub_admin_id" value="{{ $subAdmin->id }}">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        @foreach ($sideMenus as $sideMenu)
-                                            <!-- Parent Menu Checkbox -->
-                                            <div class="form-check mb-3">
-                                                <input type="checkbox" class="form-check-input parent-checkbox"
-                                                    id="menu-{{ $subAdmin->id }}-{{ $sideMenu->id }}"
-                                                    onclick="toggleNestedPermissions(this, '{{ $subAdmin->id }}-{{ $sideMenu->id }}')"
-                                                    {{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->isNotEmpty() ? 'checked' : '' }}>
+                            <input type="hidden" name="sub_admin_id" value="{{ $subAdmin->id }}">
+                            <div class="form-group">
+                                @foreach ($sideMenus as $sideMenu)
+                                    <div class="form-check mb-3">
+                                        <input type="checkbox" class="form-check-input parent-checkbox"
+                                            id="menu-{{ $subAdmin->id }}-{{ $sideMenu->id }}"
+                                            onclick="toggleNestedPermissions(this, '{{ $subAdmin->id }}-{{ $sideMenu->id }}')"
+                                            {{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->isNotEmpty() ? 'checked' : '' }}>
+                                        <label class="form-check-label"
+                                            for="menu-{{ $subAdmin->id }}-{{ $sideMenu->id }}">
+                                            {{ $sideMenu->name }}
+                                        </label>
+                                    </div>
+                                    <div class="ml-4 nested-permissions"
+                                        id="nested-permissions-{{ $subAdmin->id }}-{{ $sideMenu->id }}"
+                                        style="{{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->isNotEmpty() ? 'display:flex;' : 'display:none;' }}">
+                                        @foreach (['view', 'create', 'edit', 'delete'] as $perm)
+                                            <div class="form-check mr-2">
+                                                <input type="checkbox" class="form-check-input"
+                                                    id="{{ $perm }}-{{ $subAdmin->id }}-{{ $sideMenu->id }}"
+                                                    name="side_menu_id[{{ $sideMenu->id }}][]" value="{{ $perm }}"
+                                                    {{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->pluck('permissions')->contains($perm) ? 'checked' : '' }}>
                                                 <label class="form-check-label"
-                                                    for="menu-{{ $subAdmin->id }}-{{ $sideMenu->id }}">
-                                                    {{ $sideMenu->name }}
+                                                    for="{{ $perm }}-{{ $subAdmin->id }}-{{ $sideMenu->id }}">
+                                                    {{ ucfirst($perm) }}
                                                 </label>
-                                            </div>
-
-                                            <!-- Nested Permissions (Initially Hidden) -->
-                                            <div class="ml-4 nested-permissions align-items-center"
-                                                id="nested-permissions-{{ $subAdmin->id }}-{{ $sideMenu->id }}"
-                                                style="{{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->isNotEmpty() ? 'display:flex;' : 'display:none;' }}">
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input"
-                                                        id="view-{{ $subAdmin->id }}-{{ $sideMenu->id }}"
-                                                        name="side_menu_id[{{ $sideMenu->id }}][]" value="view"
-                                                        {{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->pluck('permissions')->contains('view') ? 'checked' : '' }}>
-                                                    <label class="form-check-label"
-                                                        for="view-{{ $subAdmin->id }}-{{ $sideMenu->id }}">View</label>
-                                                </div>
-
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input"
-                                                        id="create-{{ $subAdmin->id }}-{{ $sideMenu->id }}"
-                                                        name="side_menu_id[{{ $sideMenu->id }}][]" value="create"
-                                                        {{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->pluck('permissions')->contains('create') ? 'checked' : '' }}>
-                                                    <label class="form-check-label"
-                                                        for="create-{{ $subAdmin->id }}-{{ $sideMenu->id }}">Create</label>
-                                                </div>
-
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input"
-                                                        id="edit-{{ $subAdmin->id }}-{{ $sideMenu->id }}"
-                                                        name="side_menu_id[{{ $sideMenu->id }}][]" value="edit"
-                                                        {{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->pluck('permissions')->contains('edit') ? 'checked' : '' }}>
-                                                    <label class="form-check-label"
-                                                        for="edit-{{ $subAdmin->id }}-{{ $sideMenu->id }}">Edit</label>
-                                                </div>
-
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input"
-                                                        id="delete-{{ $subAdmin->id }}-{{ $sideMenu->id }}"
-                                                        name="side_menu_id[{{ $sideMenu->id }}][]" value="delete"
-                                                        {{ $subAdmin->permissions->where('side_menu_id', $sideMenu->id)->pluck('permissions')->contains('delete') ? 'checked' : '' }}>
-                                                    <label class="form-check-label"
-                                                        for="delete-{{ $subAdmin->id }}-{{ $sideMenu->id }}">Delete</label>
-                                                </div>
                                             </div>
                                         @endforeach
                                     </div>
-                                </div>
+                                @endforeach
                             </div>
-
                             <div class="modal-footer justify-content-center">
-                                <button type="submit" class="btn btn-primary"
-                                    onclick="submitSubadminForm({{ $subAdmin->id }})">Save Permissions</button>
+                                <button type="submit" class="btn btn-primary">Save Permissions</button>
                             </div>
                         </form>
                     </div>
@@ -91,36 +60,33 @@
         </div>
     @endforeach
 
-
-    <div class="main-content" style="min-height: 562px;">
+    {{-- Sub Admins Table --}}
+    <div class="main-content">
         <section class="section">
             <div class="section-body">
                 <div class="row">
-                    <div class="col-12 col-md-12 col-lg-12">
+                    <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <div class="col-12">
-                                    <h4>Sub Admins</h4>
-                                </div>
+                                <h4>Sub Admins</h4>
                             </div>
-                            <div class="card-body table-striped table-bordered table-responsive">
-
-                                @if (Auth::guard('admin')->check())
-                                    <a class="btn btn-primary mb-3 text-white"
-                                        href="{{ route('subadmin.create') }}">Create</a>
+                            <div class="card-body table-responsive">
+                                @if (Auth::guard('admin')->check() ||
+                                        ($sideMenuPermissions->has('subadmin') && $sideMenuPermissions['subadmin']->contains('create')))
+                                    <a class="btn btn-primary mb-3" href="{{ route('subadmin.create') }}">Create</a>
                                 @endif
 
-                                <table class="table responsive" id="table_id_events">
+                                <table class="table table-bordered" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Contact</th>
+                                            <th>Role</th>
                                             <th>Image</th>
-                                            <th scope="col">Permissions</th>
                                             <th>Status</th>
-                                            <th scope="col">Actions</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -130,119 +96,103 @@
                                                 <td>{{ $subAdmin->name }}</td>
                                                 <td>{{ $subAdmin->email }}</td>
                                                 <td>{{ $subAdmin->phone }}</td>
+                                                <td>{{ $subAdmin->roles->pluck('name')->join(', ') ?: 'No Role' }}</td>
+                                                <td><img src="{{ asset($subAdmin->image) }}" width="50" height="50"
+                                                        alt="Image"></td>
                                                 <td>
-                                                    <img src="{{ asset($subAdmin->image) }}" alt="" height="50"
-                                                        width="50" class="image">
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex justify-content-center align-items-center">
-                                                        <button class="btn btn-info text-white updatePermissionBtn"
-                                                            data-toggle="modal"
-                                                            data-target="#createSubadminModal-{{ $subAdmin->id }}"><i
-                                                                class="fas fa-user"></i></button>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <label class="custom-switch p-0">
+                                                    <label class="custom-switch">
                                                         <input type="checkbox" class="custom-switch-input toggle-status"
                                                             data-id="{{ $subAdmin->id }}"
-                                                            {{ $subAdmin->status == 1 ? 'checked' : '' }}>
+                                                            {{ $subAdmin->status ? 'checked' : '' }}>
                                                         <span class="custom-switch-indicator"></span>
                                                         <span class="custom-switch-description">
-                                                            {{ $subAdmin->status == 1 ? 'Activated' : 'Deactivated' }}
+                                                            {{ $subAdmin->status ? 'Activated' : 'Deactivated' }}
                                                         </span>
                                                     </label>
                                                 </td>
-
                                                 <td>
-                                                    @if (Auth::guard('admin')->check())
-                                                        <div class="d-flex gap-4">
+                                                    <div class="d-flex">
+                                                        @if (Auth::guard('admin')->check() ||
+                                                                ($sideMenuPermissions->has('subadmin') && $sideMenuPermissions['subadmin']->contains('edit')))
                                                             <a href="{{ route('subadmin.edit', $subAdmin->id) }}"
-                                                                class="btn btn-primary">Edit</a>
+                                                                class="btn btn-primary mr-1">
+                                                                <i class="fa fa-edit"></i>
+                                                            </a>
+                                                        @endif
+
+                                                        @if (Auth::guard('admin')->check() ||
+                                                                ($sideMenuPermissions->has('subadmin') && $sideMenuPermissions['subadmin']->contains('delete')))
                                                             <form action="{{ route('subadmin.destroy', $subAdmin->id) }}"
-                                                                method="POST"
-                                                                style="display:inline-block; margin-left: 10px">
+                                                                method="POST" class="delete-form">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button type="submit"
-                                                                    class="btn btn-danger btn-flat show_confirm"
-                                                                    data-toggle="tooltip">Delete</button>
+                                                                <button type="submit" class="btn show_confirm"
+                                                                    style="background: #ff5608; "><i
+                                                                        class="fa fa-trash"></i></button>
                                                             </form>
-                                                        </div>
-                                                    @endif
+                                                        @endif
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
-                            </div>
 
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
     </div>
-
 @endsection
 
 @section('js')
 
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#table_id_events').DataTable()
-        })
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-    <script type="text/javascript">
-        $('.show_confirm').click(function(event) {
-            var form = $(this).closest("form");
-            var name = $(this).data("name");
-            event.preventDefault();
-            swal({
-                    title: `Are you sure you want to delete this record?`,
-                    text: "If you delete this, it will be gone forever.",
+            $('#table_id_events').DataTable();
+
+            $('.show_confirm').click(function(event) {
+                event.preventDefault();
+                var form = $(this).closest("form");
+
+                swal({
+                    title: "Are you sure?",
+                    text: " If you delete this Subadmin record, it will be gone forever.",
                     icon: "warning",
                     buttons: true,
                     dangerMode: true,
-                })
-                .then((willDelete) => {
+                }).then((willDelete) => {
                     if (willDelete) {
                         form.submit();
+                        toastr.success('Subadmin deleted successfully');
                     }
                 });
+            });
         });
-    </script>
-    <script>
-        function toggleNestedPermissions(parentCheckbox, uniqueId) {
-            const nestedPermissions = document.getElementById(`nested-permissions-${uniqueId}`);
+
+        function toggleNestedPermissions(parentCheckbox, targetId) {
+            const container = document.getElementById('nested-permissions-' + targetId);
             if (parentCheckbox.checked) {
-                // Show nested permissions and enable child checkboxes
-                nestedPermissions.style.display = 'flex';
-                nestedPermissions.querySelectorAll('.form-check-input').forEach(checkbox => {
-                    checkbox.disabled = false;
-                });
+                container.style.display = 'flex';
             } else {
-                // Hide nested permissions and disable child checkboxes
-                nestedPermissions.style.display = 'none';
-                nestedPermissions.querySelectorAll('.form-check-input').forEach(checkbox => {
-                    checkbox.disabled = true;
-                    checkbox.checked = false; // Uncheck all child boxes
-                });
+                container.style.display = 'none';
+                const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(cb => cb.checked = false);
             }
         }
-    </script>
-    <script>
+
+        //togle functionality for status
         $(document).ready(function() {
             $('.toggle-status').on('change', function() {
                 var subAdminId = $(this).data('id');
                 var status = $(this).is(':checked') ? 1 : 0;
-                var toggleSwitch = $(this);
-                var statusText = $(this).siblings('.custom-switch-description');
 
                 $.ajax({
-                    url: "{{ route('subadmin.StatusChange') }}", // Change this to your actual route
-                    type: "POST",
+                    url: "{{ route('admin.subadmin.toggleStatus') }}",
+                    method: "POST",
                     data: {
                         _token: "{{ csrf_token() }}",
                         id: subAdminId,
@@ -250,19 +200,16 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            statusText.text(status ? 'Activated' : 'Deactivated');
+                            toastr.success(response.message);
                         } else {
-                            alert('Something went wrong!');
-                            toggleSwitch.prop('checked', !status); // Revert on failure
+                            toastr.error('Something went wrong!');
                         }
                     },
                     error: function() {
-                        alert('Failed to update status');
-                        toggleSwitch.prop('checked', !status); // Revert on error
+                        toastr.error('Failed to update status.');
                     }
                 });
             });
         });
     </script>
-
 @endsection

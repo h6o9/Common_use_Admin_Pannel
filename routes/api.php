@@ -1,7 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\SideMenueController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\SideMenuPermissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +21,14 @@ use App\Http\Controllers\Api\AuthController;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+
+Route::post('/roles', [RoleController::class, 'store']);
+
+Route::post('/permissions', [PermissionController::class, 'store']);
+Route::post('/sidemenue', [SideMenueController::class, 'store']);
+
+Route::post('/permission-insert', [SideMenuPermissionController::class, 'assignPermissions']);
+
 
 
 Route::post('farmer/login', [AuthController::class, 'login'])->name('login');

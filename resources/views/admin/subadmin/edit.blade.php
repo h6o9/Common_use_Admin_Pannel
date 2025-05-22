@@ -5,7 +5,8 @@
         <section class="section">
             <div class="section-body">
                 <a class="btn btn-primary mb-3" href="{{ url()->previous() }}">Back</a>
-                <form id="edit_subadmin" action="{{ route('subadmin.update', $subAdmin->id) }}" method="POST" enctype="multipart/form-data">
+                <form id="edit_subadmin" action="{{ route('subadmin.update', $subAdmin->id) }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     @method('POST') <!-- Use PUT method for editing -->
                     <div class="row">
@@ -17,7 +18,8 @@
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
                                             <label for="name">Name</label>
-                                            <input type="text" class="form-control" id="name" name="name" value="{{ $subAdmin->name }}" required>
+                                            <input type="text" class="form-control" id="name" name="name"
+                                                value="{{ $subAdmin->name }}" required placeholder="Enter name" autofocus>
                                             <div class="invalid-feedback"></div>
                                         </div>
                                     </div>
@@ -26,7 +28,8 @@
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
                                             <label for="email">Email</label>
-                                            <input type="text" class="form-control" id="email" name="email" value="{{ $subAdmin->email }}" required>
+                                            <input type="text" class="form-control" id="email" name="email"
+                                                value="{{ $subAdmin->email }}" required placeholder="Enter email" autofocus>
                                             <div class="invalid-feedback"></div>
                                         </div>
                                     </div>
@@ -35,8 +38,25 @@
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
                                             <label for="tel">Phone</label>
-                                            <input type="text" class="form-control" id="phone" name="phone" value="{{ $subAdmin->phone }}" required>
+                                            <input type="text" class="form-control" id="phone" name="phone"
+                                                value="{{ $subAdmin->phone }}" required placeholder="Enter phone number"
+                                                autofocus>
                                             <div class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                    {{-- Role --}}
+                                    <div class="col-sm-6 pl-sm-0 pr-sm-3">
+                                        <div class="form-group">
+                                            <label for="role">Select Role</label>
+                                            <select class="form-control" id="role" name="role">
+                                                <option value="">-- Select Role --</option>
+                                                @foreach ($roles as $role)
+                                                    <option value="{{ $role->id }}"
+                                                        {{ isset($currentRoleId) && $currentRoleId == $role->id ? 'selected' : '' }}>
+                                                        {{ $role->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
 
@@ -56,7 +76,8 @@
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
                                             <label for="image">Image</label>
-                                            <input type="file" class="form-control" id="image" name="image">
+                                            <input type="file" class="form-control" id="image" name="image"
+                                                placeholder="Upload Image" autofocus>
                                             <div class="mt-2">
                                                 @if ($subAdmin->image)
                                                     <img src="{{ asset($subAdmin->image) }}" alt="Image" width="100">
@@ -65,12 +86,24 @@
                                             <div class="invalid-feedback"></div>
                                         </div>
                                     </div>
+                                    <!-- Password -->
+                                    <div class="col-sm-6 pl-sm-0 pr-sm-3">
+                                        <div class="form-group position-relative">
+                                            <label for="password">Password</label>
+                                            <input type="password" class="form-control" id="password" name="password"
+                                                placeholder="Enter password" tabindex="2" autofocus>
+                                            <span class="fa fa-eye position-absolute"
+                                                style="top: 42px; right: 15px; cursor: pointer;"
+                                                onclick="togglePassword()"></span>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Submit Button -->
                                 <div class="card-footer text-center row">
                                     <div class="col-12">
-                                        <button type="submit" class="btn btn-primary mr-1 btn-bg" id="submit">Update</button>
+                                        <button type="submit" class="btn btn-primary mr-1 btn-bg" id="submit">Save
+                                            Changes</button>
                                     </div>
                                 </div>
                             </div>
@@ -82,9 +115,24 @@
 @endsection
 
 @section('js')
-    @if (\Illuminate\Support\Facades\Session::has('message'))
+    @if (session('success'))
         <script>
-            toastr.success('{{ \Illuminate\Support\Facades\Session::get('message') }}');
+            toastr.success('{{ session('success') }}');
         </script>
     @endif
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const icon = event.target;
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
 @endsection

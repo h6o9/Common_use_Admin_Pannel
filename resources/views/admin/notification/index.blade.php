@@ -2,76 +2,9 @@
 @section('title', 'Notifications')
 @section('content')
 
-    <style>
-        .select2-container {
-            display: block;
-        }
-    </style>
-
-    <div class="modal fade" id="notificationModal" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="notificationModalLabel">Send Notification</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="{{ route('notification.store') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <!-- User Type Dropdown -->
-                        <div class="form-group">
-                            <label for="userType">Select User Type</label>
-                            <select class="form-control" name="user_type" id="userType" required multiple>
-                                <option value="farmers">Farmers</option>
-                                <option value="dealers">Authorized Dealers</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group d-none" id="farmers-group">
-                            <label for="farmers">Select Farmers</label>
-                            <div>
-                                <input type="checkbox" id="selectAllFarmers"> <label for="selectAllFarmers">Select All</label>
-                            </div>
-                            <select class="form-control" id="farmers" name="farmers[]" required multiple>
-                                @foreach ($farmers as $farmer)
-                                    <option value="{{ $farmer->id }}">{{ $farmer->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="form-group d-none" id="dealers-group">
-                            <label for="dealers">Select Authorized Dealer</label>
-                            <div>
-                                <input type="checkbox" id="selectAllDealers"> <label for="selectAllDealers">Select All</label>
-                            </div>
-                            <select class="form-control" id="dealers" name="dealers[]" required multiple>
-                                @foreach ($dealers as $dealer)
-                                    <option value="{{ $dealer->id }}">{{ $dealer->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-
-                        <!-- Message Textbox -->
-                        <div class="form-group">
-                            <label for="message">Message</label>
-                            <textarea class="form-control" id="message" name="message" rows="5" placeholder="Enter your message here"
-                                required></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Send Notification</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
+    @php
+        use Illuminate\Support\Str;
+    @endphp
 
     <div class="main-content" style="min-height: 562px;">
         <section class="section">
@@ -80,53 +13,77 @@
                     <div class="col-12 col-md-12 col-lg-12">
                         <div class="card">
                             <div class="card-header">
-                                <div class="col-12">
+                                <div class="col-12 d-flex justify-content-between">
                                     <h4>Notifications</h4>
+                                    <!-- Create Button -->
+
+                                    @if (Auth::guard('admin')->check() ||
+                                            ($sideMenuPermissions->has('notification') && $sideMenuPermissions['notification']->contains('create')))
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#createAboutModal">
+                                            <i class="fas fa-plus"></i> Create
+                                        </button>
+                                    @endif
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
-                                @if (Auth::guard('admin')->check() ||
-                                        $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Notifications' &&
-                                                $permission['permissions']->contains('create')))
-                                    <a class="btn btn-primary mb-3 text-white" href="#" data-toggle="modal"
-                                        data-target="#notificationModal">Create</a>
-                                @endif
-
-
-                                <table class="table text-center" id="table_id_events">
+                                <table class="table" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
-                                            <th>Name</th>
+                                            <th>Image</th>
                                             <th>Description</th>
-                                            {{-- <th scope="col">Actions</th> --}}
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            {{-- <td>
-                                                <div class="d-flex gap-4 justify-content-center">
-                                                    @if (Auth::guard('admin')->check() || $sideMenuPermissions->contains(fn($permission) => $permission['side_menu_name'] === 'Notifications' && $permission['permissions']->contains('delete')))
-                                                        <form action=
-                                                        "{{ route('notification.index') }}"
-                                                             method="POST"
-                                                             style="display:inline-block; margin-left: 10px">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-flat show_confirm" data-toggle="tooltip">Delete</button>
-                                                        </form>
+                                        @forelse($data as $item)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>
+                                                    @if ($item->image)
+                                                        <img src="{{ asset('storage/' . $item->image) }}" width="100"
+                                                            alt="About Us Image" required>
+                                                    @else
+                                                        No Image
                                                     @endif
+                                                </td>
+                                                <td>
+                                                    {!! Str::limit(strip_tags($item->description), 200) !!}
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex gap-2">
 
-                                                </div>
-                                            </td> --}}
-                                        </tr>
+                                                        @if (Auth::guard('admin')->check() ||
+                                                                ($sideMenuPermissions->has('notification') && $sideMenuPermissions['notification']->contains('edit')))
+                                                            <a href="{{ route('admin.about-us.edit', $item->id) }}"
+                                                                class="btn btn-sm btn-primary">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                        @endif
+
+                                                        @if (Auth::guard('admin')->check() ||
+                                                                ($sideMenuPermissions->has('notification') && $sideMenuPermissions['notification']->contains('delete')))
+                                                            <form action="{{ route('admin.about-us.destroy', $item->id) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit"
+                                                                    class="btn btn-sm btn-danger show_confirm">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="4" class="text-center">No about us content found</td>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -134,79 +91,62 @@
         </section>
     </div>
 
+    <!-- Create Modal -->
+    <div class="modal fade" id="createAboutModal" tabindex="-1" role="dialog" aria-labelledby="createAboutModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createAboutModalLabel">Add New Notification</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Image</label>
+                            <input type="file" name="image" class="form-control" placeholder="Upload Image" required
+                                placeholder="Upload Image">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea name="description" class="form-control" rows="5" required placeholder="Enter description"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('js')
-
     <script>
         $(document).ready(function() {
-            $('#table_id_events').DataTable()
-        })
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-    <script type="text/javascript">
-        $('.show_confirm').click(function(event) {
-            var form = $(this).closest("form");
-            var name = $(this).data("name");
-            event.preventDefault();
-            swal({
-                    title: `Are you sure you want to delete this record?`,
-                    text: "If you delete this, it will be gone forever.",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        form.submit();
-                    }
-                });
+            $('#table_id_events').DataTable();
         });
-    </script>
 
-    <script>
-        $(document).ready(function() {
-            $('#userType, #dealers, #farmers').select2({
-                placeholder: "Select User",
-                allowClear: true
-            });
-
-            $('#userType').on('change', function() {
-                var selectedValues = $(this).val();
-
-                // Hide both groups initially
-                $('#farmers-group, #dealers-group').addClass('d-none');
-
-                // Show respective groups based on selection
-                if (selectedValues) {
-                    if (selectedValues.includes('farmers')) {
-                        $('#farmers-group').removeClass('d-none');
-                    }
-                    if (selectedValues.includes('dealers')) {
-                        $('#dealers-group').removeClass('d-none');
-                    }
+        // SweetAlert for delete confirmation
+        $('.show_confirm').click(function(event) {
+            event.preventDefault();
+            const form = $(this).closest("form");
+            swal({
+                title: 'Are you sure?',
+                text: "This will be permanently deleted!",
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    form.submit();
                 }
             });
-
-            $('#selectAllFarmers').on('change', function() {
-            if ($(this).is(':checked')) {
-                $('#farmers option').prop('selected', true);
-            } else {
-                $('#farmers option').prop('selected', false);
-            }
-            $('#farmers').trigger('change'); // Update Select2 if used
-        });
-
-        $('#selectAllDealers').on('change', function() {
-            if ($(this).is(':checked')) {
-                $('#dealers option').prop('selected', true);
-            } else {
-                $('#dealers option').prop('selected', false);
-            }
-            $('#dealers').trigger('change'); // Update Select2 if used
-        });
-
         });
     </script>
-
 @endsection

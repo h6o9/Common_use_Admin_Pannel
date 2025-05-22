@@ -17,8 +17,12 @@
     <!-- Custom style CSS -->
     <link rel="stylesheet" href="{{ asset('public/admin/assets/toastr/css/toastr.css') }}">
     <link rel="stylesheet" href="{{ asset('public/admin/assets/css/custom.css') }}">
-    <link rel='shortcut icon' type='image/x-icon' href='{{ asset('public/admin/assets/img/logo2.png') }}' />
+    <link rel='shortcut icon' type='image/x-icon' href='{{ asset('public/admin/assets/img/logo.png') }}' />
     <link rel="stylesheet" href="{{ asset('public/admin/assets/css/datatables.css') }}">
+
+    {{-- toasr css --}}
+
+    <link rel="stylesheet" href="{{ asset('public/admin/assets/toastr/toastr.css') }}">
 
     <link rel="stylesheet"
         href="{{ asset('public/admin/assets/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css') }}">
@@ -59,29 +63,40 @@
     <script src="{{ asset('public/admin/assets/js/page/datatables.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="{{ asset('public/admin/assets/toastr/toastr.js') }}"></script>
     <script>
         toastr.options = {
             "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
             "progressBar": true,
             "positionClass": "toast-top-right",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000"
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
         };
-
-        @if (session('message'))
-            toastr.success("{{ session('message') }}");
+ 
+        @if (Session::has('success'))
+            toastr.success("{{ Session::get('success') }}");
         @endif
 
-        @if (session('error'))
-            toastr.error("{{ session('error') }}");
+        @if (Session::has('error'))
+            toastr.error("{{ Session::get('error') }}");
         @endif
 
-        @if (session('info'))
-            toastr.info("{{ session('info') }}");
+        @if (Session::has('info'))
+            toastr.info("{{ Session::get('info') }}");
         @endif
 
-        @if (session('warning'))
-            toastr.warning("{{ session('warning') }}");
+        @if (Session::has('warning'))
+            toastr.warning("{{ Session::get('warning') }}");
         @endif
     </script>
     @yield('js')

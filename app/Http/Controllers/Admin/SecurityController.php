@@ -6,6 +6,7 @@ use App\Models\AboutUs;
 use Illuminate\Http\Request;
 use App\Models\PrivacyPolicy;
 use App\Models\TermCondition;
+use App\Models\UserRolePermission;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\AdminController;
@@ -15,16 +16,38 @@ class SecurityController extends Controller
     public function PrivacyPolicy()
     {
         $data = PrivacyPolicy::first();
-        $sideMenuName = [];
+          $sideMenuPermissions = collect();
 
-        if (Auth::guard('subadmin')->check()) {
-            $getSubAdminPermissions = new AdminController();
-            $subAdminData = $getSubAdminPermissions->getSubAdminPermissions();
-            $sideMenuName = $subAdminData['sideMenuName'];
-        }
+    // ✅ Check if user is not admin (normal subadmin)
+    if (!Auth::guard('admin')->check()) {
+        $user =Auth::guard('subadmin')->user()->load('roles');
 
-        return view('admin.privacyPolicy.index', compact('data', 'sideMenuName'));
+
+        // ✅ 1. Get role_id of subadmin
+        $roleId = $user->role_id;
+
+        // ✅ 2. Get all permissions assigned to this role
+        $permissions = UserRolePermission::with(['permission', 'sideMenue'])
+            ->where('role_id', $roleId)
+            ->get();
+
+        // ✅ 3. Group permissions by side menu
+        $sideMenuPermissions = $permissions->groupBy('sideMenue.name')->map(function ($items) {
+            return $items->pluck('permission.name'); // ['view', 'create']
+        });
     }
+
+
+        return view('admin.privacyPolicy.index', compact('data',  'sideMenuPermissions'));
+    }
+
+
+    public function PrivacyPolicyView()
+    {
+        $data = PrivacyPolicy::first();
+        return view('admin.privacyPolicy.privacypolicy', compact('data'));
+    }
+
     public function PrivacyPolicyEdit()
     {
         $data = PrivacyPolicy::first();
@@ -44,21 +67,45 @@ class SecurityController extends Controller
         } else {
             PrivacyPolicy::create($request->all());
         }
-        return redirect('/admin/privacy-policy')->with(['status' => true, 'message' => 'Privacy Policy Updated Successfully']);
+        return redirect('/admin/privacy-policy')->with('success', 'Privacy & Policy updated successfully');
     }
     public function TermCondition()
     {
         $data = TermCondition::first();
-        $sideMenuName = [];
 
-        if (Auth::guard('subadmin')->check()) {
-            $getSubAdminPermissions = new AdminController();
-            $subAdminData = $getSubAdminPermissions->getSubAdminPermissions();
-            $sideMenuName = $subAdminData['sideMenuName'];
-        }
-        
-        return view('admin.termCondition.index', compact('data', 'sideMenuName'));
+          $sideMenuPermissions = collect();
+
+    // ✅ Check if user is not admin (normal subadmin)
+    if (!Auth::guard('admin')->check()) {
+        $user =Auth::guard('subadmin')->user()->load('roles');
+
+
+        // ✅ 1. Get role_id of subadmin
+        $roleId = $user->role_id;
+
+        // ✅ 2. Get all permissions assigned to this role
+        $permissions = UserRolePermission::with(['permission', 'sideMenue'])
+            ->where('role_id', $roleId)
+            ->get();
+
+        // ✅ 3. Group permissions by side menu
+        $sideMenuPermissions = $permissions->groupBy('sideMenue.name')->map(function ($items) {
+            return $items->pluck('permission.name'); // ['view', 'create']
+        });
     }
+
+        
+        
+        
+        return view('admin.termCondition.index', compact('data', 'sideMenuPermissions'));
+    }
+
+    public function TermConditionView()
+    {
+        $data = TermCondition::first();
+        return view('admin.termCondition.termcondition', compact('data'));
+    }
+
     public function TermConditionEdit()
     {
         $data = TermCondition::first();
@@ -77,21 +124,42 @@ class SecurityController extends Controller
         } else {
             TermCondition::create($request->all());
         }
-        return redirect('/admin/term-condition')->with(['status' => true, 'message' => 'Term & Condition Updated Successfully']);
+        return redirect('/admin/term-condition')->with('success', 'Terms & Conditions updated successfully');
     }
 
     public function AboutUs()
     {
         $data = AboutUs::first();
-        $sideMenuName = [];
+          $sideMenuPermissions = collect();
 
-        if (Auth::guard('subadmin')->check()) {
-            $getSubAdminPermissions = new AdminController();
-            $subAdminData = $getSubAdminPermissions->getSubAdminPermissions();
-            $sideMenuName = $subAdminData['sideMenuName'];
-        }
+    // ✅ Check if user is not admin (normal subadmin)
+    if (!Auth::guard('admin')->check()) {
+        $user =Auth::guard('subadmin')->user()->load('roles');
 
-        return view('admin.aboutUs.index', compact('data', 'sideMenuName'));
+
+        // ✅ 1. Get role_id of subadmin
+        $roleId = $user->role_id;
+
+        // ✅ 2. Get all permissions assigned to this role
+        $permissions = UserRolePermission::with(['permission', 'sideMenue'])
+            ->where('role_id', $roleId)
+            ->get();
+
+        // ✅ 3. Group permissions by side menu
+        $sideMenuPermissions = $permissions->groupBy('sideMenue.name')->map(function ($items) {
+            return $items->pluck('permission.name'); // ['view', 'create']
+        });
+    }
+
+
+        return view('admin.aboutUs.index', compact('data', 'sideMenuPermissions'));
+    }
+
+
+    public function AboutUsView()
+    {
+        $data = AboutUs::first();
+        return view('admin.aboutUs.aboutus', compact('data'));
     }
     public function AboutUsEdit()
     {
@@ -106,12 +174,13 @@ class SecurityController extends Controller
         
 
         $data = AboutUs::first();
+        // return $data;
         // AboutUs::find($data->id)->update($request->all());
         if ($data) {
             $data->update($request->all());
         } else {
             AboutUs::create($request->all());
         }
-        return redirect('/admin/about-us')->with(['status' => true, 'message' => 'About Us Updated Successfully']);
+        return redirect('/admin/about-us')->with('success', 'About-Us updated successfully');
     }
 }

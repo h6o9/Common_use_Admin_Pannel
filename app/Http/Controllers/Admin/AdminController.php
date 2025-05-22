@@ -22,42 +22,35 @@ class AdminController extends Controller
 
     public function getdashboard()
     {
-        $totalFarmers = Farmer::all()->count();
-        $totalDealers = AuthorizedDealer::all()->count();
-        // $totalInsuranceCrops = EnsuredCrop::all()->count();
-        // dd($totalFarmers);
-        $sideMenuName = [];
-        $sideMenuPermissions = [];
+        // $totalFarmers = Farmer::all()->count();
+        // $totalDealers = AuthorizedDealer::all()->count();
+        // // $totalInsuranceCrops = EnsuredCrop::all()->count();
+        // // dd($totalFarmers);
+        // $sideMenuName = [];
+        // $sideMenuPermissions = [];
 
-        if (Auth::guard('subadmin')->check()) {
-            $subAdminData = $this->getSubAdminPermissions();
-            $sideMenuPermissions = $subAdminData['sideMenuPermissions'];
-            $sideMenuName = $subAdminData['sideMenuName'];
-        }
+        // if (Auth::guard('subadmin')->check()) {
+        //     $subAdminData = $this->getSubAdminPermissions();
+        //     $sideMenuPermissions = $subAdminData['sideMenuPermissions'];
+        //     $sideMenuName = $subAdminData['sideMenuName'];
+        // }
         // dd($sideMenuName);
-        return view('admin.index', compact('sideMenuName', 'totalFarmers', 'totalDealers'));
+        return view('admin.index');
     }
 
-    public function getProfile()
-    {
+   public function getProfile()
+{
+    if (Auth::guard('admin')->check()) {
         $data = Admin::find(Auth::guard('admin')->id());
-
-        if (Auth::guard('subadmin')->check()) {
-            $data = SubAdmin::find(Auth::guard('subadmin')->id());
-        }
-
-        $sideMenuName = [];
-        $sideMenuPermissions = [];
-
-        if (Auth::guard('subadmin')->check()) {
-            $getSubAdminPermissions = new AdminController();
-            $subAdminData = $getSubAdminPermissions->getSubAdminPermissions();
-            $sideMenuName = $subAdminData['sideMenuName'];
-            $sideMenuPermissions = $subAdminData['sideMenuPermissions'];
-        }
-
-        return view('admin.auth.profile', compact('data', 'sideMenuPermissions', 'sideMenuName'));
+    } elseif (Auth::guard('subadmin')->check()) {
+        $data = SubAdmin::find(Auth::guard('subadmin')->id());
+    } else {
+        // Not authenticated — optionally redirect to login
+        return redirect()->route('login')->with('error', 'Unauthorized access.');
     }
+
+    return view('admin.auth.profile', compact('data'));
+}
 
     public function update_profile(Request $request)
     {
@@ -108,7 +101,7 @@ class AdminController extends Controller
 
         // $exists = DB::table('password_resets')->where('email', $request->email)->first();
         if ($exists) {
-            return back()->with('message', 'Reset Password link has been already sent');
+            return back()->with('error', 'Reset Password link has been already sent');
             // dd($subAdminExists);
         } else {
             $token = Str::random(30);
@@ -118,8 +111,8 @@ class AdminController extends Controller
             ]);
 
             $data['url'] = url('change_password', $token);
-            Mail::to($emailToUse)->send(new ResetPasswordMail($data));
-            return back()->with('message', 'Reset Password Link Send Successfully');
+            // Mail::to($emailToUse)->send(new ResetPasswordMail($data));
+            return back()->with('success', 'Reset Password Link Send Successfully');
         }
     }
     public function change_password($id)
@@ -137,12 +130,14 @@ class AdminController extends Controller
 
         $request->validate([
             'password' => 'required|min:8',
-            'confirmed' => 'required',
+            'confirmPassword' => 'required',
 
         ]);
-        if ($request->password != $request->confirmed) {
+        // return $request;
+        if ($request->password != $request->confirmPassword) {
+        // return $request;
+                       return back()->with('error', 'Password and confirm password do not match');
 
-            return back()->with(['error_message' => 'Password not matched']);
         }
         $password = bcrypt($request->password);
         $adminExists = Admin::where('email', $request->email)->first();
@@ -152,7 +147,8 @@ class AdminController extends Controller
         }
 
         if (!$adminExists && !$subAdminExists) {
-            return back()->with(['error_message' => 'Email not registered in any admin or subadmin account']);
+                       return back()->with('error', 'Email address not found');
+
         }
 
         if ($adminExists) {
@@ -163,8 +159,11 @@ class AdminController extends Controller
 
         DB::table('password_resets')->where('email', $request->email)->delete();
 
-        return redirect('admin')->with('message', 'Password Reset Successfully!');
+            return redirect('/admin')->with('success', 'Password updated successfully');
+
     }
+
+
     public function logout()
     {
         $adminExists = Auth::guard('admin')->logout();
@@ -172,7 +171,7 @@ class AdminController extends Controller
         if (!$adminExists) {
             Auth::guard('subadmin')->logout();
         }
-        return redirect('admin')->with('message', 'Log Out Successfully');
+        return redirect('admin')->with('success', 'Log Out Successfully');
     }
 
 

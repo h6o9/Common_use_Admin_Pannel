@@ -1,31 +1,22 @@
 <?php
 
+use App\Models\Role;
+use App\Models\SideMenue;
+use App\Models\Permission;
+use App\Models\UserRolePermission;
+use App\Models\SideMenuHasPermission;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\EventsController;
-use App\Http\Controllers\Admin\UcController;
-use App\Http\Controllers\HighlightController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\FarmerController;
-use App\Http\Controllers\Admin\TehsilController;
-use App\Http\Controllers\Admin\VillageController;
-use App\Http\Controllers\Admin\AreaUnitController;
-use App\Http\Controllers\Admin\DistrictController;
+use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\SecurityController;
 use App\Http\Controllers\Admin\SubAdminController;
-use App\Http\Controllers\Admin\DealerItemController;
-use App\Http\Controllers\Admin\EnsuredCropController;
 use App\Http\Controllers\Admin\NotificationController;
-use App\Http\Controllers\Admin\InsuranceTypeController;
-use App\Http\Controllers\Admin\EnsuredCropNameController;
-use App\Http\Controllers\Admin\AuthorizedDealerController;
-use App\Http\Controllers\Admin\InsuranceCompanyController;
-use App\Http\Controllers\Admin\InsuranceSubTypeController;
-use App\Http\Controllers\Admin\LandDataManagementController;
-use App\Http\Controllers\Admin\CompanyInsuranceTypeController;
-use App\Http\Controllers\Admin\InsuranceClaimRequestController;
-use App\Http\Controllers\Admin\CompanyInsuranceSubTypeController;
+use App\Http\Controllers\Admin\RolePermissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,258 +44,130 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::post('update-profile', [AdminController::class, 'update_profile']);
 
     // ############ Privacy-policy #################
-    Route::get('privacy-policy', [SecurityController::class, 'PrivacyPolicy']);
-    Route::get('privacy-policy-edit', [SecurityController::class, 'PrivacyPolicyEdit']);
-    Route::post('privacy-policy-update', [SecurityController::class, 'PrivacyPolicyUpdate']);
+    Route::get('privacy-policy', [SecurityController::class, 'PrivacyPolicy'])->middleware('check.permission:privacypolicy,view');
+    Route::get('privacy-policy-edit', [SecurityController::class, 'PrivacyPolicyEdit'])->middleware('check.permission:privacypolicy,edit');
+    Route::post('privacy-policy-update', [SecurityController::class, 'PrivacyPolicyUpdate']) ->middleware('check.permission:privacypolicy,edit');
+    Route::get('privacy-policy-view', [SecurityController::class, 'PrivacyPolicyView']) ->middleware('check.permission:privacypolicy,view');
+
+    // ############ Role Permissions #################
+
+    // Route::get('roles-permission', [RolePermissionController::class, 'index'])->name('role-permission')->middleware('check.permission:role,view');
+
+
+
+            // ############ Roles #################
+
+        Route::get('/roles', [RoleController::class, 'index'])->name('roles.index')->middleware('check.permission:role,view');
+
+        Route::get('/roles-create', [RoleController::class, 'create'])->name('create.role')->middleware('check.permission:role,create');
+
+        Route::post('/store-role', [RoleController::class, 'store'])->name('store.role')->middleware('check.permission:role,create');
+
+
+        Route::get('/roles-permissions/{id}', [RoleController::class, 'permissions'])->name('role.permissions')->middleware('check.permission:role,create');
+
+
+        //////////////////////////////////////////
+        Route::post('/admin/roles/{id}/permissions/store', [RoleController::class, 'storePermissions'])->name('roles.permissions.store')->middleware('check.permission:role,create');
+
+
+        Route::delete('/delete-role/{id}', [RoleController::class, 'delete'])->name('delete.role')->middleware('check.permission:role,delete');
+
+    
 
     // ############ Term & Condition #################
-    Route::get('term-condition', [SecurityController::class, 'TermCondition']);
-    Route::get('term-condition-edit', [SecurityController::class, 'TermConditionEdit']);
-    Route::post('term-condition-update', [SecurityController::class, 'TermConditionUpdate']);
+    Route::get('term-condition', [SecurityController::class, 'TermCondition']) ->middleware('check.permission:termcondition,view');
+    Route::get('term-condition-edit', [SecurityController::class, 'TermConditionEdit']) ->middleware('check.permission:termcondition,edit');
+    Route::post('term-condition-update', [SecurityController::class, 'TermConditionUpdate']) ->middleware('check.permission:termcondition,edit');
+    Route::get('term-condition-view', [SecurityController::class, 'TermConditionView']) ->middleware('check.permission:termcondition,view');
 
     // ############ About Us #################
-    Route::get('about-us', [SecurityController::class, 'AboutUs']);
-    Route::get('about-us-edit', [SecurityController::class, 'AboutUsEdit']);
-    Route::post('about-us-update', [SecurityController::class, 'AboutUsUpdate']);
+    Route::get('about-us', [SecurityController::class, 'AboutUs']) ->middleware('check.permission:aboutus,view');
+    Route::get('about-us-edit', [SecurityController::class, 'AboutUsEdit']) ->middleware('check.permission:aboutus,edit');
+    Route::post('about-us-update', [SecurityController::class, 'AboutUsUpdate']) ->middleware('check.permission:aboutus,edit');
+    Route::get('about-us-view', [SecurityController::class, 'AboutUsView']) ->middleware('check.permission:aboutus,view');
 
     Route::get('logout', [AdminController::class, 'logout']);
 
+        // ############ Faq #################
+    Route::get('faq-index', [FaqController::class, 'Faq'])->middleware('check.permission:faq,view');
+    Route::get('faq-edit/{id}', [FaqController::class, 'FaqsEdit'])->name('faq.edit') ->middleware('check.permission:faq,edit');
+    Route::post('faq-update/{id}', [FaqController::class, 'FaqsUpdate'])->middleware('check.permission:faq,edit');
+    Route::get('faq-view', [FaqController::class, 'FaqView']) ->middleware('check.permission:faq,view');
+    Route::get('faq-create', [FaqController::class, 'Faqscreateview']) ->middleware('check.permission:faq,create');
+    Route::post('faq-store', [FaqController::class, 'Faqsstore']) ->middleware('check.permission:faq,create');
+    Route::delete('faq-destroy/{id}', [FaqController::class, 'faqdelete'])->name('faq.destroy') ->middleware('check.permission:faq,delete');
+    Route::post('/faqs/reorder', [FaqController::class, 'reorder'])->name('faq.reorder');
+
+    // ############ Users #################
+
+    Route::get('/user', [UserController::class, 'Index'])->name('user.index') ->middleware('check.permission:users,view');
+Route::get('/user-create', [UserController::class, 'createview'])->name('user.createview') ->middleware('check.permission:users,create');
+Route::post('/user-store', [UserController::class, 'create'])->name('user.create') ->middleware('check.permission:users,create');
+Route::get('/user-edit/{id}', [UserController::class, 'edit'])->name('user.edit') ->middleware('check.permission:users,edit');
+Route::post('/user-update/{id}', [UserController::class, 'update'])->name('user.update') ->middleware('check.permission:users,edit');
+Route::delete('/users-destory/{id}', [UserController::class, 'delete'])->name('user.delete') ->middleware('check.permission:users,delete');
+Route::get('/users/trashed', [UserController::class, 'trashed']);
+Route::post('/users/{id}/restore', [UserController::class, 'restore']);
+Route::delete('/users/{id}/force', [UserController::class, 'forceDelete'])->name('user.forceDelete') ->middleware('check.permission:users,delete');
+
+Route::post('/users/toggle-status', [UserController::class, 'toggleStatus'])->name('user.toggle-status');
+
+
     // ############ Sub Admin #################
     Route::controller(SubAdminController::class)->group(function () {
-        Route::get('/subadmin',  'index')->name('subadmin.index');
-        Route::get('/subadmin-create',  'create')->name('subadmin.create');
-        Route::post('/subadmin-store',  'store')->name('subadmin.store');
-        Route::get('/subadmin-edit/{id}',  'edit')->name('subadmin.edit');
-        Route::post('/subadmin-update/{id}',  'update')->name('subadmin.update');
-        Route::delete('/subadmin-destroy/{id}',  'destroy')->name('subadmin.destroy');
+        Route::get('/subadmin',  'index')->name('subadmin.index') ->middleware('check.permission:subadmin,view');
+        Route::get('/subadmin-create',  'create')->name('subadmin.create') ->middleware('check.permission:subadmin,create');
+        Route::post('/subadmin-store',  'store')->name('subadmin.store') ->middleware('check.permission:subadmin,create');
+        Route::get('/subadmin-edit/{id}',  'edit')->name('subadmin.edit') ->middleware('check.permission:subadmin,edit');
+        Route::post('/subadmin-update/{id}',  'update')->name('subadmin.update') ->middleware('check.permission:subadmin,edit');
+        Route::delete('/subadmin-destroy/{id}',  'destroy')->name('subadmin.destroy') ->middleware('check.permission:subadmin,delete');
 
         Route::post('/update-permissions/{id}', 'updatePermissions')->name('update.permissions');
 
-        Route::post('/subadmin-StatusChange', 'StatusChange')->name('subadmin.StatusChange');
+        Route::post('/subadmin-StatusChange', 'StatusChange')->name('subadmin.StatusChange')->middleware('check.permission:subadmin,edit');
+
+        Route::post('/admin/subadmin/toggle-status', [SubAdminController::class, 'toggleStatus'])->name('admin.subadmin.toggleStatus');
+
     });
 
-    // ############ Authorized Dealers #################
-    Route::controller(AuthorizedDealerController::class)->group(function () {
-        Route::get('/dealer',  'index')->name('dealer.index');
-        Route::get('/dealer-create',  'create')->name('dealer.create');
-        Route::post('/dealer-store',  'store')->name('dealer.store');
-        Route::get('/dealer-edit/{id}',  'edit')->name('dealer.edit');
-        Route::post('/dealer-update/{id}',  'update')->name('dealer.update');
-        Route::delete('/dealer-destroy/{id}',  'destroy')->name('dealer.destroy');
-    });
 
-    // ############ Dealer Items #################
-    Route::controller(DealerItemController::class)->group(function () {
-        Route::get('/dealer-items/{id}',  'index')->name('dealer.item.index');
-        Route::get('/dealer-item-create/{id}',  'create')->name('dealer.item.create');
-        Route::post('/dealer-item-store',  'store')->name('dealer.item.store');
-        Route::get('/dealer-item-edit/{dealer_id}/{item_id}',  'edit')->name('dealer.item.edit');
-        Route::post('/dealer-item-update/{id}',  'update')->name('dealer.item.update');
-        Route::delete('/dealer-item-destroy/{id}',  'destroy')->name('dealer.item.destroy');
-    });
+            // ############ Blogs #################
 
-    // ############ Items for Dealers Selection #################
-    Route::controller(ItemController::class)->group(function () {
-        Route::get('/items',  'index')->name('items.index');
-        Route::post('/item-store',  'store')->name('item.store');
-        Route::post('/item-update/{id}',  'update')->name('item.update');
-        Route::delete('/item-destroy/{id}',  'destroy')->name('item.destroy');
-    });
+    Route::get('/blogs-index', [BlogController::class, 'index'])->name('blog.index')->middleware('check.permission:Blogs,view');
 
-    // ############ Farmers #################
-    Route::controller(FarmerController::class)->group(function () {
-        Route::get('/farmers',  'index')->name('farmers.index');
-        Route::get('/farmer-create',  'create')->name('farmer.create');
-        Route::post('/farmer-store',  'store')->name('farmer.store');
-        Route::get('/farmer-edit/{id}',  'edit')->name('farmer.edit');
-        Route::post('/farmer-update/{id}',  'update')->name('farmer.update');
-        Route::delete('/farmer-destroy/{id}',  'destroy')->name('farmer.destroy');
-    });
+    Route::get('/blogs-create', [BlogController::class, 'create'])->name('blog.createview')->middleware('check.permission:Blogs,create');
 
-    // ############ Ensured Crops For Farmer #################
-    Route::controller(EnsuredCropController::class)->group(function () {
-        Route::get('/ensured-crops',  'index')->name('ensured.crops.index');
-        Route::post('/ensured-crops-store',  'store')->name('ensured.crops.store');
-        Route::post('/ensured-crops-update/{id}',  'update')->name('ensured.crops.update');
-        Route::delete('/ensured-crops-destroy/{id}',  'destroy')->name('ensured.crops.destroy');
-    });
+    Route::post('/blogs-store', [BlogController::class, 'store'])->name('blog.store')->middleware('check.permission:Blogs,create');
 
-    // ############ Ensured Crops Name #################
-    Route::controller(EnsuredCropNameController::class)->group(function () {
-        // For Farmer
-        Route::get('/ensured-crop-name',  'index')->name('ensured.crop.name.index');
-        Route::post('/ensured-crops-name-store',  'store')->name('ensured.crop.name.store');
-        Route::post('/ensured-crops-name-update/{id}',  'update')->name('ensured.crop.name.update');
-        Route::delete('/ensured-crops-name-destroy/{id}',  'destroy')->name('ensured.crop.name.destroy');
-    });
+    Route::get('/blogs-edit/{id}', [BlogController::class, 'edit'])->name('blog.edit')->middleware('check.permission:Blogs,edit');
+    Route::post('/blogs-update/{id}', [BlogController::class, 'update'])->name('blog.update')->middleware('check.permission:Blogs,edit');
+    Route::delete('/blogs-destroy/{id}', [BlogController::class, 'delete'])->name('blog.destroy')->middleware('check.permission:Blogs,delete');
 
-    // ############ Land Data Management #################
-    Route::controller(LandDataManagementController::class)->group(function () {
-        Route::get('/land-data-management',  'index')->name('land.index');
+    Route::post('/blogs/toggle-status', [BlogController::class, 'toggleStatus'])->name('blog.toggle-status');
 
-        Route::get('/get-insurance-types/{companyId}','getInsuranceTypes');
-        Route::get('/get-insurance-subtypes/{typeId}','getInsuranceSubTypes');
-    });
 
-    // ############ Area Units #################
-    Route::controller(AreaUnitController::class)->group(function () {
-        Route::get('/units',  'index')->name('units.index');
-        Route::post('/unit-store',  'store')->name('unit.store');
-        Route::put('/unit-update/{id}',  'update')->name('unit.update');
-        Route::delete('/unit-destroy/{id}',  'destroy')->name('unit.destroy');
-    });
 
-    // ############ union council #################
-    Route::controller(UcController::class)->group(function () {
-        Route::get('/union/{id}',  'index')->name('union.index');
-        Route::post('/union-store',  'store')->name('union.store');
-        Route::put('/union-update/{id}',  'update')->name('union.update');
-        Route::delete('/union-destroy/{id}',  'destroy')->name('union.destroy');
-    });
-
-    // ############ village council #################
-    Route::controller(VillageController::class)->group(function () {
-        Route::get('/village/{id}',  'index')->name('village.index');
-        Route::post('/village-store',  'store')->name('village.store');
-        Route::put('/village-update/{id}',  'update')->name('village.update');
-        Route::delete('/village-destroy/{id}',  'destroy')->name('village.destroy');
-    });
-
-    // ############ Tehsil #################
-    Route::controller(TehsilController::class)->group(function () {
-        Route::get('/tehsil/{id}',  'index')->name('tehsil.index');
-        Route::post('/tehsil-store',  'store')->name('tehsil.store');
-        Route::put('/tehsil-update/{id}',  'update')->name('tehsil.update');
-        Route::delete('/tehsil-destroy/{id}',  'destroy')->name('tehsil.destroy');
-    });
-
-    // ############ District Management #################
-    Route::controller(DistrictController::class)->group(function () {
-        Route::post('/district-store',  'store')->name('district.store');
-        Route::post('/district-update/{id}',  'update')->name('district.update');
-        Route::delete('/district-destroy/{id}',  'destroy')->name('district.destroy');
-        Route::get('/get-tehsils/{district_id}', 'getTehsils')->name('get.tehsils');
-    });
-
-    // ############ Insurance Company #################
-    Route::controller(InsuranceCompanyController::class)->group(function () {
-        Route::get('/insurance-company',  'index')->name('insurance.company.index');
-        Route::post('/insurance-company-store',  'store')->name('insurance.company.store');
-        Route::post('/insurance-company-update/{id}',  'update')->name('insurance.company.update');
-        Route::delete('/insurance-company-destroy/{id}',  'destroy')->name('insurance.company.destroy');
-    });
-
-    // ############ Company Insurance Types #################
-    Route::controller(CompanyInsuranceTypeController::class)->group(function () {
-        Route::get('/company-insurance-types/{id}',  'index')->name('company.insurance.types.index');
-        Route::post('/company-insurance-types-store',  'store')->name('company.insurance.types.store');
-        Route::post('/company-insurance-types-update/{id}',  'update')->name('company.insurance.types.update');
-        Route::delete('/company-insurance-types-destroy/{id}',  'destroy')->name('company.insurance.types.destroy');
-    });
-    
-    // ############ Company Insurance Sub-Types #################
-    Route::controller(CompanyInsuranceSubTypeController::class)->group(function () {
-        Route::get('/company-insurance-sub-types/{id}',  'index')->name('company.insurance.sub.types.index');
-        Route::post('/company-insurance-sub-types-store',  'store')->name('company.insurance.sub.types.store');
-        Route::post('/company-insurance-sub-types-update/{id}',  'update')->name('company.insurance.sub.types.update');
-        Route::delete('/company-insurance-sub-types-destroy/{id}',  'destroy')->name('company.insurance.sub.types.destroy');
-    });
-
-    // ############ Insurance Types #################
-    Route::controller(InsuranceTypeController::class)->group(function () {
-        Route::get('/insurance-type',  'index')->name('insurance.type.index');
-        Route::post('/insurance-type-store',  'store')->name('insurance.type.store');
-        Route::post('/insurance-type-update/{id}',  'update')->name('insurance.type.update');
-        Route::delete('/insurance-type-destroy/{id}',  'destroy')->name('insurance.type.destroy');
-    });
-
-    // ############ Insurance Sub-Types #################
-    Route::controller(InsuranceSubTypeController::class)->group(function () {
-        Route::get('/insurance-sub-type/{id}',  'index')->name('insurance.sub.type.index');
-        Route::post('/insurance-sub-type-store',  'store')->name('insurance.sub.type.store');
-        Route::post('/insurance-sub-type-update/{id}',  'update')->name('insurance.sub.type.update');
-        Route::delete('/insurance-sub-type-destroy/{id}',  'destroy')->name('insurance.sub.type.destroy');
-        Route::get('/insurance-sub-type-production-price/{id}',  'production_price')->name('insurance.sub.type.productionPrice');
-        Route::post('/insurance-sub-type-production-price-store',  'production_price_store')->name('insurance.sub.type.productionPrice.store');
-        Route::post('/insurance-sub-type-production-price-update/{id}',  'production_price_update')->name('insurance.sub.type.productionPrice.update');
-        Route::delete('/insurance-sub-type-production-price-destroy/{id}',  'production_price_destroy')->name('insurance.sub.type.productionPrice.destroy');
-    });
-
-    // ############ Insurance Claim Requests #################
-    Route::controller(InsuranceClaimRequestController::class)->group(function () {
-        Route::get('/insurance-claim',  'index')->name('insurance.claim.index');
-        Route::get('/insurance-claim-create',  'create')->name('insurance.claim.create');
-        Route::post('/insurance-claim-store',  'store')->name('insurance.claim.store');
-        Route::get('/insurance-claim-edit/{id}',  'edit')->name('insurance.claim.edit');
-        Route::post('/insurance-claim-update/{id}',  'update')->name('insurance.claim.update');
-        Route::delete('/insurance-claim-destroy/{id}',  'destroy')->name('insurance.claim.destroy');
-    });
 
     // ############ Notifications #################
     Route::controller(NotificationController::class)->group(function () {
-        Route::get('/notification',  'index')->name('notification.index');
-        Route::post('/notification-store',  'store')->name('notification.store');
-        Route::delete('/notification-destroy/{id}',  'destroy')->name('notification.destroy');
-
-        //hightlights 
-
-    Route::get('/hightlight-view', [HighlightController::class, 'highlightview'])->name('highlight.view');
-
-    Route::get('/hightlight-createview', [HighlightController::class, 'highlightcrview'])->name('highlight.createview');
-
-    Route::post('/hightlight-create', [HighlightController::class, 'store'])->name('highlight.create');
-
-    
-    Route::get('/hightlight-mainview', [HighlightController::class, 'index'])->name('highlight.mainview');
-
-    Route::delete('/highlight-delete/{id}', [HighlightController::class, 'Delete'])->name('highlight.delete');
-
-  
-
-    
-    Route::post('/highlight-update/{id}', [HighlightController::class, 'Update'])->name('video.update');
-    
-    Route::get('/highlight-updatedview/{id}', [HighlightController::class, 'Updateview'])->name('highlight.updateview');
-
-
-    Route::get('/highlights', [HighlightController::class, 'searchindex'])->name('highlight.index');
-
-    
- //events routes 
-
-
- Route::get('/event-createview', [EventsController::class, 'createEvent'])->name('event.createview');
-
- Route::post('/event-create', [EventsController::class, 'store'])->name('event.create');
-
- //add more
-
- Route::get('/add-imagesview/{id}', [EventsController::class, 'addmoreivew'])->name('event.addMoreview');
- Route::post('/add-images/{id}', [EventsController::class, 'addMoreImages'])->name('event.addMoreImages');
-
- //sidler image routes
-
-Route::get('/admin/slider-imagesview/{id}', [EventsController::class, 'SliderimgView'])->name('event.sliderimagesview');
-
- Route::post('/slider-imagesedit/{id}', [EventsController::class, 'SlidereditImage'])->name('event.slidereditimage');
-
- // Route::post('/slider-imagesview/{id}', [EventsController::class, 'SlidereditImage'])->name('event.sliderimages');
-
- Route::get('/slider-imagesview/{id}', [EventsController::class, 'SliderimgView'])->name('event.addimage');
-
-
- Route::get('/event-view', [EventsController::class, 'eventsView'])->name('event.view');
-
- Route::get('/event-updateview/{id}', [EventsController::class, 'UpdateView'])->name('event.updateview');
-
- Route::post('/event-update/{id}', [EventsController::class, 'Update'])->name('event.update');
-
- Route::delete('/event-delete/{id}', [EventsController::class, 'Delete'])->name('event.delete');
-
- Route::get('/events', [EventsController::class, 'index'])->name('event.index');
-
+        Route::get('/notification',  'index')->name('notification.index') ->middleware('check.permission:notification,view');
+        Route::post('/notification-store',  'store')->name('notification.store') ->middleware('check.permission:notification,create');
+        Route::delete('/notification-destroy/{id}',  'destroy')->name('notification.destroy') ->middleware('check.permission:notification,delete');
     
     });
+
+
+
+
+
+
+    // ############ Contact Us #################
+Route::get('/admin/contact-us', [ContactController::class, 'index'])->name('contact.index') ->middleware('check.permission:contact,view');
+Route::get('/admin/contact-us-create', [ContactController::class, 'create'])->name('contact.create') ->middleware('check.permission:contact,create');
+Route::post('/admin/contact-us-store', [ContactController::class, 'store'])->name('contact.store') ->middleware('check.permission:contact,create');
+Route::get('/admin/contact-us-edit/{id}', [ContactController::class, 'updateview'])->name('contact.updateview') ->middleware('check.permission:contact,edit');
+Route::post('/admin/contact-us-update/{id}', [ContactController::class, 'update'])->name('contact.update') ;
 
 
 
