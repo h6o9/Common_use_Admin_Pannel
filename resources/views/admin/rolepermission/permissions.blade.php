@@ -72,12 +72,13 @@
                         @endphp
 
                         <div class="card mb-3">
-                            <div class="card-header d-flex align-items-center">
+                            <div class="border-bottom-0 card-header d-flex align-items-center"
+                                style="padding-bottom: 8px !important;padding-left: 40px!important">
                                 <input type="checkbox" class="form-check-input menu-toggle me-2"
                                     data-target="#perm-{{ $menu->id }}" id="menu-{{ $menu->id }}"
                                     @if ($hasPermission) checked @endif>
                                 <label class="form-check-label main-permission" for="menu-{{ $menu->id }}">
-                                    <strong>{{ $menu->id }} - {{ ucfirst($menu->name) }}</strong>
+                                    <strong>{{ $loop->iteration }} - {{ ucfirst($menu->name) }}</strong>
                                 </label>
                             </div>
 
