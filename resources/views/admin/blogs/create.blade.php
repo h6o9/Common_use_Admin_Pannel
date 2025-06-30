@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('title', 'Create Blogs')
+@section('title', 'Create Blog')
 @section('content')
 
     <div class="main-content">
@@ -20,7 +20,7 @@
                                     <!-- Title -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="title">Title</label>
+                                            <label for="title">Title <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control" id="title" name="title"
                                                 value="{{ old('title') }}" placeholder="Enter title" required autofocus>
                                             @error('title')
@@ -32,7 +32,7 @@
                                     <!-- Slug -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="slug">Slug</label>
+                                            <label for="slug">Slug <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control" id="slug" name="slug"
                                                 value="{{ old('slug') }}" placeholder="slug" required>
                                             @error('slug')
@@ -45,7 +45,7 @@
                                     <!-- Image -->
                                     <div class="col-sm-12 pl-sm-0 pr-sm-3 w-100">
                                         <div class="form-group">
-                                            <label for="Image">Image</label>
+                                            <label for="Image">Image <span style="color: red;">*</span></label>
                                             <input type="file" class="form-control @error('image') is-invalid @enderror"
                                                 id="conent" name="image" placeholder="Enter Image" required autofocus>
 
@@ -62,7 +62,7 @@
                                     <!-- Description -->
                                     <div class="col-sm-12 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="email">Description</label>
+                                            <label for="email">Description <span style="color: red;">*</span></label>
                                             <textarea type="text" class="form-control" id="content" name="content" placeholder="Enter Description" required
                                                 autofocus>
                                             </textarea>

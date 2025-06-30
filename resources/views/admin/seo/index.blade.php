@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('title', 'Sub Admins')
+@section('title', 'SEO')
 <style>
     /* For the active tab */
     .nav-pills .nav-link.active {
@@ -42,25 +42,25 @@
                                 @csrf
                                 @method('PUT')
                                 <div class="mb-3">
-                                    <label class="form-label">Title</label>
+                                    <label class="form-label">Title <span style="color: red;">*</span></label>
                                     <input type="text" name="title" value="{{ old('title', $page->title) }}"
                                         class="form-control">
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">OG Title</label>
+                                    <label class="form-label">OG Title <span style="color: red;">*</span></label>
                                     <input type="text" name="og_title" value="{{ old('og_title', $page->og_title) }}"
                                         class="form-control">
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Description</label>
+                                    <label class="form-label">Description <span style="color: red;">*</span></label>
                                     <textarea name="description" class="form-control" rows="3">{{ old('description', $page->description) }}</textarea>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">OG Description</label>
+                                    <label class="form-label">OG Description <span style="color: red;">*</span></label>
                                     <textarea name="og_description" class="form-control" rows="3">{{ old('og_description', $page->og_description) }}</textarea>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Keywords</label>
+                                    <label class="form-label">Keywords <span style="color: red;">*</span></label>
                                     <textarea name="keywords" class="form-control" rows="3">{{ old('keywords', $page->keywords) }}</textarea>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Save Changes</button>

@@ -16,7 +16,6 @@
                             <div class="card-body table-striped table-bordered table-responsive">
                                 <div class="clearfix">
                                     <div class="create-btn">
-
                                         @if (Auth::guard('admin')->check() ||
                                                 ($sideMenuPermissions->has('Faqs') && $sideMenuPermissions['Faqs']->contains('create')))
                                             <a class="btn btn-primary mb-3 text-white"
@@ -28,8 +27,9 @@
                                 <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
-                                            <th></th> <!-- Sort handle column -->
+                                            <th></th>
                                             <th>Sr.</th>
+                                            <th>Question</th>
                                             <th>Description</th>
                                             <th scope="col">Actions</th>
                                         </tr>
@@ -41,11 +41,11 @@
                                                     <i class="fas fa-th"></i>
                                                 </td>
                                                 <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $farmer->questions }}</td>
                                                 <td>{{ \Illuminate\Support\Str::limit(strip_tags($farmer->description), 150, '...') }}
                                                 </td>
                                                 <td>
-                                                    <div class="d-flex gap-4">
-
+                                                    <div class="d-flex">
                                                         @if (Auth::guard('admin')->check() ||
                                                                 ($sideMenuPermissions->has('Faqs') && $sideMenuPermissions['Faqs']->contains('edit')))
                                                             <a href="{{ route('faq.edit', $farmer->id) }}"
@@ -53,7 +53,6 @@
                                                                 <span><i class="fa fa-edit"></i></span>
                                                             </a>
                                                         @endif
-
 
                                                         @if (Auth::guard('admin')->check() ||
                                                                 ($sideMenuPermissions->has('Faqs') && $sideMenuPermissions['Faqs']->contains('delete')))
@@ -76,6 +75,7 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+
                             </div>
                         </div>
                     </div>
@@ -95,28 +95,23 @@
                 paging: false,
                 info: false
             });
-        });
-    </script>
 
-    <!-- SweetAlert -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+            // SweetAlert Delete
+            $('.show_confirm').on('click', function(e) {
+                e.preventDefault();
+                var formId = $(this).data('form');
+                var form = $('#' + formId);
 
-    <script type="text/javascript">
-        $('.show_confirm').click(function(event) {
-            var formId = $(this).data("form");
-            var form = document.getElementById(formId);
-            event.preventDefault();
-            swal({
+                swal({
                     title: "Are you sure you want to delete this record?",
                     text: "If you delete this FAQ's record, it will be gone forever.",
                     icon: "warning",
                     buttons: true,
                     dangerMode: true,
-                })
-                .then((willDelete) => {
+                }).then(function(willDelete) {
                     if (willDelete) {
                         $.ajax({
-                            url: form.action,
+                            url: form.attr('action'),
                             type: 'POST',
                             data: {
                                 _method: 'DELETE',
@@ -133,56 +128,49 @@
                                     location.reload();
                                 });
                             },
-                            error: function(xhr) {
+                            error: function() {
                                 swal("Error!", "Failed to delete record.", "error");
                             }
                         });
                     }
                 });
-        });
-    </script>
+            });
 
-    <!-- SortableJS for Drag-and-Drop -->
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <script>
-        window.addEventListener('load', () => {
+            // Toastr for reorder success
             const message = localStorage.getItem('toastMessage');
             if (message) {
                 toastr.success(message);
                 localStorage.removeItem('toastMessage');
             }
-        });
 
-
-        // Initialize SortableJS on the FAQ table
-        new Sortable(document.getElementById('sortable-faqs'), {
-            animation: 150,
-            handle: '.sort-handler',
-            onEnd: function() {
-                let order = [];
-                document.querySelectorAll('#sortable-faqs tr').forEach((row, index) => {
-                    order.push({
-                        id: row.getAttribute('data-id'),
-                        position: index + 1
+            // jQuery-based sortable using jQuery UI
+            $('#sortable-faqs').sortable({
+                handle: '.sort-handler',
+                update: function(event, ui) {
+                    var order = [];
+                    $('#sortable-faqs tr').each(function(index) {
+                        order.push({
+                            id: $(this).data('id'),
+                            position: index + 1
+                        });
                     });
-                });
 
-                fetch("{{ route('faq.reorder') }}", {
+                    $.ajax({
+                        url: "{{ route('faq.reorder') }}",
                         method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            order: order
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        localStorage.setItem('toastMessage', 'Alignment has been updated successfully');
-                        window.location.reload();
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            order: order,
+                            _token: '{{ csrf_token() }}'
+                        }),
+                        success: function() {
+                            localStorage.setItem('toastMessage',
+                                'Alignment has been updated successfully');
+                            location.reload();
+                        }
                     });
-            }
+                }
+            });
         });
     </script>
 

@@ -153,4 +153,46 @@ public function getUsersByType(Request $request)
     return response()->json($users);
 }
 
+
+public function update() {
+    return "ok";
+}
+
+
+
+
+
+
+public function getRecipients(Request $request)
+{
+    $request->validate([
+        'user_types' => 'required|array',
+        'user_types.*' => 'in:users,subadmins',
+    ]);
+
+    $recipients = [];
+    
+    if (in_array('users', $request->user_types)) {
+        $users = User::select('id', 'name')->get();
+        foreach ($users as $user) {
+            $recipients[$user->id] = $user->name . ' (User)';
+        }
+    }
+    
+    if (in_array('subadmins', $request->user_types)) {
+        $subadmins = SubAdmin::select('id', 'name')->get();
+        foreach ($subadmins as $subadmin) {
+            $recipients[$subadmin->id] = $subadmin->name . ' (Subadmin)';
+        }
+    }
+    
+    // Sort recipients alphabetically by name
+    asort($recipients);
+    
+    return response()->json([
+        'success' => true,
+        'recipients' => $recipients
+    ]);
+}
+
 }

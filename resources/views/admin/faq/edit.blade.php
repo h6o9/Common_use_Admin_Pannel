@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('title', 'FAQS')
+@section('title', 'Edit FAQ')
 @section('content')
     <!-- Main Content -->
     <div class="main-content">
@@ -14,16 +14,16 @@
                         <div class="col-12 col-md-12 col-lg-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4>FAQ</h4>
+                                    <h4>Edit FAQ</h4>
                                 </div>
 
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label>Question</label>
-                                        <input name="question" class="form-control @error('question') is-invalid @enderror"
+                                        <label>Question <span style="color: red;">*</span></label>
+                                        <input name="questions" class="form-control @error('question') is-invalid @enderror"
                                             value="{{ $data->questions }}">
 
-                                        @error('question')
+                                        @error('questions')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
 
@@ -34,12 +34,14 @@
 
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label>Description</label>
-                                        <textarea name="description" class="form-control">
-                                            @if ($data)
+                                        <label>Description <span style="color: red;">*</span></label>
+                                        <textarea name="description" class="form-control @error('description') is-invalid @enderror">
+                                              @if ($data)
 {{ $data->description }}
 @endif
-                                            
+                                         @error('description')
+<div class="invalid-feedback">{{ $message }}</div>
+@enderror               
                                         </textarea>
                                     </div>
                                 </div>
@@ -59,5 +61,17 @@
     <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
     <script>
         CKEDITOR.replace('description');
+
+
+        //error handling 
+        $(document).ready(function() {
+            $('input, select, textarea').on('focus', function() {
+                const $feedback = $(this).parent().find('.invalid-feedback');
+                if ($feedback.length) {
+                    $feedback.hide();
+                    $(this).removeClass('is-invalid');
+                }
+            });
+        });
     </script>
 @endsection

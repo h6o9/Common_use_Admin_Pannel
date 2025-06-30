@@ -156,11 +156,16 @@ Route::post('/blogs/reorder', [BlogController::class, 'reorder'])->name('blog.re
 
 
     // ############ Notifications #################
+    Route::post('/notification-update', [NotificationController::class, 'update'])->name('notification.update');
+
+    Route::post('notifications/get-recipients', [NotificationController::class, 'getRecipients'])->name('notification.getRecipients');
+
     Route::controller(NotificationController::class)->group(function () {
         Route::get('/notification',  'index')->name('notification.index') ->middleware('check.permission:Notifications,view');
         Route::post('/notification-store',  'store')->name('notification.store') ->middleware('check.permission:Notifications,create');
         Route::delete('/notification-destroy/{id}',  'destroy')->name('notification.destroy') ->middleware('check.permission:Notifications,delete');
         Route::get('/get-users-by-type', 'getUsersByType');
+        
 
     
     });

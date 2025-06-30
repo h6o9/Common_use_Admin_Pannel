@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('title', 'Edit Blogs')
+@section('title', 'Edit Blog')
 @section('content')
 
     <div class="main-content">
@@ -21,7 +21,7 @@
                                     {{-- Title --}}
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label for="title">Title</label>
+                                            <label for="title">Title <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control" id="title" name="title"
                                                 value="{{ $data->title }}" placeholder="Enter title" required autofocus>
                                         </div>
@@ -30,7 +30,7 @@
                                     {{-- Slug --}}
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label for="slug">Slug</label>
+                                            <label for="slug">Slug <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control" id="slug" name="slug"
                                                 value="{{ $data->slug }}" placeholder="Slug" required>
                                         </div>
@@ -39,7 +39,7 @@
                                     {{-- Image --}}
                                     <div class="col-sm-12">
                                         <div class="form-group">
-                                            <label for="image">Image</label>
+                                            <label for="image">Image <span style="color: red;">*</span></label>
                                             <input type="file" class="form-control @error('image') is-invalid @enderror"
                                                 id="image" name="image">
 
@@ -60,7 +60,7 @@
                                     {{-- Description --}}
                                     <div class="col-sm-12">
                                         <div class="form-group">
-                                            <label for="content">Description</label>
+                                            <label for="content">Description <span style="color: red;">*</span></label>
                                             <textarea class="form-control" id="content" name="content" rows="5" required>{{ $data->content }}</textarea>
                                         </div>
                                     </div>

@@ -49,7 +49,6 @@ class RoleController extends Controller
 
   public function store(Request $request)
 {
-    try {
         $request->validate([
             'name' => 'required|string|max:255|unique:roles',
         ]);
@@ -59,12 +58,7 @@ class RoleController extends Controller
         ]);
 
         return redirect('admin/roles')->with('message', 'Role created successfully');
-        
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return redirect()->back()->with('error', $e->validator->errors()->first());
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Something went wrong.');
-    }
+   
 }
 
 

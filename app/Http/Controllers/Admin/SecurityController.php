@@ -10,6 +10,8 @@ use App\Models\UserRolePermission;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\AdminController;
+use Illuminate\Support\Facades\Validator;
+
 
 class SecurityController extends Controller
 {
@@ -56,9 +58,19 @@ class SecurityController extends Controller
     }
     public function PrivacyPolicyUpdate(Request $request)
     {
-        $request->validate([
-            'description' => 'required'
-        ]);
+  $validator = Validator::make($request->all(), [
+        'description' => 'required',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'errors' => $validator->errors()
+        ], 422);
+    }
+
+
+
 
         $data = PrivacyPolicy::first();
         // PrivacyPolicy::find($data->id)->update($request->all());

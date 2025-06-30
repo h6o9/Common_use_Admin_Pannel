@@ -72,7 +72,7 @@
                                                 </td>
 
                                                 <td>
-                                                    <div class="d-flex gap-4">
+                                                    <div class="d-flex">
                                                         @if (Auth::guard('admin')->check() ||
                                                                 ($sideMenuPermissions->has('Blogs') && $sideMenuPermissions['Blogs']->contains('edit')))
                                                             <a href="{{ route('blog.edit', $blog->id) }}"
@@ -90,9 +90,11 @@
                                                                 @method('DELETE')
                                                             </form>
 
-                                                            <button class="show_confirm btn d-flex gap-4"
-                                                                data-form="delete-form-{{ $blog->id }}" type="button"
-                                                                style="background: #ff5608;">
+                                                            <!-- Delete Button -->
+                                                            <button class="show_confirm btn d-flex "
+                                                                style="background-color: #ff5608
+;"
+                                                                data-form="delete-form-{{ $blog->id }}" type="button">
                                                                 <span><i class="fa fa-trash"></i></span>
                                                             </button>
                                                         @endif
@@ -170,20 +172,44 @@
 
     <!-- Delete Confirmation Script -->
     <script type="text/javascript">
-        $('.show_confirm').click(function(event) {
-            let formId = $(this).data("form");
-            let form = document.getElementById(formId);
+        $(document).on('click', '.show_confirm', function(event) {
+            var formId = $(this).data("form");
+            var form = document.getElementById(formId);
             event.preventDefault();
+
             swal({
                     title: "Are you sure you want to delete this record?",
-                    text: "If you delete this blog, it will be gone forever.",
+                    text: "If you delete this Sub Admin record, it will be gone forever.",
                     icon: "warning",
                     buttons: true,
                     dangerMode: true,
                 })
                 .then((willDelete) => {
                     if (willDelete) {
-                        form.submit();
+                        // Send AJAX request to delete
+                        $.ajax({
+                            url: form.action,
+                            type: 'POST',
+                            data: {
+                                _method: 'DELETE',
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                swal({
+                                    title: "Success!",
+                                    text: "Record deleted successfully",
+                                    icon: "success",
+                                    button: false,
+                                    timer: 3000
+
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                swal("Error!", "Failed to delete record.", "error");
+                            }
+                        });
                     }
                 });
         });

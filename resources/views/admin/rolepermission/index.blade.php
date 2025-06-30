@@ -26,7 +26,7 @@
                                             <th>Name</th>
                                             {{-- <th>Status</th> --}}
                                             <th>Permissions</th>
-                                            <th>Actions</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -42,8 +42,9 @@
                                                 <td>
                                                     @if (Auth::guard('admin')->check() ||
                                                             ($sideMenuPermissions->has('Roles') && $sideMenuPermissions['Roles']->contains('edit')))
-                                                        <a class="btn btn-success"
-                                                            href="{{ route('role.permissions', $role->id) }}">Permissions</a>
+                                                        <a class="btn" style="background-color: #ff5608;"
+                                                            href="{{ route('role.permissions', $role->id) }}"><span
+                                                                class="fa fa-eye"></span></a>
                                                     @endif
                                                 </td>
 

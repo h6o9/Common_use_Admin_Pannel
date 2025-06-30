@@ -24,8 +24,8 @@
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
-                                            <th>Details</th>
-                                            <th scope="col">Actions</th>
+                                            <th>Detail</th>
+                                            <th scope="col">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -66,13 +66,14 @@
 
 @section('js')
 
-    <script>
+    <script type="text/javascript">
         $(document).ready(function() {
             $('#table_id_events').DataTable()
         })
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-    <script type="text/javascript">
+
+        // deleting
+
+
         $('.show_confirm').click(function(event) {
             var form = $(this).closest("form");
             var name = $(this).data("name");
