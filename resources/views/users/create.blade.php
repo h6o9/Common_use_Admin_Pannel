@@ -18,9 +18,9 @@
                                     <!-- Name -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="name">Name</label>
+                                            <label for="name">Name <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                                id="name" name="name" value="{{ old('name') }}"
+                                                required id="name" name="name" value="{{ old('name') }}"
                                                 placeholder="Enter name" required autofocus>
                                             @error('name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -31,9 +31,9 @@
                                     <!-- Email -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="email">Email</label>
+                                            <label for="email">Email <span style="color: red;">*</span></label>
                                             <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                                id="email" name="email" value="{{ old('email') }}"
+                                                required id="email" name="email" value="{{ old('email') }}"
                                                 placeholder="example@gmail.com" required autofocus>
                                             @error('email')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -44,9 +44,9 @@
                                     <!-- Phone -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="phone">Phone</label>
+                                            <label for="phone">Phone <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control @error('phone') is-invalid @enderror"
-                                                id="phone" name="phone" value="{{ old('phone') }}"
+                                                required id="phone" name="phone" value="{{ old('phone') }}"
                                                 placeholder="Enter phone" required autofocus>
                                             @error('phone')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -54,21 +54,19 @@
                                         </div>
                                     </div>
 
-                                    <!-- Password -->
+                                    <!-- Password Field -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group position-relative">
-                                            <label for="password">Password</label>
+                                            <label for="password">Password <span style="color: red;">*</span></label>
                                             <input type="password"
                                                 class="form-control @error('password') is-invalid @enderror" id="password"
-                                                name="password" placeholder="Password" required>
-                                            <span class="fa fa-eye position-absolute"
-                                                style="top: 42px; right: 15px; cursor: pointer;"
-                                                onclick="togglePassword()"></span>
-                                            @error('password')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                                required name="password" placeholder="Password">
+
+                                            <span class="fa fa-eye position-absolute toggle-password"
+                                                style="top: 42px; right: 15px; cursor: pointer;"></span>
                                         </div>
                                     </div>
+
 
                                 </div>
 
@@ -98,31 +96,29 @@
 
     <script>
         // Password toggle
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const icon = event.target;
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        }
+        $(document).ready(function() {
+            $('.toggle-password').on('click', function() {
+                const $passwordInput = $('#password');
+                const $icon = $(this);
+
+                if ($passwordInput.attr('type') === 'password') {
+                    $passwordInput.attr('type', 'text');
+                    $icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    $passwordInput.attr('type', 'password');
+                    $icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+        });
 
         // Auto hide validation error when field is focused
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputs = document.querySelectorAll('input, select');
-            inputs.forEach(input => {
-                input.addEventListener('focus', function() {
-                    const errorDiv = this.parentElement.querySelector('.invalid-feedback');
-                    if (errorDiv) {
-                        errorDiv.style.display = 'none';
-                        this.classList.remove('is-invalid');
-                    }
-                });
+        $(document).ready(function() {
+            $('input, select, textarea').on('focus', function() {
+                const $feedback = $(this).parent().find('.invalid-feedback');
+                if ($feedback.length) {
+                    $feedback.hide();
+                    $(this).removeClass('is-invalid');
+                }
             });
         });
     </script>

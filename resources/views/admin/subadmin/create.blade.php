@@ -10,13 +10,13 @@
                     <div class="row">
                         <div class="col-12 col-md-12 col-lg-12">
                             <div class="card">
-                                <h4 class="text-center my-4">Add SubAdmin</h4>
+                                <h4 class="text-center my-4">Create Sub Admin</h4>
                                 <div class="row mx-0 px-4">
 
                                     <!-- Name Field -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="name">Name</label>
+                                            <label for="name">Name <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control @error('name') is-invalid @enderror"
                                                 id="name" name="name" value="{{ old('name') }}" required
                                                 placeholder="Enter name">
@@ -29,7 +29,7 @@
                                     <!-- Email Field -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="email">Email</label>
+                                            <label for="email">Email <span style="color: red;">*</span></label>
                                             <input type="email" class="form-control @error('email') is-invalid @enderror"
                                                 id="email" name="email" value="{{ old('email') }}" required
                                                 placeholder="Enter email">
@@ -39,55 +39,13 @@
                                         </div>
                                     </div>
 
-                                    <!-- Phone Field -->
-                                    <div class="col-sm-6 pl-sm-0 pr-sm-3">
-                                        <div class="form-group">
-                                            <label for="phone">Phone</label>
-                                            <input type="tel" class="form-control @error('phone') is-invalid @enderror"
-                                                id="phone" name="phone" value="{{ old('phone') }}" required
-                                                placeholder="Enter phone number">
-                                            @error('phone')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <!-- Password Field -->
-                                    <div class="col-sm-6 pl-sm-0 pr-sm-3">
-                                        <div class="form-group position-relative">
-                                            <label for="password">Password</label>
-                                            <input type="password"
-                                                class="form-control @error('password') is-invalid @enderror" id="password"
-                                                name="password" required placeholder="Enter password">
-                                            <span class="fa fa-eye position-absolute"
-                                                style="top: 42px; right: 15px; cursor: pointer;"
-                                                onclick="togglePassword()"></span>
-                                            @error('password')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <!-- Image Upload -->
-                                    <div class="col-sm-6 pl-sm-0 pr-sm-3">
-                                        <div class="form-group">
-                                            <label for="image">Image</label>
-                                            <input type="file" class="form-control @error('image') is-invalid @enderror"
-                                                id="image" name="image" required>
-                                            <small class="text-danger">Note: Maximum image size allowed is 2MB</small>
-                                            @error('image')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
                                     <!-- Role Field -->
-                                    <div class="col-sm-6 pl-sm-0 pr-sm-3" style="margin-left: 28px;">
+                                    <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="role">Select Role</label>
+                                            <label for="role">Select Role <span style="color: red;">*</span></label>
                                             <select class="form-control @error('role') is-invalid @enderror" id="role"
                                                 name="role" required>
-                                                <option value="">-- Select Role --</option>
+                                                <option value="" disabled>-- Select Role --</option>
                                                 @foreach ($roles as $role)
                                                     <option value="{{ $role->id }}"
                                                         {{ old('role') == $role->id ? 'selected' : '' }}>
@@ -100,6 +58,34 @@
                                             @enderror
                                         </div>
                                     </div>
+
+                                    <!-- Image Upload -->
+                                    <div class="col-sm-6 pl-sm-0 pr-sm-3">
+                                        <div class="form-group">
+                                            <label for="image">Image (Optional)</label>
+                                            <input type="file" class="form-control @error('image') is-invalid @enderror"
+                                                id="image" name="image" required>
+                                            <small class="text-danger">Note: Maximum image size allowed is 2MB</small>
+                                            @error('image')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+
+                                    <!-- Password Field -->
+                                    <div class="col-sm-6 pl-sm-0 pr-sm-3">
+                                        <div class="form-group position-relative">
+                                            <label for="password">Password <span style="color: red;">*</span></label>
+                                            <input type="password"
+                                                class="form-control @error('password') is-invalid @enderror" id="password"
+                                                name="password" placeholder="Password">
+
+                                            <span class="fa fa-eye position-absolute toggle-password"
+                                                style="top: 42px; right: 15px; cursor: pointer;"></span>
+                                        </div>
+                                    </div>
+
 
                                     <!-- Submit Button -->
                                     <div class="card-footer text-center row">
@@ -128,20 +114,20 @@
 
     <script>
         // Toggle password visibility
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const icon = event.target;
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        }
+        $(document).ready(function() {
+            $('.toggle-password').on('click', function() {
+                const $passwordInput = $('#password');
+                const $icon = $(this);
 
+                if ($passwordInput.attr('type') === 'password') {
+                    $passwordInput.attr('type', 'text');
+                    $icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    $passwordInput.attr('type', 'password');
+                    $icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+        });
         // Hide validation errors on focus
         document.addEventListener('DOMContentLoaded', function() {
             const inputs = document.querySelectorAll('input, select, textarea');

@@ -14,7 +14,22 @@
                         <div class="col-12 col-md-12 col-lg-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4>FAQS</h4>
+                                    <h4>FAQ</h4>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label>Question</label>
+                                        <input name="question" class="form-control @error('question') is-invalid @enderror"
+                                            value="{{ $data->questions }}">
+
+                                        @error('question')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+
+
+
+                                    </div>
                                 </div>
 
                                 <div class="card-body">

@@ -21,7 +21,7 @@
                                     <!-- Name Field -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="name">Name</label>
+                                            <label for="name">Name <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control @error('name') is-invalid @enderror"
                                                 id="name" name="name" value="{{ old('name', $user->name) }}"
                                                 placeholder="Enter your name" required>
@@ -34,7 +34,7 @@
                                     <!-- Email Field -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="email">Email</label>
+                                            <label for="email">Email <span style="color: red;">*</span></label>
                                             <input type="email" class="form-control @error('email') is-invalid @enderror"
                                                 id="email" name="email" value="{{ old('email', $user->email) }}"
                                                 placeholder="example@gmail.com" required>
@@ -47,7 +47,7 @@
                                     <!-- Phone Field -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="phone">Phone</label>
+                                            <label for="phone">Phone <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control @error('phone') is-invalid @enderror"
                                                 id="phone" name="phone" value="{{ old('phone', $user->phone) }}"
                                                 placeholder="Enter your phone" required>
@@ -60,10 +60,10 @@
                                     <!-- Password Field (optional) -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group position-relative">
-                                            <label for="password">Password</label>
+                                            <label for="password">Password (Optional)</label>
                                             <input type="password"
                                                 class="form-control @error('password') is-invalid @enderror" id="password"
-                                                name="password" placeholder="Leave blank to keep current">
+                                                name="password" placeholder="Password">
                                             <span class="fa fa-eye position-absolute"
                                                 style="top: 42px; right: 15px; cursor: pointer;"
                                                 onclick="togglePassword()"></span>

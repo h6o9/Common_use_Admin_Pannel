@@ -55,6 +55,7 @@ class FaqController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'description' => 'required',
+            'question' => 'required',
         ]);
 
         // If validation fails
@@ -71,7 +72,7 @@ class FaqController extends Controller
 
         // Save data
         Faq::create($request->all());
-        return redirect('/admin/faq-index')->with('success', 'FAQs created successfully');
+        return redirect('/admin/faq-index')->with('success', 'FAQ created successfully');
     }
 
 

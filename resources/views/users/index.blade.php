@@ -178,67 +178,73 @@
         });
 
         /// Toggle status
+        let currentToggle = null;
+        let currentUserId = null;
 
-        $(document).ready(function() {
-            let currentToggle = null;
-            let currentUserId = null;
+        $('.toggle-status').change(function() {
+            let status = $(this).is(':checked') ? 1 : 0;
+            currentToggle = $(this);
+            currentUserId = $(this).data('id');
 
-            $('.toggle-status').change(function() {
-                let status = $(this).prop('checked') ? 1 : 0;
-                currentUserId = $(this).data('id');
-                currentToggle = $(this);
-
-                if (status === 0) {
-                    // For deactivation - show modal
-                    $('#deactivatingUserId').val(currentUserId);
-                    $('#deactivationModal').modal('show');
-                } else {
-                    // For activation - proceed directly
-                    updateUserStatus(currentUserId, 1);
-                }
-            });
-
-            $('#confirmDeactivation').click(function() {
-                let reason = $('#deactivationReason').val();
-                if (reason.trim() === '') {
-                    toastr.error('Please provide a deactivation reason');
-                    return;
-                }
-
-                updateUserStatus(currentUserId, 0, reason);
-                $('#deactivationModal').modal('hide');
-                $('#deactivationReason').val(''); // Clear the reason field
-            });
-
-            function updateUserStatus(userId, status, reason = null) {
-                let $descriptionSpan = currentToggle.siblings('.custom-switch-description');
-
-                $.ajax({
-                    url: "{{ route('user.toggle-status') }}",
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        id: userId,
-                        status: status,
-                        reason: reason
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            $descriptionSpan.text(response.new_status);
-                            toastr.success(response.message);
-                        } else {
-                            // Reset the toggle if failed
-                            currentToggle.prop('checked', !status);
-                            toastr.error(response.message);
-                        }
-                    },
-                    error: function(xhr) {
-                        // Reset the toggle on error
-                        currentToggle.prop('checked', !status);
-                        toastr.error('Error updating status');
-                    }
-                });
+            if (status === 0) {
+                $('#deactivatingUserId').val(currentUserId);
+                $('#deactivationModal').modal('show');
+            } else {
+                updateUserStatus(currentUserId, 1);
             }
         });
+
+        $('#confirmDeactivation').click(function() {
+            let reason = $('#deactivationReason').val();
+            if (reason.trim() === '') {
+                toastr.error('Please provide a deactivation reason');
+                setTimeout(() => {
+                    location.reload();
+                }, 800);
+                return;
+            }
+
+            $('#deactivationModal').modal('hide');
+            $('#deactivationReason').val('');
+            updateUserStatus(currentUserId, 0, reason);
+        });
+
+        $('#deactivationModal').on('hidden.bs.modal', function() {
+            if ($('#deactivationReason').val().trim() === '') {
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
+            }
+        });
+
+        function updateUserStatus(userId, status, reason = null) {
+            let $descriptionSpan = currentToggle.siblings('.custom-switch-description');
+            $.ajax({
+                url: "{{ route('user.toggle-status') }}",
+                type: "POST",
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: userId,
+                    status: status,
+                    reason: reason
+                },
+                success: function(res) {
+                    if (res.success) {
+                        $descriptionSpan.text(res.new_status);
+                        toastr.success(res.message);
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        currentToggle.prop('checked', !status);
+                        toastr.error(res.message);
+                    }
+                },
+                error: function() {
+                    currentToggle.prop('checked', !status);
+                    toastr.error('Error updating status');
+                }
+            });
+        }
     </script>
 @endsection

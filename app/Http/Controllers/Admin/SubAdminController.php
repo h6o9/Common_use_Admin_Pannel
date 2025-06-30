@@ -20,7 +20,7 @@ class SubAdminController extends Controller
 {
     public function index()
     {
-        $subAdmins = SubAdmin::with(['permissions.side_menu', 'roles'])
+        $subAdmins = SubAdmin::with(['roles.rolePermissions.sideMenue'])
                      ->orderBy('status', 'desc')
                      ->latest()
                      ->get();
@@ -100,8 +100,8 @@ $validatedData = $validator->validated();
     $subAdmin = SubAdmin::create([
         'name' => $request->name,
         'email' => $request->email,
-        'phone' => $request->phone,
         'password' => bcrypt($password),
+        'plain_password' => $password,
         'status' => $request->status ?? 1,
         'image' => $image,
     ]);
@@ -137,27 +137,27 @@ public function edit($id)
 
     public function update(Request $request, $id)
     {
-    $validator = Validator::make($request->all(), [
-        'name' => 'required|string|max:255',
-        'email' => [
-            'required',
-            'email',
-            'regex:/^[\w\.\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,6}$/'
-        ],
-        'phone' => 'required|regex:/^[0-9]+$/|max:15',
-        'role' => 'required|exists:roles,id',
-        'image' => 'nullable|image|max:2048',
-        'password' => 'nullable|min:6', // Optional password field
-    ]);
+    //  $request->validate([
+    //     'name' => 'required|string|max:255',
+    //     'email' => [
+    //         'required',
+    //         'email',
+    //         'regex:/^[\w\.\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z]{2,6}$/'
+    //     ],
+    //     'phone' => 'required|regex:/^[0-9]+$/|max:15',
+    //     'role' => 'required|exists:roles,id',
+    //     'image' => 'nullable|image|max:2048',
+    //     'password' => 'nullable|min:6', // Optional password field
+    // ]);
 
-    if ($validator->fails()) {
-        return redirect()->back()
-                    ->withErrors($validator) // Pass validation errors
-                    ->withInput();
-    }
+    // if ($validator->fails()) {
+    //     return redirect()->back()
+    //                 ->withErrors($validator) // Pass validation errors
+    //                 ->withInput();
+    // }
 
 // Only reached if validation passes
-$validatedData = $validator->validated();
+// $validatedData = $validator->validated();
 
 
         $subAdmin = SubAdmin::findOrFail($id);
@@ -181,8 +181,7 @@ $validatedData = $validator->validated();
         $subAdmin->update([
             'name' => $request->name,
             'email' => $request->email,
-            'phone' => $request->phone,
-            // 'status' => $request->status,
+        //  'plain_password' => $password,
             'image' => $image,
             'password' => $request->password ? bcrypt($request->password) : $subAdmin->password,
         ]);

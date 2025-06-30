@@ -12,13 +12,24 @@
                         <div class="col-12 col-md-12 col-lg-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4>FAQS</h4>
+                                    <h4>FAQ</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label>Question</label>
+                                        <input name="question" class="form-control @error('question') is-invalid @enderror">
+                                        @error('question')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label>Description</label>
-                                        <textarea name="description" class="form-control">
-                                                           
+                                        <textarea name="description" class="form-control @error('description') is-invalid @enderror">
+                                         @error('description')
+<div class="invalid-feedback">{{ $message }}</div>
+@enderror               
                                         </textarea>
                                     </div>
                                 </div>
@@ -38,5 +49,17 @@
     <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
     <script>
         CKEDITOR.replace('description');
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('input, select, textarea').on('focus', function() {
+                const $feedback = $(this).parent().find('.invalid-feedback');
+                if ($feedback.length) {
+                    $feedback.hide();
+                    $(this).removeClass('is-invalid');
+                }
+            });
+        });
     </script>
 @endsection

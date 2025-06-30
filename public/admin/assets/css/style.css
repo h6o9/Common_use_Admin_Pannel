@@ -1998,6 +1998,10 @@
     color: #f44336 !important
 }
 
+.swal-title {
+    font-size: 18px !important;
+}
+
 .col-pink {
     color: #e91e63 !important
 }

@@ -10,4 +10,6 @@ class Faq extends Model
     use HasFactory;
     protected $guarded=[];
 
+    
+
 }
